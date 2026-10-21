@@ -172,6 +172,22 @@ def print_cards_page(
         }
     )
 
+
+@app.get("/print/card-preview-noqr", response_class=HTMLResponse)
+def print_card_preview_noqr(request: Request):
+    if not is_authenticated(request):
+        return RedirectResponse(url="/login")
+    conn = get_db_connection()
+    students = [dict(s) for s in conn.execute(
+        "SELECT * FROM students WHERE is_active = 1 ORDER BY class_name ASC, CAST(roll_no AS INTEGER) ASC LIMIT 6"
+    ).fetchall()]
+    conn.close()
+    return templates.TemplateResponse(
+        request=request,
+        name="print_card_preview_noqr.html",
+        context={"students": students, "school_name": get_setting("school_name", "Shaheen Public High School")}
+    )
+
 @app.get("/print/card-backs", response_class=HTMLResponse)
 def print_card_backs_page(
     request: Request,

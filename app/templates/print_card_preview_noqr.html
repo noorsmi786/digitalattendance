@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Front Card Preview (No-QR) — Option 1B &amp; 2B</title>
+  <link rel="icon" type="image/png" href="/static/icons/icon-192.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', Arial, sans-serif; background: #e2e8f0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+    /* ── TOOLBAR ── */
+    .toolbar {
+      position: sticky; top: 0; z-index: 200;
+      background: #fff; border-bottom: 2px solid #044332;
+      padding: 10px 20px; display: flex; align-items: center;
+      justify-content: space-between; gap: 12px; flex-wrap: wrap;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+    .ttitle { font-size: 14px; font-weight: 800; color: #044332; }
+    .tsub { font-size: 11px; color: #64748b; font-weight: 500; }
+    .btn { padding: 7px 14px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 5px; text-decoration: none; }
+    .btn-green { background: #044332; color: #fff; }
+    .btn-green:hover { background: #065f46; }
+    .btn-light { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; }
+    .btn-light:hover { background: #e5e7eb; }
+
+    /* ── PAGE LAYOUT ── */
+    .page-wrapper { padding: 24px 0 40px; display: flex; flex-direction: column; align-items: center; gap: 32px; }
+
+    /* Section headings */
+    .design-section { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .design-label {
+      background: #044332; color: #fff;
+      padding: 6px 20px; border-radius: 20px;
+      font-size: 13px; font-weight: 800; letter-spacing: 0.4px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .design-caption { font-size: 12px; color: #475569; font-weight: 500; text-align: center; max-width: 340px; }
+
+    /* Sample cards row */
+    .cards-row { display: flex; gap: 14mm; align-items: flex-start; justify-content: center; flex-wrap: wrap; }
+
+    /* card container matching exact CR80 dimensions */
+    .card-wrap {
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+    }
+    .card-tag {
+      font-size: 10px; font-weight: 700; color: #64748b;
+      background: #f1f5f9; padding: 3px 10px; border-radius: 10px;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       BASE CARD DIMENSIONS
+       ═══════════════════════════════════════════════════ */
+    .id-card {
+      width: 54mm; height: 85.6mm;
+      border-radius: 4.5mm;
+      overflow: hidden;
+      position: relative;
+      flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.14);
+    }
+
+    /* ═══════════════════════════════════════════════════
+       OPTION 1B — EMERALD SPLIT (No-QR Front)
+       Original: photo + 3 badge tags + QR box side-by-side
+       No-QR:    photo taller + extra info tags replacing QR
+       ═══════════════════════════════════════════════════ */
+    .card-1b {
+      display: flex; flex-direction: column;
+      background: #fff; border: 1px solid #cbd5e1;
+    }
+
+    /* Header: dark green band with logo + school name */
+    .c1b-head {
+      background: #044332;
+      padding: 2mm 2.6mm 1.8mm 2.6mm;
+      display: flex; align-items: center; gap: 2.2mm; flex-shrink: 0;
+    }
+    .c1b-logo { width: 14mm; height: 11mm; flex-shrink: 0; display: flex; align-items: center; }
+    .c1b-logo img { width: 100%; height: 100%; object-fit: contain; }
+    .c1b-hdiv { width: 1px; height: 10mm; background: rgba(255,255,255,.4); flex-shrink: 0; }
+    .c1b-htitles { flex: 1; line-height: 1.1; }
+    .c1b-sch1, .c1b-sch2 { font-size: 8pt; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 0.2px; }
+    .c1b-loc { font-size: 4.8pt; color: rgba(255,255,255,.82); margin-top: 0.4mm; font-weight: 500; }
+
+    /* Gold stripe */
+    .c1b-gold { height: 1.4mm; background: #d97706; flex-shrink: 0; }
+
+    /* Body */
+    .c1b-body { padding: 1.8mm 2.6mm 1.6mm; display: flex; flex-direction: column; align-items: center; position: relative; flex: 1; }
+
+    /* Watermark */
+    .c1b-wm { position: absolute; top: 1.5mm; left: 50%; transform: translateX(-50%); width: 42mm; height: 42mm; opacity: 0.12; pointer-events: none; z-index: 0; }
+    .c1b-wm img { width: 100%; height: 100%; object-fit: contain; }
+
+    /* PHOTO — taller than original since QR is removed */
+    .c1b-photo { width: 22mm; height: 26mm; border: 1.5px solid #044332; border-radius: 3.2mm; padding: 0.8mm; background: #fff; box-shadow: 0 2px 6px rgba(4,67,50,.14); position: relative; z-index: 2; }
+    .c1b-photo-inner { width: 100%; height: 100%; border-radius: 2.4mm; background: #cbd5e1; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    .c1b-photo-inner img { width: 100%; height: 100%; object-fit: cover; }
+    .c1b-avatar svg { width: 14mm; height: 14mm; fill: #64748b; }
+
+    .c1b-name { font-size: 9.6pt; font-weight: 800; color: #044332; margin-top: 1.2mm; max-width: 49mm; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; position: relative; z-index: 2; }
+    .c1b-father { font-size: 5.2pt; color: #475569; margin-top: 0.2mm; text-align: center; position: relative; z-index: 2; }
+
+    /* Info tags — now 4 tags full width (no QR eating half the space) */
+    .c1b-tags { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4mm; width: 100%; margin-top: 1.8mm; position: relative; z-index: 2; }
+    .c1b-tag { display: flex; align-items: center; border: 1px solid #044332; border-radius: 1.6mm; overflow: hidden; height: 7mm; background: #fff; }
+    .c1b-tag-lbl { background: #044332; color: #fff; font-size: 4pt; font-weight: 800; text-transform: uppercase; letter-spacing: 0.3px; padding: 0 1.2mm; height: 100%; display: flex; align-items: center; justify-content: center; width: 9mm; flex-shrink: 0; }
+    .c1b-tag-val { flex: 1; padding: 0 1.2mm; font-size: 7pt; font-weight: 800; color: #044332; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .c1b-tag.code { border-color: #d97706; }
+    .c1b-tag.code .c1b-tag-lbl { background: #d97706; }
+    .c1b-tag.code .c1b-tag-val { font-family: monospace; font-size: 6.8pt; color: #92400e; }
+    .c1b-tag.session .c1b-tag-lbl { background: #475569; border-color: #475569; }
+    .c1b-tag.session .c1b-tag-val { font-size: 6pt; color: #475569; }
+
+    /* wave footer */
+    .c1b-wave { flex-shrink: 0; height: 7mm; }
+    .c1b-wave svg { width: 100%; height: 100%; display: block; }
+
+
+    /* ═══════════════════════════════════════════════════
+       OPTION 2B — VERTICAL SPLIT MAX (No-QR Front)
+       Original: blue sidebar + photo + name + tags + QR section
+       No-QR:    photo taller + extra tag row + session replacing QR section
+       ═══════════════════════════════════════════════════ */
+    .card-2b {
+      display: flex; flex-direction: row;
+      background: #fff; border: 1px solid #cbd5e1;
+    }
+
+    /* Blue sidebar (unchanged) */
+    .c2b-side {
+      width: 9.5mm; background: #1e3a8a;
+      display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+      padding: 2.2mm 0; flex-shrink: 0;
+    }
+    .c2b-side-logo { width: 8mm; height: 8mm; background: rgba(255,255,255,.12); border-radius: 1.5mm; padding: 0.5mm; display: flex; align-items: center; }
+    .c2b-side-logo img { width: 100%; height: 100%; object-fit: contain; }
+    .c2b-side-text { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 4.6pt; font-weight: 600; color: rgba(255,255,255,.75); letter-spacing: 1.1px; text-transform: uppercase; flex: 1; display: flex; align-items: center; padding: 2mm 0; }
+    .c2b-side-badge { width: 7.2mm; background: #d97706; color: #fff; font-size: 4pt; font-weight: 700; text-align: center; padding: 1mm 0; border-radius: 1mm; }
+
+    /* Main area */
+    .c2b-main { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 1.6mm 2mm 1.8mm; overflow: hidden; position: relative; }
+
+    /* Watermark */
+    .c2b-wm { position: absolute; top: 10mm; left: 50%; transform: translateX(-50%); width: 38mm; height: 38mm; opacity: 0.13; pointer-events: none; z-index: 0; }
+    .c2b-wm img { width: 100%; height: 100%; object-fit: contain; }
+
+    .c2b-header { width: 100%; display: flex; flex-direction: column; align-items: center; margin-bottom: 1mm; position: relative; z-index: 2; }
+    .c2b-sch1, .c2b-sch2 { font-size: 8.6pt; font-weight: 900; color: #1e3a8a; text-transform: uppercase; letter-spacing: 0.3px; line-height: 1.1; }
+    .c2b-loc { font-size: 4.6pt; font-weight: 700; color: #b45309; text-transform: uppercase; letter-spacing: 0.8px; margin-top: 0.3mm; }
+    .c2b-divider { width: 24mm; height: 1.2px; background: #d97706; margin-top: 0.8mm; }
+
+    /* PHOTO — taller */
+    .c2b-photo { width: 22mm; height: 26mm; border: 1.5px solid #1e3a8a; border-radius: 3.2mm; padding: 0.8mm; background: #fff; box-shadow: 0 2px 6px rgba(30,58,138,.14); display: flex; align-items: center; justify-content: center; position: relative; z-index: 2; }
+    .c2b-photo-inner { width: 100%; height: 100%; border-radius: 2.4mm; background: #cbd5e1; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    .c2b-photo-inner img { width: 100%; height: 100%; object-fit: cover; }
+    .c2b-avatar svg { width: 13mm; height: 13mm; fill: #64748b; }
+
+    .c2b-name { font-size: 9.2pt; font-weight: 800; color: #0f172a; margin-top: 1mm; line-height: 1.1; max-width: 38mm; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; position: relative; z-index: 2; }
+    .c2b-father { font-size: 4.8pt; color: #64748b; margin-top: 0.2mm; position: relative; z-index: 2; }
+
+    /* 2×2 info grid */
+    .c2b-info { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 0; width: 100%; margin-top: 1.4mm; position: relative; z-index: 2; border: 1px solid #1e3a8a; border-radius: 1.6mm; overflow: hidden; }
+    .c2b-cell { display: flex; flex-direction: column; align-items: center; padding: 1mm 0.8mm; }
+    .c2b-cell-lbl { font-size: 3.8pt; font-weight: 800; color: #1e3a8a; text-transform: uppercase; letter-spacing: 0.3px; }
+    .c2b-cell-val { font-size: 7.6pt; font-weight: 800; color: #0f172a; margin-top: 0.2mm; }
+    .c2b-vdiv { width: 1px; background: #1e3a8a; align-self: stretch; }
+
+    /* Code row */
+    .c2b-code-row { width: 100%; margin-top: 1.2mm; display: flex; align-items: center; border: 1px solid #d97706; border-radius: 1.6mm; overflow: hidden; height: 7.5mm; position: relative; z-index: 2; }
+    .c2b-code-lbl { background: #d97706; color: #fff; font-size: 4pt; font-weight: 800; text-transform: uppercase; padding: 0 1.4mm; height: 100%; display: flex; align-items: center; }
+    .c2b-code-val { flex: 1; padding: 0 1.4mm; font-family: monospace; font-size: 7.4pt; font-weight: 800; color: #92400e; }
+
+    /* Session + issued strip replacing QR section */
+    .c2b-session-strip { width: 100%; margin-top: 1.2mm; display: flex; gap: 1.2mm; position: relative; z-index: 2; }
+    .c2b-sstrip-cell { flex: 1; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 1.4mm; padding: 0.9mm 1mm; display: flex; flex-direction: column; align-items: center; }
+    .c2b-sstrip-lbl { font-size: 3.6pt; font-weight: 700; color: #1e3a8a; text-transform: uppercase; letter-spacing: 0.3px; }
+    .c2b-sstrip-val { font-size: 5.8pt; font-weight: 800; color: #1e3a8a; margin-top: 0.3mm; }
+
+    /* Bottom bar */
+    .c2b-bottom { width: 100%; margin-top: auto; display: flex; flex-direction: column; }
+    .c2b-bar-gold { height: 1mm; background: #d97706; }
+    .c2b-bar-navy { height: 2mm; background: #1e3a8a; }
+
+    /* ── PRINT ── */
+    @media print {
+      body { background: #fff !important; }
+      .toolbar { display: none !important; }
+      .page-wrapper { padding: 10mm 0 !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <div>
+    <div class="ttitle">🔍 Front Card Preview — QR Moved to Back</div>
+    <div class="tsub">Shows how Option 1B (Emerald Split) &amp; Option 2B (Vertical Split Max) look without the QR code on the front</div>
+  </div>
+  <div style="display:flex; gap:8px; align-items:center;">
+    <a href="/print/cards" class="btn btn-light">🖨️ Full Card Studio</a>
+    <a href="/print/card-backs" class="btn btn-light">📇 QR Back Sheets</a>
+    <a href="/admin" class="btn btn-light">← Admin</a>
+    <button onclick="window.print()" class="btn btn-green">🖨️ Print Preview</button>
+  </div>
+</div>
+
+<div class="page-wrapper">
+
+  <!-- ─────────────── OPTION 1B ─────────────── -->
+  <div class="design-section">
+    <div class="design-label">
+      ⭐ Option 1B — Emerald Split (No-QR Front)
+    </div>
+    <div class="design-caption">QR removed → photo taller (22×26mm) + 4 info tags in 2×2 grid (Class, Roll, Code, Session)</div>
+    <div class="cards-row">
+      {% for s in students[:3] %}
+      <div class="card-wrap">
+        <div class="id-card card-1b">
+
+          <!-- Header -->
+          <div class="c1b-head">
+            <div class="c1b-logo"><img src="/static/img/shaheen_logo_trans.png" alt="Logo"></div>
+            <div class="c1b-hdiv"></div>
+            <div class="c1b-htitles">
+              <div class="c1b-sch1">SHAHEEN PUBLIC</div>
+              <div class="c1b-sch2">HIGH SCHOOL</div>
+              <div class="c1b-loc">Loi Shalman &bull; Khyber</div>
+            </div>
+          </div>
+          <div class="c1b-gold"></div>
+
+          <!-- Body -->
+          <div class="c1b-body">
+            <div class="c1b-wm"><img src="/static/img/shaheen_logo_trans.png" alt=""></div>
+
+            <!-- Taller photo -->
+            <div class="c1b-photo">
+              <div class="c1b-photo-inner">
+                {% if s.photo_url %}
+                  <img src="{{ s.photo_url }}" alt="{{ s.full_name }}">
+                {% else %}
+                  <div class="c1b-avatar"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="c1b-name">{{ s.full_name }}</div>
+            <div class="c1b-father">S/D of {{ s.father_name or 'Guardian' }}</div>
+
+            <!-- 4 tags in 2×2 grid (QR area now used for extra tags) -->
+            <div class="c1b-tags">
+              <div class="c1b-tag">
+                <span class="c1b-tag-lbl">Class</span>
+                <span class="c1b-tag-val">{{ s.class_name }}</span>
+              </div>
+              <div class="c1b-tag">
+                <span class="c1b-tag-lbl">Roll</span>
+                <span class="c1b-tag-val">{{ s.roll_no }}</span>
+              </div>
+              <div class="c1b-tag code" style="grid-column: span 2;">
+                <span class="c1b-tag-lbl">Code</span>
+                <span class="c1b-tag-val">{{ s.student_code }}</span>
+              </div>
+              <div class="c1b-tag session" style="grid-column: span 2;">
+                <span class="c1b-tag-lbl">Session</span>
+                <span class="c1b-tag-val">2026 – 2027</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Wave footer -->
+          <div class="c1b-wave">
+            <svg viewBox="0 0 100 28" preserveAspectRatio="none">
+              <path d="M0,12 C25,24 45,26 60,26 C78,26 90,18 100,14 L100,28 L0,28 Z" fill="#044332"/>
+              <path d="M0,20 C25,26 48,28 65,27 C82,26 92,22 100,19 L100,28 L0,28 Z" fill="#022a1f" opacity="0.6"/>
+              <path d="M0,10 C25,22 45,24.5 60,24.5 C78,24.5 90,16.5 100,12.5 L100,14 C90,18 78,26 60,26 C45,26 25,24 0,12 Z" fill="#d97706"/>
+            </svg>
+          </div>
+        </div>
+        <div class="card-tag">{{ s.full_name }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- ─────────────── OPTION 2B ─────────────── -->
+  <div class="design-section">
+    <div class="design-label" style="background:#1e3a8a;">
+      ⭐ Option 2B — Vertical Split Max (No-QR Front)
+    </div>
+    <div class="design-caption">QR removed → photo taller (22×26mm) + full-width Class/Roll grid + Code badge + Session strip</div>
+    <div class="cards-row">
+      {% for s in students[:3] %}
+      <div class="card-wrap">
+        <div class="id-card card-2b">
+
+          <!-- Blue sidebar -->
+          <div class="c2b-side">
+            <div class="c2b-side-logo"><img src="/static/img/shaheen_logo_trans.png" alt="Logo"></div>
+            <div class="c2b-side-text">Shaheen Public High School</div>
+            <div class="c2b-side-badge">26-27</div>
+          </div>
+
+          <!-- Main -->
+          <div class="c2b-main">
+            <div class="c2b-wm"><img src="/static/img/shaheen_logo_trans.png" alt=""></div>
+
+            <div class="c2b-header">
+              <div class="c2b-sch1">SHAHEEN PUBLIC</div>
+              <div class="c2b-sch2">HIGH SCHOOL</div>
+              <div class="c2b-loc">Loi Shalman &bull; Khyber</div>
+              <div class="c2b-divider"></div>
+            </div>
+
+            <!-- Taller photo -->
+            <div class="c2b-photo">
+              <div class="c2b-photo-inner">
+                {% if s.photo_url %}
+                  <img src="{{ s.photo_url }}" alt="{{ s.full_name }}">
+                {% else %}
+                  <div class="c2b-avatar"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="c2b-name">{{ s.full_name }}</div>
+            <div class="c2b-father">S/D of {{ s.father_name or 'Guardian' }}</div>
+
+            <!-- Class + Roll (full-width, no QR eating half) -->
+            <div class="c2b-info">
+              <div class="c2b-cell">
+                <span class="c2b-cell-lbl">Class</span>
+                <span class="c2b-cell-val">{{ s.class_name }}</span>
+              </div>
+              <div class="c2b-vdiv"></div>
+              <div class="c2b-cell">
+                <span class="c2b-cell-lbl">Roll No</span>
+                <span class="c2b-cell-val">{{ s.roll_no }}</span>
+              </div>
+            </div>
+
+            <!-- Code badge (full width) -->
+            <div class="c2b-code-row">
+              <span class="c2b-code-lbl">Student Code</span>
+              <span class="c2b-code-val">{{ s.student_code }}</span>
+            </div>
+
+            <!-- Session strip (fills QR space) -->
+            <div class="c2b-session-strip">
+              <div class="c2b-sstrip-cell">
+                <span class="c2b-sstrip-lbl">Session</span>
+                <span class="c2b-sstrip-val">2026 – 2027</span>
+              </div>
+              <div class="c2b-sstrip-cell">
+                <span class="c2b-sstrip-lbl">QR on Back</span>
+                <span class="c2b-sstrip-val" style="font-size:4.4pt; color:#64748b;">Flip to Scan</span>
+              </div>
+            </div>
+
+            <div class="c2b-bottom">
+              <div class="c2b-bar-gold"></div>
+              <div class="c2b-bar-navy"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card-tag">{{ s.full_name }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
