@@ -172,6 +172,25 @@ def print_cards_page(
         }
     )
 
+@app.get("/print/card-backs", response_class=HTMLResponse)
+def print_card_backs_page(
+    request: Request,
+    sheets: int = 1
+):
+    if not is_authenticated(request):
+        return RedirectResponse(url="/login")
+
+    return templates.TemplateResponse(
+        request=request,
+        name="print_card_backs.html",
+        context={
+            "school_name": get_setting("school_name", "Shaheen Public High School"),
+            "school_address": "Loi Shalman Near Cricket Ground, Ghundakhel",
+            "school_phone": "03359365884 • 03342727432",
+            "sheets": max(1, min(sheets, 50))
+        }
+    )
+
 @app.get("/print/comparison", response_class=HTMLResponse)
 @app.get("/print/sample-sheet", response_class=HTMLResponse)
 def print_comparison_page(

@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ID Card Backs (Master A4 Sheet) - Shaheen Public High School</title>
+  <link rel="icon" type="image/png" href="/static/icons/icon-192.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #e2e8f0;
+      color: #0f172a;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    /* Screen Toolbar */
+    .toolbar {
+      position: sticky; top: 0; z-index: 100;
+      background: #ffffff; border-bottom: 1px solid #cbd5e1;
+      padding: 10px 20px; display: flex; justify-content: space-between;
+      align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      flex-wrap: wrap; gap: 12px;
+    }
+    .toolbar-left { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .toolbar-title { font-size: 15px; font-weight: 800; color: #044332; display: flex; align-items: center; gap: 8px; }
+    .control-group { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #334155; font-weight: 600; }
+    .control-group select {
+      padding: 6px 10px; border-radius: 6px; border: 1px solid #cbd5e1;
+      font-size: 13px; font-weight: 600; background: #fff; color: #0f172a; cursor: pointer;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #044332; color: #fff; padding: 8px 16px;
+      border-radius: 6px; text-decoration: none; font-weight: 700;
+      font-size: 13px; cursor: pointer; border: none; transition: background 0.15s;
+    }
+    .btn:hover { background: #065f46; }
+    .btn-secondary { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
+    .btn-secondary:hover { background: #e2e8f0; }
+
+    /* A4 Page / Sheet Container */
+    .sheet-wrapper {
+      padding: 15px 0 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .a4-sheet {
+      width: 210mm;
+      min-height: 297mm;
+      background: #ffffff;
+      padding: 4mm auto;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+      position: relative;
+      page-break-after: always;
+      break-after: page;
+    }
+
+    /* Grid matching front cards exactly: 3 columns x 3 rows = 9 cards */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 54mm);
+      gap: 5mm 6mm;
+      justify-content: center;
+      margin: 4mm auto;
+      width: 180mm;
+    }
+
+    /* Outer Cutout Guide Box */
+    .card-cutout-box {
+      width: 54mm;
+      height: 85.6mm;
+      border: 0.5px dashed #94a3b8;
+      border-radius: 3.5mm;
+      padding: 0;
+      position: relative;
+      background: #ffffff;
+      box-sizing: border-box;
+      overflow: hidden;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    /* ID Card Back Standard CR80 Canvas */
+    .card-back {
+      width: 100%;
+      height: 100%;
+      background: #ffffff;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 3mm 3.2mm 2.8mm;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    /* Eagle Watermark */
+    .card-back .watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 38mm;
+      height: 38mm;
+      opacity: 0.045;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .card-back .watermark img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .card-back > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header Section */
+    .cb-header {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border-bottom: 1.2px solid #044332;
+      padding-bottom: 1.8mm;
+    }
+    .cb-logo-wrap {
+      width: 9.5mm;
+      height: 9.5mm;
+      margin-bottom: 0.8mm;
+    }
+    .cb-logo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .cb-school-title {
+      font-size: 6.8pt;
+      font-weight: 900;
+      color: #044332;
+      letter-spacing: 0.4px;
+      line-height: 1.15;
+      text-transform: uppercase;
+    }
+    .cb-school-campus {
+      font-size: 4.8pt;
+      font-weight: 700;
+      color: #d97706;
+      letter-spacing: 0.8px;
+      margin-top: 0.3mm;
+      text-transform: uppercase;
+    }
+    .cb-motto {
+      font-size: 4.2pt;
+      font-weight: 600;
+      color: #475569;
+      font-style: italic;
+      margin-top: 0.3mm;
+    }
+
+    /* Rules & Instructions Section */
+    .cb-rules-box {
+      margin: 1.5mm 0;
+    }
+    .cb-rules-heading {
+      font-size: 5pt;
+      font-weight: 800;
+      color: #044332;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      margin-bottom: 1mm;
+      border-bottom: 0.6px solid #e2e8f0;
+      padding-bottom: 0.4mm;
+    }
+    .cb-rules-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.9mm;
+    }
+    .cb-rule-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 2.2px;
+      font-size: 4.4pt;
+      line-height: 1.22;
+      color: #1e293b;
+    }
+    .cb-rule-num {
+      font-weight: 800;
+      color: #044332;
+      font-size: 4.4pt;
+      min-width: 2.6mm;
+      flex-shrink: 0;
+    }
+    .cb-rule-text {
+      font-weight: 500;
+    }
+
+    /* Contact & Lost-and-Found Box */
+    .cb-contact-box {
+      background: #f0fdf4;
+      border: 0.8px solid #86efac;
+      border-radius: 1.5mm;
+      padding: 1.2mm 1.8mm;
+      margin-top: 0.6mm;
+    }
+    .cb-contact-title {
+      font-size: 4.3pt;
+      font-weight: 800;
+      color: #166534;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      margin-bottom: 0.4mm;
+    }
+    .cb-contact-addr {
+      font-size: 4.2pt;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1.2;
+    }
+    .cb-contact-phones {
+      font-size: 4.5pt;
+      font-weight: 800;
+      color: #044332;
+      margin-top: 0.5mm;
+      letter-spacing: 0.2px;
+    }
+
+    /* Footer Section (Session & Principal Signature) */
+    .cb-footer {
+      border-top: 0.8px solid #cbd5e1;
+      padding-top: 1.2mm;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .cb-session {
+      font-size: 4.5pt;
+      font-weight: 800;
+      color: #044332;
+      display: flex;
+      flex-direction: column;
+    }
+    .cb-session span {
+      font-size: 3.8pt;
+      color: #64748b;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .cb-sign-box {
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+    .cb-sign-line {
+      width: 17mm;
+      border-bottom: 0.7px solid #475569;
+      margin-bottom: 0.6mm;
+    }
+    .cb-sign-text {
+      font-size: 4pt;
+      font-weight: 700;
+      color: #334155;
+      text-transform: uppercase;
+    }
+
+    /* ================= THEME 2: INK-SAVER ECO MODE ================= */
+    .theme-eco .card-cutout-box {
+      border-color: #000000 !important;
+    }
+    .theme-eco .card-back {
+      background: #ffffff !important;
+    }
+    .theme-eco .watermark {
+      display: none !important;
+    }
+    .theme-eco .cb-header {
+      border-bottom-color: #000000 !important;
+    }
+    .theme-eco .cb-school-title,
+    .theme-eco .cb-rule-num,
+    .theme-eco .cb-rules-heading,
+    .theme-eco .cb-contact-phones,
+    .theme-eco .cb-session {
+      color: #000000 !important;
+    }
+    .theme-eco .cb-school-campus {
+      color: #333333 !important;
+    }
+    .theme-eco .cb-contact-box {
+      background: #ffffff !important;
+      border: 0.8px solid #000000 !important;
+    }
+    .theme-eco .cb-contact-title {
+      color: #000000 !important;
+    }
+    .theme-eco .cb-sign-line {
+      border-bottom-color: #000000 !important;
+    }
+
+    /* ================= THEME 3: ROYAL BLUE / NAVY ================= */
+    .theme-navy .cb-header {
+      border-bottom-color: #1e3a8a;
+    }
+    .theme-navy .cb-school-title,
+    .theme-navy .cb-rule-num,
+    .theme-navy .cb-rules-heading,
+    .theme-navy .cb-contact-phones,
+    .theme-navy .cb-session {
+      color: #1e3a8a;
+    }
+    .theme-navy .cb-school-campus {
+      color: #b45309;
+    }
+    .theme-navy .cb-contact-box {
+      background: #eff6ff;
+      border-color: #93c5fd;
+    }
+    .theme-navy .cb-contact-title {
+      color: #1e40af;
+    }
+
+    /* Print Media Rules */
+    @media print {
+      body {
+        background: #ffffff !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .toolbar {
+        display: none !important;
+      }
+      .sheet-wrapper {
+        padding: 0 !important;
+        gap: 0 !important;
+      }
+      .a4-sheet {
+        box-shadow: none !important;
+        margin: 0 !important;
+        width: 210mm !important;
+        height: 297mm !important;
+        padding: 4mm auto !important;
+        page-break-after: always !important;
+        break-after: page !important;
+      }
+      .cards-grid {
+        grid-template-columns: repeat(3, 54mm) !important;
+        gap: 5mm 6mm !important;
+        margin: 4mm auto !important;
+        width: 180mm !important;
+      }
+      .card-cutout-box {
+        border-color: #cbd5e1 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Screen Toolbar -->
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <div class="toolbar-title">
+        📇 ID Card Backs Studio &mdash; Master A4 Sheet
+      </div>
+      <div class="control-group">
+        <label for="theme-select">Back Style:</label>
+        <select id="theme-select">
+          <option value="emerald" selected>🌲 Official Emerald &amp; Gold</option>
+          <option value="navy">⚓ Royal Navy Accent</option>
+          <option value="eco">🌱 Ink-Saver Eco Mode (Pure Black &amp; White)</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label for="sheets-select">Sheets to Print:</label>
+        <select id="sheets-select">
+          <option value="1" selected>1 Sheet (9 Cards)</option>
+          <option value="2">2 Sheets (18 Cards)</option>
+          <option value="3">3 Sheets (27 Cards)</option>
+          <option value="5">5 Sheets (45 Cards)</option>
+          <option value="10">10 Sheets (90 Cards)</option>
+          <option value="26">26 Sheets (234 Cards &bull; Full School)</option>
+        </select>
+      </div>
+    </div>
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <a href="/print/cards" class="btn btn-secondary">🖨️ Front Cards Studio</a>
+      <a href="/admin" class="btn btn-secondary">&#8592; Admin Dashboard</a>
+      <button onclick="window.print()" class="btn">🖨️ Print Back Sheets</button>
+    </div>
+  </div>
+
+  <!-- A4 Sheets Container -->
+  <div class="sheet-wrapper" id="sheets-container">
+    {% for s in range(sheets) %}
+    <div class="a4-sheet">
+      <div class="cards-grid">
+        {% for i in range(9) %}
+        <div class="card-cutout-box">
+          <div class="card-back">
+            <!-- Center Watermark -->
+            <div class="watermark">
+              <img src="/static/img/shaheen_logo_trans.png" alt="">
+            </div>
+
+            <!-- Header -->
+            <div class="cb-header">
+              <div class="cb-logo-wrap">
+                <img src="/static/img/shaheen_logo_trans.png" alt="Logo">
+              </div>
+              <div class="cb-school-title">{{ school_name }}</div>
+              <div class="cb-school-campus">LOI SHALMAN &bull; KHYBER</div>
+              <div class="cb-motto">&ldquo;Knowledge is Light &bull; Discipline &bull; Character&rdquo;</div>
+            </div>
+
+            <!-- Rules & Regulations -->
+            <div class="cb-rules-box">
+              <div class="cb-rules-heading">
+                <span>🛡️</span>
+                <span>Card Regulations &amp; Terms</span>
+              </div>
+              <ul class="cb-rules-list">
+                <li class="cb-rule-item">
+                  <span class="cb-rule-num">1.</span>
+                  <span class="cb-rule-text">Must be carried &amp; worn visibly at all times on school grounds.</span>
+                </li>
+                <li class="cb-rule-item">
+                  <span class="cb-rule-num">2.</span>
+                  <span class="cb-rule-text">Required for morning gate QR scanning, classroom, &amp; exams.</span>
+                </li>
+                <li class="cb-rule-item">
+                  <span class="cb-rule-num">3.</span>
+                  <span class="cb-rule-text">Strictly non-transferable; valid only for authorized student.</span>
+                </li>
+                <li class="cb-rule-item">
+                  <span class="cb-rule-num">4.</span>
+                  <span class="cb-rule-text">Report loss or damage immediately to Administration Office.</span>
+                </li>
+                <li class="cb-rule-item">
+                  <span class="cb-rule-num">5.</span>
+                  <span class="cb-rule-text">If found, please return to the school campus address below.</span>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Campus Address & Contacts -->
+            <div class="cb-contact-box">
+              <div class="cb-contact-title">
+                <span>📍</span>
+                <span>Campus Location &amp; Helpline:</span>
+              </div>
+              <div class="cb-contact-addr">{{ school_address }}</div>
+              <div class="cb-contact-phones">📞 / 💬 {{ school_phone }}</div>
+            </div>
+
+            <!-- Footer: Session & Signature -->
+            <div class="cb-footer">
+              <div class="cb-session">
+                <span>Academic Session</span>
+                2026&ndash;2027
+              </div>
+              <div class="cb-sign-box">
+                <div class="cb-sign-line"></div>
+                <div class="cb-sign-text">Principal Signature</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <script>
+    const themeSelect = document.getElementById('theme-select');
+    const sheetsSelect = document.getElementById('sheets-select');
+    const container = document.getElementById('sheets-container');
+
+    // Theme switching
+    themeSelect.addEventListener('change', (e) => {
+      document.body.classList.remove('theme-eco', 'theme-navy');
+      if (e.target.value === 'eco') {
+        document.body.classList.add('theme-eco');
+      } else if (e.target.value === 'navy') {
+        document.body.classList.add('theme-navy');
+      }
+    });
+
+    // Dynamic sheets generation without reloading
+    sheetsSelect.addEventListener('change', (e) => {
+      const count = parseInt(e.target.value) || 1;
+      const singleSheetHtml = container.children[0].outerHTML;
+      container.innerHTML = '';
+      for (let i = 0; i < count; i++) {
+        container.insertAdjacentHTML('beforeend', singleSheetHtml);
+      }
+    });
+  </script>
+</body>
+</html>
