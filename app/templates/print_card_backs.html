@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>ID Card Backs — Shaheen Public High School</title>
+  <title>ID Card Backs (QR) — Shaheen Public High School</title>
   <link rel="icon" type="image/png" href="/static/icons/icon-192.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;500;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@500;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -25,11 +25,11 @@
       padding: 10px 20px;
       display: flex; align-items: center; justify-content: space-between;
       gap: 12px; flex-wrap: wrap;
-      box-shadow: 0 2px 6px rgba(0,0,0,.10);
+      box-shadow: 0 2px 8px rgba(0,0,0,.10);
     }
-    .tleft  { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .tleft { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
     .ttitle { font-size: 14px; font-weight: 800; color: #01411C; }
-    .ctrl   { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #374151; font-weight: 600; }
+    .ctrl { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #374151; font-weight: 600; }
     .ctrl select { padding: 5px 8px; border: 1px solid #d1d5db; border-radius: 5px; font-size: 12px; font-weight: 600; background: #fff; cursor: pointer; }
     .btn { padding: 7px 14px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 5px; text-decoration: none; }
     .btn-green { background: #01411C; color: #fff; }
@@ -37,262 +37,214 @@
     .btn-light { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; }
     .btn-light:hover { background: #e5e7eb; }
 
+    /* Tip banner */
+    .tip-banner {
+      background: #f0fdf4; border-bottom: 1px solid #86efac;
+      padding: 8px 20px; font-size: 12px; color: #15803d; font-weight: 600;
+      display: flex; align-items: center; gap: 8px;
+    }
+
     /* ── A4 SHEET ── */
     .sheet-wrapper { padding: 20px 0 40px; display: flex; flex-direction: column; align-items: center; gap: 24px; }
     .a4-sheet { width: 210mm; min-height: 297mm; background: #fff; box-shadow: 0 4px 20px rgba(0,0,0,.18); page-break-after: always; break-after: page; }
-    .cards-grid { display: grid; grid-template-columns: repeat(3, 54mm); gap: 5.5mm 6mm; justify-content: center; padding: 5mm 0; }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 54mm);
+      gap: 5.5mm 6mm;
+      justify-content: center;
+      padding: 5mm 0;
+    }
 
     /* ── CARD SHELL ── */
     .card-back {
-      width: 54mm; height: 85.6mm;
+      width: 54mm;
+      height: 85.6mm;
       border-radius: 3mm;
       overflow: hidden;
       position: relative;
-      /* outer green border frame */
-      border: 1.2px solid #01411C;
       background: #fff;
+      border: 1px solid #01411C;
     }
 
-    /* ── DECORATIVE BACKGROUND LAYER ── */
-    /* Large faded crescent+star watermark: pure CSS/SVG, behind everything */
-    .bg-wm {
-      position: absolute;
-      top: 44%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 44mm; height: 44mm;
-      opacity: .06;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* Diagonal stripe pattern overlay */
-    .bg-stripes {
-      position: absolute;
-      inset: 0;
-      background-image: repeating-linear-gradient(
-        135deg,
-        transparent,
-        transparent 3mm,
-        rgba(1, 65, 28, 0.018) 3mm,
-        rgba(1, 65, 28, 0.018) 3.6mm
-      );
-      z-index: 0;
-      pointer-events: none;
-    }
-
-    /* Bottom-left decorative circle accent */
-    .bg-circle-bl {
-      position: absolute;
-      bottom: -8mm; left: -8mm;
-      width: 20mm; height: 20mm;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(1,65,28,0.10) 0%, transparent 70%);
-      z-index: 0;
-      pointer-events: none;
-    }
-    /* Top-right decorative circle accent */
-    .bg-circle-tr {
-      position: absolute;
-      top: -6mm; right: -6mm;
-      width: 18mm; height: 18mm;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(217,119,6,0.12) 0%, transparent 70%);
-      z-index: 0;
-      pointer-events: none;
-    }
-
-    /* ── GREEN HEADER BAND ── */
-    .card-header {
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 17mm;
-      background: linear-gradient(160deg, #01411C 70%, #026b2e 100%);
-      z-index: 1;
+    /* ── TOP HEADER BAND (green) ── */
+    .cb-head {
+      background: linear-gradient(135deg, #01411C 0%, #025c28 100%);
+      padding: 1.8mm 2.4mm 1.5mm;
       display: flex;
       align-items: center;
-      padding: 0 2.2mm;
       gap: 1.6mm;
+      position: relative;
     }
-
-    /* thin gold line at header bottom */
-    .card-header::after {
+    /* gold bottom border on header */
+    .cb-head::after {
       content: '';
       position: absolute;
       bottom: 0; left: 0; right: 0;
-      height: 0.8mm;
-      background: linear-gradient(90deg, transparent, #d97706 20%, #d97706 80%, transparent);
+      height: 0.7mm;
+      background: linear-gradient(90deg, transparent 0%, #d97706 30%, #d97706 70%, transparent 100%);
     }
+    .cb-logo { width: 8mm; height: 8mm; flex-shrink: 0; background: rgba(255,255,255,.15); border-radius: 50%; padding: 0.6mm; }
+    .cb-logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
 
-    .hdr-logo {
-      width: 9mm; height: 9mm; flex-shrink: 0;
-      /* white circle bg for logo */
-      background: rgba(255,255,255,0.15);
-      border-radius: 50%;
-      padding: 0.8mm;
-    }
-    .hdr-logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
-
-    .hdr-text {
-      flex: 1;
-      display: flex; flex-direction: column;
-      align-items: center; gap: 0;
-    }
-    .hdr-ur {
+    .cb-titles { flex: 1; text-align: center; }
+    .cb-ur {
       font-family: 'Noto Nastaliq Urdu', serif;
-      font-size: 6.6pt;
-      font-weight: 700;
-      color: #fff;
-      direction: rtl;
-      text-align: center;
-      line-height: 1.45;
+      font-size: 6.4pt; font-weight: 700;
+      color: #fff; direction: rtl;
+      line-height: 1.4; display: block;
     }
-    .hdr-en {
-      font-size: 4.2pt;
-      font-weight: 800;
-      color: #d1fae5;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-      text-align: center;
-    }
-    .hdr-sub {
-      font-size: 3.7pt;
-      font-weight: 600;
-      color: #fde68a;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      text-align: center;
-      margin-top: 0.2mm;
-    }
+    .cb-en { font-size: 4.0pt; font-weight: 800; color: #d1fae5; text-transform: uppercase; letter-spacing: 0.3px; }
+    .cb-loc { font-size: 3.6pt; font-weight: 600; color: #fde68a; letter-spacing: 0.4px; margin-top: 0.2mm; }
 
-    .hdr-flag {
-      width: 8mm; height: 5.2mm; flex-shrink: 0;
-      border: 0.5px solid rgba(255,255,255,0.4);
-      border-radius: 0.6mm;
-      overflow: hidden;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-    }
-    .hdr-flag svg { display: block; width: 100%; height: 100%; }
+    .cb-flag { width: 7.5mm; height: 4.8mm; flex-shrink: 0; border: 0.4px solid rgba(255,255,255,.3); border-radius: 0.5mm; overflow: hidden; }
+    .cb-flag svg { display: block; width: 100%; height: 100%; }
 
-    /* ── BODY (below header) ── */
-    .card-body {
-      position: absolute;
-      top: 17mm; left: 0; right: 0; bottom: 0;
-      z-index: 1;
+    /* ── BODY ── */
+    .cb-body {
       display: flex;
       flex-direction: column;
-      padding: 1.4mm 2.4mm 1.8mm;
+      align-items: center;
+      padding: 2mm 2.6mm 1.8mm;
       gap: 0;
     }
 
-    /* Section label style */
-    .sec-label {
-      font-size: 3.9pt;
+    /* QR scan instruction */
+    .scan-label {
+      font-size: 4.0pt;
       font-weight: 800;
       color: #01411C;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.6px;
       display: flex;
       align-items: center;
-      gap: 1.5mm;
-      margin-bottom: 0.7mm;
+      gap: 2mm;
+      width: 100%;
+      margin-bottom: 1.2mm;
     }
-    .sec-label::after { content: ''; flex: 1; height: 0.4px; background: #d1d5db; }
+    .scan-label::before, .scan-label::after { content: ''; flex: 1; height: 0.4px; background: #d1d5db; }
 
-    /* Rules table */
-    .rules { flex: 0 0 auto; margin-bottom: 1.1mm; }
+    /* QR image box */
+    .qr-wrapper {
+      width: 34mm;
+      height: 34mm;
+      border: 1.2px solid #01411C;
+      border-radius: 1.8mm;
+      padding: 1.2mm;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      margin-bottom: 1.5mm;
+      position: relative;
+    }
+    /* corner accents on QR box */
+    .qr-wrapper::before,
+    .qr-wrapper::after {
+      content: '';
+      position: absolute;
+      width: 3.5mm; height: 3.5mm;
+    }
+    .qr-wrapper::before {
+      top: -0.8px; left: -0.8px;
+      border-top: 1.8px solid #d97706;
+      border-left: 1.8px solid #d97706;
+      border-radius: 1.5mm 0 0 0;
+    }
+    .qr-wrapper::after {
+      bottom: -0.8px; right: -0.8px;
+      border-bottom: 1.8px solid #d97706;
+      border-right: 1.8px solid #d97706;
+      border-radius: 0 0 1.5mm 0;
+    }
+    .qr-wrapper img {
+      width: 100%; height: 100%;
+      object-fit: contain; display: block;
+    }
 
-    .rule-row {
-      display: grid;
-      grid-template-columns: 3.2mm 1fr 0.4px 1fr;
-      align-items: start;
-      column-gap: 1.2mm;
-      margin-bottom: 0.8mm;
-    }
-    .rule-num {
-      font-size: 3.9pt; font-weight: 900;
-      color: #01411C; line-height: 1.3;
-      padding-top: 0.1mm;
-    }
-    .rule-en {
-      font-size: 3.8pt; font-weight: 500;
-      color: #374151; line-height: 1.25;
-    }
-    .rule-div { background: #e5e7eb; align-self: stretch; }
-    .rule-ur {
-      font-family: 'Noto Nastaliq Urdu', serif;
-      font-size: 4.3pt; font-weight: 500;
-      color: #1e293b; direction: rtl;
-      text-align: right; line-height: 1.35;
+    /* Student code badge */
+    .student-code {
+      background: #01411C;
+      color: #fff;
+      font-size: 5.2pt;
+      font-weight: 900;
+      letter-spacing: 1px;
+      padding: 0.6mm 3mm;
+      border-radius: 4mm;
+      margin-bottom: 1mm;
     }
 
-    /* Contact box */
-    .contact-box {
-      flex: 0 0 auto;
+    /* Student name + class */
+    .student-name {
+      font-size: 5.0pt;
+      font-weight: 800;
+      color: #111827;
+      text-align: center;
+      margin-bottom: 0.3mm;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .student-class {
+      font-size: 4.2pt;
+      font-weight: 700;
+      color: #6b7280;
+      text-align: center;
+      margin-bottom: 1.2mm;
+    }
+
+    /* Contact strip */
+    .contact-strip {
+      width: 100%;
       background: #f0fdf4;
-      border: 0.8px solid #6ee7b7;
-      border-radius: 1.4mm;
-      padding: 1.1mm 1.5mm;
+      border: 0.6px solid #6ee7b7;
+      border-radius: 1mm;
+      padding: 0.9mm 1.4mm;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3mm;
       margin-bottom: 0.8mm;
     }
     .contact-row {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
+      align-items: center;
       gap: 1mm;
     }
-    .contact-head-en {
-      font-size: 3.8pt; font-weight: 800;
-      color: #065f46; text-transform: uppercase;
-      letter-spacing: 0.3px;
-    }
-    .contact-head-ur {
-      font-family: 'Noto Nastaliq Urdu', serif;
-      font-size: 4.2pt; font-weight: 700;
-      color: #065f46; direction: rtl;
-    }
-    .contact-addr-en {
-      font-size: 3.7pt; font-weight: 600;
-      color: #374151; line-height: 1.2;
-      margin-top: 0.4mm;
+    .contact-addr {
+      font-size: 3.6pt; font-weight: 600; color: #374151; line-height: 1.2;
     }
     .contact-addr-ur {
       font-family: 'Noto Nastaliq Urdu', serif;
-      font-size: 4.0pt; font-weight: 600;
-      color: #374151; direction: rtl;
-      text-align: right; line-height: 1.25;
-      margin-top: 0.4mm;
+      font-size: 4.0pt; font-weight: 600; color: #374151;
+      direction: rtl; text-align: right; line-height: 1.2;
     }
     .phones {
-      background: #01411C;
-      color: #fff;
-      border-radius: 0.8mm;
-      padding: 0.5mm 0;
-      text-align: center;
-      font-size: 4.5pt;
-      font-weight: 900;
-      letter-spacing: 0.2px;
-      margin-top: 0.7mm;
+      font-size: 4.0pt; font-weight: 900; color: #01411C;
+      text-align: center; letter-spacing: 0.2px;
     }
 
     /* Footer */
-    .card-footer {
-      flex: 1;
+    .cb-footer {
       display: flex;
-      align-items: flex-end;
       justify-content: space-between;
-      border-top: 0.5px solid #d1d5db;
-      padding-top: 0.9mm;
+      align-items: center;
+      width: 100%;
+      border-top: 0.5px solid #e5e7eb;
+      padding-top: 0.8mm;
     }
-    .ft-session-lbl { font-size: 3.4pt; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.3px; }
-    .ft-session-val { font-size: 4.5pt; font-weight: 900; color: #01411C; }
-    .ft-sign { display: flex; flex-direction: column; align-items: flex-end; }
-    .ft-sign-line { width: 16mm; border-bottom: 0.6px solid #6b7280; margin-bottom: 0.4mm; }
-    .ft-sign-lbl { font-size: 3.4pt; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.2px; }
+    .ft-session { font-size: 3.8pt; font-weight: 800; color: #01411C; }
+    .ft-lbl { font-size: 3.4pt; font-weight: 600; color: #9ca3af; }
+    .ft-ur {
+      font-family: 'Noto Nastaliq Urdu', serif;
+      font-size: 4.0pt; font-weight: 600; color: #6b7280;
+      direction: rtl;
+    }
 
     /* ── PRINT ── */
     @media print {
       body { background: #fff !important; }
-      .toolbar { display: none !important; }
+      .toolbar, .tip-banner { display: none !important; }
       .sheet-wrapper { padding: 0 !important; gap: 0 !important; }
       .a4-sheet { box-shadow: none !important; width: 210mm !important; min-height: 297mm !important; page-break-after: always !important; }
       .cards-grid { grid-template-columns: repeat(3, 54mm) !important; gap: 5.5mm 6mm !important; padding: 5mm 0 !important; }
@@ -304,56 +256,55 @@
 <!-- TOOLBAR -->
 <div class="toolbar">
   <div class="tleft">
-    <div class="ttitle">🇵🇰 &nbsp;ID Card Backs — Shaheen Public High School</div>
+    <div class="ttitle">🇵🇰 QR Card Backs — {{ students|length }} Students</div>
     <div class="ctrl">
-      <label for="sheets-sel">Sheets to print:</label>
-      <select id="sheets-sel">
-        <option value="1">1 Sheet &nbsp;(9 backs)</option>
-        <option value="2">2 Sheets (18 backs)</option>
-        <option value="3">3 Sheets (27 backs)</option>
-        <option value="5">5 Sheets (45 backs)</option>
-        <option value="10">10 Sheets (90 backs)</option>
-        <option value="26">26 Sheets — Full School (234 backs)</option>
+      <label for="class-filter">Filter by class:</label>
+      <select id="class-filter" onchange="window.location='/print/card-backs?class_name='+this.value">
+        <option value="" {% if class_name=='All Classes' %}selected{% endif %}>All Classes</option>
+        {% set seen=[] %}
+        {% for s in students %}
+          {% if s.class_name not in seen %}
+            {% set _ = seen.append(s.class_name) %}
+            <option value="{{ s.class_name }}" {% if class_name==s.class_name %}selected{% endif %}>{{ s.class_name }}</option>
+          {% endif %}
+        {% endfor %}
       </select>
     </div>
   </div>
   <div style="display:flex;gap:8px;align-items:center;">
-    <a href="/print/cards" class="btn btn-light">🖨️ Front Cards Studio</a>
+    <a href="/print/cards{% if class_name and class_name!='All Classes' %}?class_name={{ class_name }}{% endif %}" class="btn btn-light">🖨️ Front Cards</a>
     <a href="/admin" class="btn btn-light">← Admin</a>
-    <button onclick="window.print()" class="btn btn-green">🖨️ Print Now</button>
+    <button onclick="window.print()" class="btn btn-green">🖨️ Print QR Backs</button>
   </div>
 </div>
 
+<!-- TIP BANNER -->
+<div class="tip-banner">
+  💡 <strong>Duplex Printing Tip:</strong> Print front cards first, flip the paper stack in the tray (same orientation), then print this sheet. Each student's QR back will align to their photo front — cards are sorted identically (Class → Roll No).
+</div>
+
 <!-- SHEETS -->
-<div class="sheet-wrapper" id="wrapper">
-  {% for sheet in range(sheets) %}
+<div class="sheet-wrapper">
+  {% set cards_per_page = 9 %}
+  {% set total = students|length %}
+  {% for page_start in range(0, total, cards_per_page) %}
+  {% set page_students = students[page_start : page_start + cards_per_page] %}
   <div class="a4-sheet">
     <div class="cards-grid">
-      {% for i in range(9) %}
+      {% for s in page_students %}
       <div class="card-back">
 
-        <!-- BG decorations -->
-        <div class="bg-stripes"></div>
-        <div class="bg-circle-bl"></div>
-        <div class="bg-circle-tr"></div>
-
-        <!-- Big crescent+star watermark (SVG inline) -->
-        <svg class="bg-wm" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" fill="#01411C">
-          <path d="M60 10 a50 50 0 1 0 58.1 76.8 a40 40 0 1 1 -58.1 -76.8 Z"/>
-          <polygon points="85,28 89,41 103,41 92,49.5 96,62.5 85,54 74,62.5 78,49.5 67,41 81,41"/>
-        </svg>
-
-        <!-- ── GREEN HEADER ── -->
-        <div class="card-header">
-          <div class="hdr-logo">
+        <!-- GREEN HEADER -->
+        <div class="cb-head">
+          <div class="cb-logo">
             <img src="/static/img/shaheen_logo_trans.png" alt="Logo">
           </div>
-          <div class="hdr-text">
-            <div class="hdr-ur">شاہین پبلک ہائی سکول اینڈ کالج</div>
-            <div class="hdr-en">Shaheen Public High School &amp; College</div>
-            <div class="hdr-sub">Loi Shalman &bull; Khyber &bull; Pakistan</div>
+          <div class="cb-titles">
+            <span class="cb-ur">شاہین پبلک ہائی سکول</span>
+            <div class="cb-en">{{ school_name }}</div>
+            <div class="cb-loc">Loi Shalman &bull; Khyber</div>
           </div>
-          <div class="hdr-flag">
+          <div class="cb-flag">
             <svg viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg">
               <rect width="60" height="40" fill="#01411C"/>
               <rect width="15" height="40" fill="#fff"/>
@@ -364,86 +315,70 @@
           </div>
         </div>
 
-        <!-- ── BODY ── -->
-        <div class="card-body">
+        <!-- BODY -->
+        <div class="cb-body">
 
-          <!-- Rules -->
-          <div class="rules">
-            <div class="sec-label">Regulations &amp; ہدایات</div>
+          <!-- Scan instruction label -->
+          <div class="scan-label">Scan for Attendance</div>
 
-            <div class="rule-row">
-              <div class="rule-num">1.</div>
-              <div class="rule-en">Wear visibly on school premises at all times.</div>
-              <div class="rule-div"></div>
-              <div class="rule-ur">سکول میں ہر وقت گلے میں پہنیں۔</div>
-            </div>
-            <div class="rule-row">
-              <div class="rule-num">2.</div>
-              <div class="rule-en">Required for gate scan, classes &amp; exams.</div>
-              <div class="rule-div"></div>
-              <div class="rule-ur">گیٹ اسکیننگ اور امتحانات کے لیے لازمی۔</div>
-            </div>
-            <div class="rule-row">
-              <div class="rule-num">3.</div>
-              <div class="rule-en">Non-transferable — authorized holder only.</div>
-              <div class="rule-div"></div>
-              <div class="rule-ur">ناقابلِ انتقال، صرف متعلقہ طالب علم۔</div>
-            </div>
-            <div class="rule-row">
-              <div class="rule-num">4.</div>
-              <div class="rule-en">Report loss / damage to Admin Office immediately.</div>
-              <div class="rule-div"></div>
-              <div class="rule-ur">گم ہو تو فوری دفتر کو مطلع کریں۔</div>
-            </div>
-            <div class="rule-row">
-              <div class="rule-num">5.</div>
-              <div class="rule-en">If found, please return to address below.</div>
-              <div class="rule-div"></div>
-              <div class="rule-ur">ملنے پر نیچے دیے گئے پتے پر واپس کریں۔</div>
-            </div>
+          <!-- QR Code -->
+          <div class="qr-wrapper">
+            {% if s.qr_image %}
+              <img src="data:image/png;base64,{{ s.qr_image }}" alt="QR {{ s.student_code }}">
+            {% else %}
+              <svg viewBox="0 0 100 100" fill="#01411C" xmlns="http://www.w3.org/2000/svg" opacity="0.2">
+                <rect x="10" y="10" width="35" height="35" rx="3"/>
+                <rect x="55" y="10" width="35" height="35" rx="3"/>
+                <rect x="10" y="55" width="35" height="35" rx="3"/>
+                <rect x="55" y="55" width="15" height="15"/>
+                <rect x="75" y="55" width="15" height="15"/>
+                <rect x="55" y="75" width="15" height="15"/>
+                <rect x="75" y="75" width="15" height="15"/>
+              </svg>
+            {% endif %}
           </div>
 
-          <!-- Contact -->
-          <div class="contact-box">
+          <!-- Student Code Badge -->
+          <div class="student-code">{{ s.student_code }}</div>
+
+          <!-- Name + Class -->
+          <div class="student-name">{{ s.full_name }}</div>
+          <div class="student-class">{{ s.class_name }}{% if s.roll_no %} &bull; Roll # {{ s.roll_no }}{% endif %}</div>
+
+          <!-- Contact strip -->
+          <div class="contact-strip">
             <div class="contact-row">
-              <div class="contact-head-en">📍 Campus &amp; Helpline</div>
-              <div class="contact-head-ur">کیمپس پتہ و رابطہ</div>
-            </div>
-            <div class="contact-row" style="margin-top:0.4mm;">
-              <div class="contact-addr-en">Loi Shalman, Near Cricket Ground,<br>Ghundakhel, Khyber</div>
-              <div class="contact-addr-ur">لوئی شلمان، نزد کرکٹ گراؤنڈ<br>غنڈہ خیل، خیبر</div>
+              <div class="contact-addr">Loi Shalman, Near Cricket Ground,<br>Ghundakhel, Khyber</div>
+              <div class="contact-addr-ur">لوئی شلمان<br>غنڈہ خیل</div>
             </div>
             <div class="phones">📞 03359365884 &nbsp;•&nbsp; 💬 03342727432</div>
           </div>
 
           <!-- Footer -->
-          <div class="card-footer">
+          <div class="cb-footer">
             <div>
-              <div class="ft-session-lbl">Academic Session</div>
-              <div class="ft-session-val">2026 – 2027</div>
+              <div class="ft-lbl">Session</div>
+              <div class="ft-session">2026 – 2027</div>
             </div>
-            <div class="ft-sign">
-              <div class="ft-sign-line"></div>
-              <div class="ft-sign-lbl">Principal / پرنسپل</div>
-            </div>
+            <div class="ft-ur">اگر ملے تو واپس کریں</div>
           </div>
 
-        </div><!-- /.card-body -->
+        </div><!-- /.cb-body -->
       </div><!-- /.card-back -->
       {% endfor %}
+
+      {# Fill remaining slots on last page with blank placeholder #}
+      {% set filled = page_students|length %}
+      {% for blank in range(cards_per_page - filled) %}
+      <div class="card-back" style="border-color:#e5e7eb; background:#fafafa; display:flex; align-items:center; justify-content:center;">
+        <span style="font-size:9pt; color:#d1d5db; font-weight:700; transform:rotate(-45deg);">BLANK</span>
+      </div>
+      {% endfor %}
+
     </div>
   </div>
   {% endfor %}
 </div>
 
-<script>
-  document.getElementById('sheets-sel').addEventListener('change', function () {
-    const n = parseInt(this.value) || 1;
-    const w = document.getElementById('wrapper');
-    const orig = w.children[0];
-    w.innerHTML = '';
-    for (let i = 0; i < n; i++) w.appendChild(orig.cloneNode(true));
-  });
-</script>
 </body>
 </html>

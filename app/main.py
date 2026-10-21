@@ -175,19 +175,35 @@ def print_cards_page(
 @app.get("/print/card-backs", response_class=HTMLResponse)
 def print_card_backs_page(
     request: Request,
-    sheets: int = 1
+    class_name: Optional[str] = None,
+    student_id: Optional[int] = None
 ):
     if not is_authenticated(request):
         return RedirectResponse(url="/login")
+
+    conn = get_db_connection()
+    query = "SELECT * FROM students WHERE is_active = 1"
+    params = []
+    if student_id:
+        query += " AND id = ?"
+        params.append(student_id)
+    elif class_name:
+        query += " AND class_name = ?"
+        params.append(class_name)
+    query += " ORDER BY class_name ASC, CAST(roll_no AS INTEGER) ASC, roll_no ASC"
+    students = [dict(s) for s in conn.execute(query, params).fetchall()]
+    conn.close()
+
+    for s in students:
+        s["qr_image"] = generate_qr_base64(s["qr_payload"])
 
     return templates.TemplateResponse(
         request=request,
         name="print_card_backs.html",
         context={
             "school_name": get_setting("school_name", "Shaheen Public High School"),
-            "school_address": "Loi Shalman Near Cricket Ground, Ghundakhel",
-            "school_phone": "03359365884 • 03342727432",
-            "sheets": max(1, min(sheets, 50))
+            "students": students,
+            "class_name": class_name or "All Classes"
         }
     )
 
