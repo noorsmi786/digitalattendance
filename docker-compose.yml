@@ -1,0 +1,24 @@
+services:
+  attendance:
+    build: .
+    container_name: digital_attendance
+    restart: always
+    volumes:
+      - ./app/data:/app/app/data
+      - ./app/uploads:/app/app/uploads
+    networks:
+      - root_default
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.attendance.rule=Host(`noorify.site`)"
+      - "traefik.http.routers.attendance.entrypoints=websecure"
+      - "traefik.http.routers.attendance.tls=true"
+      - "traefik.http.routers.attendance.tls.certresolver=letsencrypt"
+      - "traefik.http.services.attendance.loadbalancer.server.port=8000"
+      - "traefik.http.routers.attendance-http.rule=Host(`noorify.site`)"
+      - "traefik.http.routers.attendance-http.entrypoints=web"
+      - "traefik.http.routers.attendance-http.middlewares=redirect-to-https"
+
+networks:
+  root_default:
+    external: true
