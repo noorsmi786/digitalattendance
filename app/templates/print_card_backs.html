@@ -83,63 +83,64 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      background: #fff;
     }
 
-    /* Top emerald header */
     .b1b-head {
       background: #044332;
-      padding: 1.8mm 2.4mm 1.5mm;
+      padding: 1.8mm 2.4mm 1.6mm;
       display: flex;
       align-items: center;
-      gap: 1.6mm;
+      gap: 1.8mm;
       position: relative;
     }
     .b1b-head::after {
-      content: '';
-      position: absolute;
+      content: ''; position: absolute;
       bottom: 0; left: 0; right: 0;
-      height: 0.8mm;
-      background: #d97706;
+      height: 0.8mm; background: #d97706;
     }
     .b1b-logo {
-      width: 8mm; height: 8mm; flex-shrink: 0;
+      width: 8.5mm; height: 8.5mm; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
     }
     .b1b-logo img { width: 100%; height: 100%; object-fit: contain; }
-    .b1b-titles { flex: 1; text-align: center; line-height: 1.1; }
+    .b1b-titles {
+      flex: 1; text-align: center;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 0.2mm;
+    }
     .b1b-ur {
       font-family: 'Noto Nastaliq Urdu', serif;
-      font-size: 6.4pt; font-weight: 700;
-      color: #fff; direction: rtl; line-height: 1.35;
-      display: block;
+      font-size: 6.2pt; font-weight: 700;
+      color: #ffffff; direction: rtl; line-height: 1.35;
     }
     .b1b-en {
-      font-size: 4.0pt; font-weight: 800;
-      color: #d1fae5; text-transform: uppercase; letter-spacing: 0.3px;
+      font-size: 4.2pt; font-weight: 800;
+      color: #d1fae5; text-transform: uppercase; letter-spacing: 0.4px;
     }
     .b1b-loc {
       font-size: 3.6pt; font-weight: 600; color: #fde68a;
-      letter-spacing: 0.4px; margin-top: 0.2mm;
+      letter-spacing: 0.4px;
     }
     .b1b-flag {
-      width: 7.5mm; height: 4.8mm; flex-shrink: 0;
+      width: 7.5mm; height: 5mm; flex-shrink: 0;
       border: 0.4px solid rgba(255,255,255,.3);
       border-radius: 0.5mm; overflow: hidden;
     }
     .b1b-flag svg { display: block; width: 100%; height: 100%; }
 
-    /* Middle body */
     .b1b-body {
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 1.4mm 2.2mm 0;
+      justify-content: space-between;
+      padding: 1.6mm 2.4mm 1.2mm;
       flex: 1;
       position: relative;
     }
 
     .b1b-scan-lbl {
-      font-size: 4.1pt;
+      font-size: 4.0pt;
       font-weight: 800;
       color: #044332;
       text-transform: uppercase;
@@ -148,23 +149,22 @@
       align-items: center;
       gap: 1.6mm;
       width: 100%;
-      margin-bottom: 0.8mm;
+      margin-bottom: 0.6mm;
     }
     .b1b-scan-lbl::before, .b1b-scan-lbl::after { content: ''; flex: 1; height: 0.4px; background: #cbd5e1; }
 
-    /* BIG QR Code container: 36mm x 36mm */
     .b1b-qr-box {
-      width: 36mm;
-      height: 36mm;
+      width: 35mm;
+      height: 35mm;
       border: 1.2px solid #044332;
       border-radius: 2mm;
-      padding: 1.2mm;
+      padding: 1mm;
       background: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
-      margin-bottom: 1.1mm;
+      margin-bottom: 0.8mm;
       box-shadow: 0 1px 4px rgba(0,0,0,.06);
     }
     .b1b-qr-box::before {
@@ -181,19 +181,18 @@
     }
     .b1b-qr-box img { width: 100%; height: 100%; object-fit: contain; display: block; image-rendering: pixelated; }
 
-    /* Student code badge */
     .b1b-code-pill {
       background: #044332;
       color: #fff;
       font-size: 5.4pt;
       font-weight: 900;
       letter-spacing: 0.8px;
-      padding: 0.6mm 3.2mm;
+      padding: 0.5mm 3.2mm;
       border-radius: 3mm;
-      margin-bottom: 0.6mm;
+      margin-bottom: 0.4mm;
     }
     .b1b-name {
-      font-size: 5.2pt;
+      font-size: 5.4pt;
       font-weight: 800;
       color: #0f172a;
       text-align: center;
@@ -206,32 +205,30 @@
       font-size: 4.4pt;
       font-weight: 700;
       color: #64748b;
-      margin-top: 0.2mm;
       margin-bottom: 0.8mm;
     }
 
-    /* Contact strip */
     .b1b-contact {
       width: 100%;
       background: #f0fdf4;
-      border: 0.6px solid #86efac;
-      border-radius: 1mm;
-      padding: 0.8mm 1.2mm;
+      border: 0.7px solid #86efac;
+      border-radius: 1.2mm;
+      padding: 1mm 1.4mm;
       text-align: center;
     }
     .b1b-contact-addr {
-      font-size: 3.7pt; font-weight: 600; color: #334155; line-height: 1.15;
+      font-size: 3.7pt; font-weight: 700; color: #1e293b; line-height: 1.2;
     }
     .b1b-contact-phone {
-      font-size: 4.1pt; font-weight: 900; color: #044332; margin-top: 0.3mm; letter-spacing: 0.2px;
+      font-size: 4.3pt; font-weight: 900; color: #044332; margin-top: 0.4mm; letter-spacing: 0.2px;
+    }
+    .b1b-return-notice {
+      font-family: 'Noto Nastaliq Urdu', serif;
+      font-size: 4.3pt; font-weight: 600; color: #15803d;
+      margin-top: 0.4mm; direction: rtl;
     }
 
-    /* Bottom emerald wave */
-    .b1b-wave {
-      height: 6mm;
-      width: 100%;
-      flex-shrink: 0;
-    }
+    .b1b-wave { height: 6mm; width: 100%; flex-shrink: 0; }
     .b1b-wave svg { width: 100%; height: 100%; display: block; }
 
 
@@ -245,7 +242,6 @@
       background: #fff;
     }
 
-    /* Navy sidebar matching 2B front */
     .b2b-side {
       width: 9.5mm;
       background: #1e3a8a;
@@ -279,106 +275,77 @@
       padding: 1mm 0; border-radius: 1mm;
     }
 
-    /* Main body */
     .b2b-main {
       flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      padding: 1.6mm 2mm 1.8mm;
-      overflow: hidden;
-      position: relative;
-      justify-content: space-between;
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+      padding: 1.6mm 2mm 1.8mm; overflow: hidden; position: relative; justify-content: space-between;
     }
 
     .b2b-head {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-bottom: 0.8mm;
+      width: 100%; display: flex; flex-direction: column; align-items: center;
+      gap: 0.3mm; margin-bottom: 0.6mm;
     }
     .b2b-sch1 {
-      font-size: 7.8pt; font-weight: 900;
-      color: #1e3a8a; text-transform: uppercase;
-      letter-spacing: 0.3px; line-height: 1.1;
+      font-size: 6.8pt; font-weight: 900;
+      color: #1e3a8a; text-transform: uppercase; letter-spacing: 0.3px; line-height: 1.15;
     }
     .b2b-ur {
       font-family: 'Noto Nastaliq Urdu', serif;
       font-size: 5.6pt; font-weight: 700; color: #1e3a8a;
-      direction: rtl; line-height: 1.25; margin-top: 0.2mm;
+      direction: rtl; line-height: 1.35;
     }
-    .b2b-divider {
-      width: 22mm; height: 1.2px; background: #d97706; margin-top: 0.6mm;
-    }
+    .b2b-divider { width: 22mm; height: 1.2px; background: #d97706; margin-top: 0.4mm; }
 
     .b2b-scan-lbl {
-      font-size: 3.9pt; font-weight: 800; color: #1e3a8a;
-      text-transform: uppercase; letter-spacing: 0.5px;
-      margin-bottom: 0.8mm;
+      font-size: 3.8pt; font-weight: 800; color: #1e3a8a;
+      text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.6mm;
     }
 
-    /* BIG QR: 36mm x 36mm */
     .b2b-qr-box {
-      width: 36mm;
-      height: 36mm;
-      border: 1.2px solid #1e3a8a;
-      border-radius: 2mm;
-      padding: 1.2mm;
-      background: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      margin-bottom: 1mm;
+      width: 35mm; height: 35mm;
+      border: 1.2px solid #1e3a8a; border-radius: 2mm;
+      padding: 1mm; background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; margin-bottom: 0.8mm;
       box-shadow: 0 1px 4px rgba(0,0,0,.06);
     }
     .b2b-qr-box::before {
-      content: ''; position: absolute;
-      top: -0.8px; left: -0.8px; width: 4mm; height: 4mm;
-      border-top: 2px solid #d97706; border-left: 2px solid #d97706;
-      border-radius: 1.6mm 0 0 0;
+      content: ''; position: absolute; top: -0.8px; left: -0.8px; width: 4mm; height: 4mm;
+      border-top: 2px solid #d97706; border-left: 2px solid #d97706; border-radius: 1.6mm 0 0 0;
     }
     .b2b-qr-box::after {
-      content: ''; position: absolute;
-      bottom: -0.8px; right: -0.8px; width: 4mm; height: 4mm;
-      border-bottom: 2px solid #d97706; border-right: 2px solid #d97706;
-      border-radius: 0 0 1.6mm 0;
+      content: ''; position: absolute; bottom: -0.8px; right: -0.8px; width: 4mm; height: 4mm;
+      border-bottom: 2px solid #d97706; border-right: 2px solid #d97706; border-radius: 0 0 1.6mm 0;
     }
     .b2b-qr-box img { width: 100%; height: 100%; object-fit: contain; display: block; image-rendering: pixelated; }
 
-    /* Student info */
     .b2b-code-pill {
       background: #1e3a8a; color: #fff;
-      font-size: 5.2pt; font-weight: 900;
-      letter-spacing: 0.8px; padding: 0.6mm 3mm;
-      border-radius: 3mm; margin-bottom: 0.6mm;
+      font-size: 5.2pt; font-weight: 900; letter-spacing: 0.8px;
+      padding: 0.5mm 3mm; border-radius: 3mm; margin-bottom: 0.4mm;
     }
     .b2b-name {
-      font-size: 5.2pt; font-weight: 800; color: #0f172a;
+      font-size: 5.4pt; font-weight: 800; color: #0f172a;
       max-width: 38mm; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .b2b-class {
       font-size: 4.4pt; font-weight: 700; color: #64748b;
-      margin-top: 0.2mm; margin-bottom: 0.8mm;
+      margin-bottom: 0.8mm;
     }
 
-    /* Contact box */
     .b2b-contact {
-      width: 100%;
-      background: #eff6ff;
-      border: 0.6px solid #bfdbfe;
-      border-radius: 1mm;
-      padding: 0.8mm 1mm;
+      width: 100%; background: #eff6ff; border: 0.6px solid #bfdbfe;
+      border-radius: 1mm; padding: 0.8mm 1mm;
     }
     .b2b-contact-addr { font-size: 3.6pt; font-weight: 600; color: #1e3a8a; line-height: 1.15; }
-    .b2b-contact-phone { font-size: 4.0pt; font-weight: 900; color: #044332; margin-top: 0.3mm; }
-
-    /* Bottom navy + gold bars */
-    .b2b-bottom {
-      width: 100%; display: flex; flex-direction: column; margin-top: 0.8mm;
+    .b2b-contact-phone { font-size: 4.1pt; font-weight: 900; color: #044332; margin-top: 0.3mm; }
+    .b2b-return-notice {
+      font-family: 'Noto Nastaliq Urdu', serif;
+      font-size: 4.2pt; font-weight: 600; color: #1e3a8a;
+      margin-top: 0.3mm; direction: rtl;
     }
+
+    .b2b-bottom { width: 100%; display: flex; flex-direction: column; margin-top: 0.6mm; }
     .b2b-bar-gold { height: 0.8mm; background: #d97706; }
     .b2b-bar-navy { height: 1.6mm; background: #1e3a8a; }
 
@@ -446,7 +413,7 @@
     💡 <strong>Duplex Printing Instructions:</strong> Print the front cards first (from <strong>Front Studio</strong>). Take the printed stack, place it back into your printer tray (without rotating), and hit <strong>Print Backs Now</strong>. Each student's QR aligns edge-to-edge with their front photo!
   </div>
   <div style="font-size:11px; color:#166534; font-weight:700;">
-    CR80 Standard (54mm × 85.6mm) • Big 36mm QR Code
+    CR80 Standard (54mm × 85.6mm) • Big 35mm QR Code
   </div>
 </div>
 
@@ -462,13 +429,12 @@
 
       <!-- ── CARD BACK 1B (EMERALD SPLIT COMPANION) ── -->
       <div class="id-card-back back-1b card-variant-1b">
-        <!-- Top emerald header -->
         <div class="b1b-head">
           <div class="b1b-logo">
             <img src="/static/img/shaheen_logo_trans.png" alt="Logo">
           </div>
           <div class="b1b-titles">
-            <span class="b1b-ur">شاہین پبلک ہائی سکول</span>
+            <div class="b1b-ur">شاہین پبلک ہائی سکول</div>
             <div class="b1b-en">SHAHEEN PUBLIC HIGH SCHOOL</div>
             <div class="b1b-loc">Loi Shalman &bull; Khyber</div>
           </div>
@@ -483,16 +449,11 @@
           </div>
         </div>
 
-        <!-- Body with BIG 36mm QR -->
         <div class="b1b-body">
           <div class="b1b-scan-lbl">Daily Attendance Scan</div>
           
           <div class="b1b-qr-box">
-            {% if s.qr_image %}
-              <img src="data:image/png;base64,{{ s.qr_image }}" alt="QR {{ s.student_code }}">
-            {% else %}
-              <div style="font-size:6pt; color:#94a3b8;">QR Code</div>
-            {% endif %}
+            <img src="{{ s.qr_image }}" alt="QR {{ s.student_code }}">
           </div>
 
           <div class="b1b-code-pill">{{ s.student_code }}</div>
@@ -502,10 +463,10 @@
           <div class="b1b-contact">
             <div class="b1b-contact-addr">Loi Shalman Near Cricket Ground, Ghundakhel</div>
             <div class="b1b-contact-phone">📞 03359365884 &bull; 💬 03342727432</div>
+            <div class="b1b-return-notice">کارڈ ملنے کی صورت میں برائے مہربانی واپس کریں یا فون کریں</div>
           </div>
         </div>
 
-        <!-- Wave footer -->
         <div class="b1b-wave">
           <svg viewBox="0 0 100 28" preserveAspectRatio="none">
             <path d="M0,12 C25,24 45,26 60,26 C78,26 90,18 100,14 L100,28 L0,28 Z" fill="#044332"/>
@@ -518,7 +479,6 @@
 
       <!-- ── CARD BACK 2B (VERTICAL SPLIT COMPANION) ── -->
       <div class="id-card-back back-2b card-variant-2b" style="display:none;">
-        <!-- Navy sidebar -->
         <div class="b2b-side">
           <div class="b2b-side-logo">
             <img src="/static/img/shaheen_logo_trans.png" alt="Logo">
@@ -527,23 +487,17 @@
           <div class="b2b-side-badge">26-27</div>
         </div>
 
-        <!-- Main body -->
         <div class="b2b-main">
           <div class="b2b-head">
-            <div class="b2b-sch1">SHAHEEN PUBLIC</div>
+            <div class="b2b-sch1">SHAHEEN PUBLIC HIGH SCHOOL</div>
             <div class="b2b-ur">شاہین پبلک ہائی سکول لوئی شلمان</div>
             <div class="b2b-divider"></div>
           </div>
 
           <div class="b2b-scan-lbl">Scan to Verify Attendance</div>
 
-          <!-- BIG 36mm QR -->
           <div class="b2b-qr-box">
-            {% if s.qr_image %}
-              <img src="data:image/png;base64,{{ s.qr_image }}" alt="QR {{ s.student_code }}">
-            {% else %}
-              <div style="font-size:6pt; color:#94a3b8;">QR Code</div>
-            {% endif %}
+            <img src="{{ s.qr_image }}" alt="QR {{ s.student_code }}">
           </div>
 
           <div class="b2b-code-pill">{{ s.student_code }}</div>
@@ -552,7 +506,8 @@
 
           <div class="b2b-contact">
             <div class="b2b-contact-addr">Loi Shalman Near Cricket Ground, Ghundakhel</div>
-            <div class="b2b-contact-phone">📞 03359365884 &bull; 03342727432</div>
+            <div class="b2b-contact-phone">📞 03359365884 &bull; 💬 03342727432</div>
+            <div class="b2b-return-notice">اگر یہ کارڈ ملے تو برائے مہربانی واپس کریں</div>
           </div>
 
           <div class="b2b-bottom">

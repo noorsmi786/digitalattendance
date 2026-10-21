@@ -5,6 +5,8 @@
   <title>Front &amp; Back Pair Preview (Big QR Back) — Shaheen Public High School</title>
   <link rel="icon" type="image/png" href="/static/icons/icon-192.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@500;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -71,7 +73,7 @@
     }
 
     /* ═══════════════════════════════════════════════════
-       OPTION 1B — FRONT
+       OPTION 1B — FRONT (PERFECT 2x2 GRID, NO HOLES)
        ═══════════════════════════════════════════════════ */
     .card-1b-front {
       display: flex; flex-direction: column;
@@ -98,46 +100,199 @@
     .c1b-avatar svg { width: 14mm; height: 14mm; fill: #64748b; }
     .c1b-name { font-size: 9.6pt; font-weight: 800; color: #044332; margin-top: 1.2mm; max-width: 49mm; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; position: relative; z-index: 2; }
     .c1b-father { font-size: 5.2pt; color: #475569; margin-top: 0.2mm; text-align: center; position: relative; z-index: 2; }
-    .c1b-tags { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4mm; width: 100%; margin-top: 1.6mm; position: relative; z-index: 2; }
-    .c1b-tag { display: flex; align-items: center; border: 1px solid #044332; border-radius: 1.6mm; overflow: hidden; height: 6.8mm; background: #fff; }
-    .c1b-tag-lbl { background: #044332; color: #fff; font-size: 4pt; font-weight: 800; text-transform: uppercase; padding: 0 1.2mm; height: 100%; display: flex; align-items: center; justify-content: center; width: 9mm; flex-shrink: 0; }
-    .c1b-tag-val { flex: 1; padding: 0 1.2mm; font-size: 7pt; font-weight: 800; color: #044332; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    
+    /* BALANCED 2x2 GRID: Exactly 2 rows x 2 cols, perfectly symmetrical */
+    .c1b-tags {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.4mm;
+      width: 100%;
+      margin-top: 1.8mm;
+      position: relative;
+      z-index: 2;
+    }
+    .c1b-tag {
+      display: flex; align-items: center; border: 1px solid #044332;
+      border-radius: 1.6mm; overflow: hidden; height: 7.2mm; background: #fff;
+    }
+    .c1b-tag-lbl {
+      background: #044332; color: #fff; font-size: 4pt; font-weight: 800;
+      text-transform: uppercase; padding: 0 1.2mm; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      width: 9.5mm; flex-shrink: 0;
+    }
+    .c1b-tag-val {
+      flex: 1; padding: 0 1.2mm; font-size: 7.2pt; font-weight: 800;
+      color: #044332; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
     .c1b-tag.code { border-color: #d97706; }
     .c1b-tag.code .c1b-tag-lbl { background: #d97706; }
-    .c1b-tag.code .c1b-tag-val { font-family: monospace; font-size: 6.8pt; color: #92400e; }
-    .c1b-tag.session { grid-column: span 2; border-color: #044332; }
+    .c1b-tag.code .c1b-tag-val { font-family: ui-monospace, SFMono-Regular, monospace; font-size: 7.2pt; color: #92400e; font-weight: 900; }
+    .c1b-tag.session .c1b-tag-lbl { background: #065f46; }
+    .c1b-tag.session .c1b-tag-val { font-size: 6.2pt; font-weight: 800; color: #065f46; }
+
     .c1b-wave { flex-shrink: 0; height: 6.5mm; }
     .c1b-wave svg { width: 100%; height: 100%; display: block; }
 
+
     /* ═══════════════════════════════════════════════════
-       OPTION 1B — MATCHING BACK (BIG QR)
+       OPTION 1B — MATCHING BACK (FIXED HEADER & SPACING)
        ═══════════════════════════════════════════════════ */
     .card-1b-back {
-      border: 1.2px solid #044332; display: flex; flex-direction: column; justify-content: space-between; background: #fff;
+      border: 1.2px solid #044332;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: #fff;
     }
-    .b1b-head { background: #044332; padding: 1.8mm 2.4mm 1.5mm; display: flex; align-items: center; gap: 1.6mm; position: relative; }
-    .b1b-head::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 0.8mm; background: #d97706; }
-    .b1b-logo { width: 8mm; height: 8mm; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    
+    /* Clean non-colliding header */
+    .b1b-head {
+      background: #044332;
+      padding: 1.8mm 2.4mm 1.6mm;
+      display: flex;
+      align-items: center;
+      gap: 1.8mm;
+      position: relative;
+    }
+    .b1b-head::after {
+      content: ''; position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 0.8mm; background: #d97706;
+    }
+    .b1b-logo {
+      width: 8.5mm; height: 8.5mm; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
     .b1b-logo img { width: 100%; height: 100%; object-fit: contain; }
-    .b1b-titles { flex: 1; text-align: center; line-height: 1.1; }
-    .b1b-ur { font-family: 'Noto Nastaliq Urdu', serif; font-size: 6.4pt; font-weight: 700; color: #fff; direction: rtl; line-height: 1.35; display: block; }
-    .b1b-en { font-size: 4.0pt; font-weight: 800; color: #d1fae5; text-transform: uppercase; letter-spacing: 0.3px; }
-    .b1b-loc { font-size: 3.6pt; font-weight: 600; color: #fde68a; letter-spacing: 0.4px; margin-top: 0.2mm; }
-    .b1b-flag { width: 7.5mm; height: 4.8mm; flex-shrink: 0; border: 0.4px solid rgba(255,255,255,.3); border-radius: 0.5mm; overflow: hidden; }
+    .b1b-titles {
+      flex: 1; text-align: center;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 0.2mm;
+    }
+    .b1b-ur {
+      font-family: 'Noto Nastaliq Urdu', serif;
+      font-size: 6.2pt; font-weight: 700;
+      color: #ffffff; direction: rtl; line-height: 1.35;
+    }
+    .b1b-en {
+      font-size: 4.2pt; font-weight: 800;
+      color: #d1fae5; text-transform: uppercase; letter-spacing: 0.4px;
+    }
+    .b1b-loc {
+      font-size: 3.6pt; font-weight: 600; color: #fde68a;
+      letter-spacing: 0.4px;
+    }
+    .b1b-flag {
+      width: 7.5mm; height: 5mm; flex-shrink: 0;
+      border: 0.4px solid rgba(255,255,255,.3);
+      border-radius: 0.5mm; overflow: hidden;
+    }
     .b1b-flag svg { display: block; width: 100%; height: 100%; }
-    .b1b-body { display: flex; flex-direction: column; align-items: center; padding: 1.4mm 2.2mm 0; flex: 1; position: relative; }
-    .b1b-scan-lbl { font-size: 4.1pt; font-weight: 800; color: #044332; text-transform: uppercase; letter-spacing: 0.6px; display: flex; align-items: center; gap: 1.6mm; width: 100%; margin-bottom: 0.8mm; }
+
+    /* Balanced body with NO DEAD SPACE */
+    .b1b-body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.6mm 2.4mm 1.2mm;
+      flex: 1;
+      position: relative;
+    }
+
+    .b1b-scan-lbl {
+      font-size: 4.0pt;
+      font-weight: 800;
+      color: #044332;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      display: flex;
+      align-items: center;
+      gap: 1.6mm;
+      width: 100%;
+      margin-bottom: 0.6mm;
+    }
     .b1b-scan-lbl::before, .b1b-scan-lbl::after { content: ''; flex: 1; height: 0.4px; background: #cbd5e1; }
-    .b1b-qr-box { width: 36mm; height: 36mm; border: 1.2px solid #044332; border-radius: 2mm; padding: 1.2mm; background: #fff; display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 1.1mm; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
-    .b1b-qr-box::before { content: ''; position: absolute; top: -0.8px; left: -0.8px; width: 4mm; height: 4mm; border-top: 2px solid #d97706; border-left: 2px solid #d97706; border-radius: 1.6mm 0 0 0; }
-    .b1b-qr-box::after { content: ''; position: absolute; bottom: -0.8px; right: -0.8px; width: 4mm; height: 4mm; border-bottom: 2px solid #d97706; border-right: 2px solid #d97706; border-radius: 0 0 1.6mm 0; }
+
+    /* BIG 35mm QR Box */
+    .b1b-qr-box {
+      width: 35mm;
+      height: 35mm;
+      border: 1.2px solid #044332;
+      border-radius: 2mm;
+      padding: 1mm;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      margin-bottom: 0.8mm;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    }
+    .b1b-qr-box::before {
+      content: ''; position: absolute;
+      top: -0.8px; left: -0.8px; width: 4mm; height: 4mm;
+      border-top: 2px solid #d97706; border-left: 2px solid #d97706;
+      border-radius: 1.6mm 0 0 0;
+    }
+    .b1b-qr-box::after {
+      content: ''; position: absolute;
+      bottom: -0.8px; right: -0.8px; width: 4mm; height: 4mm;
+      border-bottom: 2px solid #d97706; border-right: 2px solid #d97706;
+      border-radius: 0 0 1.6mm 0;
+    }
     .b1b-qr-box img { width: 100%; height: 100%; object-fit: contain; display: block; image-rendering: pixelated; }
-    .b1b-code-pill { background: #044332; color: #fff; font-size: 5.4pt; font-weight: 900; letter-spacing: 0.8px; padding: 0.6mm 3.2mm; border-radius: 3mm; margin-bottom: 0.6mm; }
-    .b1b-name { font-size: 5.2pt; font-weight: 800; color: #0f172a; text-align: center; max-width: 48mm; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .b1b-class { font-size: 4.4pt; font-weight: 700; color: #64748b; margin-top: 0.2mm; margin-bottom: 0.8mm; }
-    .b1b-contact { width: 100%; background: #f0fdf4; border: 0.6px solid #86efac; border-radius: 1mm; padding: 0.8mm 1.2mm; text-align: center; }
-    .b1b-contact-addr { font-size: 3.7pt; font-weight: 600; color: #334155; line-height: 1.15; }
-    .b1b-contact-phone { font-size: 4.1pt; font-weight: 900; color: #044332; margin-top: 0.3mm; letter-spacing: 0.2px; }
+
+    .b1b-code-pill {
+      background: #044332;
+      color: #fff;
+      font-size: 5.4pt;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      padding: 0.5mm 3.2mm;
+      border-radius: 3mm;
+      margin-bottom: 0.4mm;
+    }
+    .b1b-name {
+      font-size: 5.4pt;
+      font-weight: 800;
+      color: #0f172a;
+      text-align: center;
+      max-width: 48mm;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .b1b-class {
+      font-size: 4.4pt;
+      font-weight: 700;
+      color: #64748b;
+      margin-bottom: 0.8mm;
+    }
+
+    /* Complete Contact & Lost-card Section */
+    .b1b-contact {
+      width: 100%;
+      background: #f0fdf4;
+      border: 0.7px solid #86efac;
+      border-radius: 1.2mm;
+      padding: 1mm 1.4mm;
+      text-align: center;
+    }
+    .b1b-contact-addr {
+      font-size: 3.7pt; font-weight: 700; color: #1e293b; line-height: 1.2;
+    }
+    .b1b-contact-phone {
+      font-size: 4.3pt; font-weight: 900; color: #044332; margin-top: 0.4mm; letter-spacing: 0.2px;
+    }
+    .b1b-return-notice {
+      font-family: 'Noto Nastaliq Urdu', serif;
+      font-size: 4.3pt; font-weight: 600; color: #15803d;
+      margin-top: 0.4mm; direction: rtl;
+    }
+
+    /* Wave footer at bottom */
     .b1b-wave { height: 6mm; width: 100%; flex-shrink: 0; }
     .b1b-wave svg { width: 100%; height: 100%; display: block; }
 
@@ -183,33 +338,91 @@
     .c2b-bar-navy { height: 2mm; background: #1e3a8a; }
 
     /* ═══════════════════════════════════════════════════
-       OPTION 2B — MATCHING BACK (BIG QR)
+       OPTION 2B — MATCHING BACK (FIXED TITLE & SPACING)
        ═══════════════════════════════════════════════════ */
     .card-2b-back {
-      border: 1.2px solid #1e3a8a; display: flex; flex-direction: row; background: #fff;
+      border: 1.2px solid #1e3a8a;
+      display: flex; flex-direction: row; background: #fff;
     }
     .b2b-side { width: 9.5mm; background: #1e3a8a; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 2.2mm 0; flex-shrink: 0; }
     .b2b-side-logo { width: 8mm; height: 8mm; background: rgba(255,255,255,.12); border-radius: 1.5mm; padding: 0.5mm; display: flex; align-items: center; justify-content: center; }
     .b2b-side-logo img { width: 100%; height: 100%; object-fit: contain; }
     .b2b-side-text { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 4.6pt; font-weight: 600; color: rgba(255,255,255,.78); letter-spacing: 1.1px; text-transform: uppercase; flex: 1; display: flex; align-items: center; justify-content: center; padding: 2mm 0; }
     .b2b-side-badge { width: 7.2mm; background: #d97706; color: #fff; font-size: 4.2pt; font-weight: 700; text-align: center; padding: 1mm 0; border-radius: 1mm; }
-    .b2b-main { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 1.6mm 2mm 1.8mm; overflow: hidden; position: relative; justify-content: space-between; }
-    .b2b-head { width: 100%; display: flex; flex-direction: column; align-items: center; margin-bottom: 0.8mm; }
-    .b2b-sch1 { font-size: 7.8pt; font-weight: 900; color: #1e3a8a; text-transform: uppercase; letter-spacing: 0.3px; line-height: 1.1; }
-    .b2b-ur { font-family: 'Noto Nastaliq Urdu', serif; font-size: 5.6pt; font-weight: 700; color: #1e3a8a; direction: rtl; line-height: 1.25; margin-top: 0.2mm; }
-    .b2b-divider { width: 22mm; height: 1.2px; background: #d97706; margin-top: 0.6mm; }
-    .b2b-scan-lbl { font-size: 3.9pt; font-weight: 800; color: #1e3a8a; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.8mm; }
-    .b2b-qr-box { width: 36mm; height: 36mm; border: 1.2px solid #1e3a8a; border-radius: 2mm; padding: 1.2mm; background: #fff; display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 1mm; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
-    .b2b-qr-box::before { content: ''; position: absolute; top: -0.8px; left: -0.8px; width: 4mm; height: 4mm; border-top: 2px solid #d97706; border-left: 2px solid #d97706; border-radius: 1.6mm 0 0 0; }
-    .b2b-qr-box::after { content: ''; position: absolute; bottom: -0.8px; right: -0.8px; width: 4mm; height: 4mm; border-bottom: 2px solid #d97706; border-right: 2px solid #d97706; border-radius: 0 0 1.6mm 0; }
+    
+    .b2b-main {
+      flex: 1;
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+      padding: 1.6mm 2mm 1.8mm; overflow: hidden; position: relative; justify-content: space-between;
+    }
+    
+    /* Clean, complete, non-colliding header */
+    .b2b-head {
+      width: 100%; display: flex; flex-direction: column; align-items: center;
+      gap: 0.3mm; margin-bottom: 0.6mm;
+    }
+    .b2b-sch1 {
+      font-size: 6.8pt; font-weight: 900;
+      color: #1e3a8a; text-transform: uppercase; letter-spacing: 0.3px; line-height: 1.15;
+    }
+    .b2b-ur {
+      font-family: 'Noto Nastaliq Urdu', serif;
+      font-size: 5.6pt; font-weight: 700; color: #1e3a8a;
+      direction: rtl; line-height: 1.35;
+    }
+    .b2b-divider { width: 22mm; height: 1.2px; background: #d97706; margin-top: 0.4mm; }
+
+    .b2b-scan-lbl {
+      font-size: 3.8pt; font-weight: 800; color: #1e3a8a;
+      text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.6mm;
+    }
+
+    /* BIG 35mm QR Box */
+    .b2b-qr-box {
+      width: 35mm; height: 35mm;
+      border: 1.2px solid #1e3a8a; border-radius: 2mm;
+      padding: 1mm; background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; margin-bottom: 0.8mm;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    }
+    .b2b-qr-box::before {
+      content: ''; position: absolute; top: -0.8px; left: -0.8px; width: 4mm; height: 4mm;
+      border-top: 2px solid #d97706; border-left: 2px solid #d97706; border-radius: 1.6mm 0 0 0;
+    }
+    .b2b-qr-box::after {
+      content: ''; position: absolute; bottom: -0.8px; right: -0.8px; width: 4mm; height: 4mm;
+      border-bottom: 2px solid #d97706; border-right: 2px solid #d97706; border-radius: 0 0 1.6mm 0;
+    }
     .b2b-qr-box img { width: 100%; height: 100%; object-fit: contain; display: block; image-rendering: pixelated; }
-    .b2b-code-pill { background: #1e3a8a; color: #fff; font-size: 5.2pt; font-weight: 900; letter-spacing: 0.8px; padding: 0.6mm 3mm; border-radius: 3mm; margin-bottom: 0.6mm; }
-    .b2b-name { font-size: 5.2pt; font-weight: 800; color: #0f172a; max-width: 38mm; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .b2b-class { font-size: 4.4pt; font-weight: 700; color: #64748b; margin-top: 0.2mm; margin-bottom: 0.8mm; }
-    .b2b-contact { width: 100%; background: #eff6ff; border: 0.6px solid #bfdbfe; border-radius: 1mm; padding: 0.8mm 1mm; }
+
+    .b2b-code-pill {
+      background: #1e3a8a; color: #fff;
+      font-size: 5.2pt; font-weight: 900; letter-spacing: 0.8px;
+      padding: 0.5mm 3mm; border-radius: 3mm; margin-bottom: 0.4mm;
+    }
+    .b2b-name {
+      font-size: 5.4pt; font-weight: 800; color: #0f172a;
+      max-width: 38mm; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .b2b-class {
+      font-size: 4.4pt; font-weight: 700; color: #64748b;
+      margin-bottom: 0.8mm;
+    }
+
+    .b2b-contact {
+      width: 100%; background: #eff6ff; border: 0.6px solid #bfdbfe;
+      border-radius: 1mm; padding: 0.8mm 1mm;
+    }
     .b2b-contact-addr { font-size: 3.6pt; font-weight: 600; color: #1e3a8a; line-height: 1.15; }
-    .b2b-contact-phone { font-size: 4.0pt; font-weight: 900; color: #044332; margin-top: 0.3mm; }
-    .b2b-bottom { width: 100%; display: flex; flex-direction: column; margin-top: 0.8mm; }
+    .b2b-contact-phone { font-size: 4.1pt; font-weight: 900; color: #044332; margin-top: 0.3mm; }
+    .b2b-return-notice {
+      font-family: 'Noto Nastaliq Urdu', serif;
+      font-size: 4.2pt; font-weight: 600; color: #1e3a8a;
+      margin-top: 0.3mm; direction: rtl;
+    }
+
+    .b2b-bottom { width: 100%; display: flex; flex-direction: column; margin-top: 0.6mm; }
     .b2b-bar-gold { height: 0.8mm; background: #d97706; }
     .b2b-bar-navy { height: 1.6mm; background: #1e3a8a; }
 
@@ -227,7 +440,7 @@
 <div class="toolbar">
   <div>
     <div class="ttitle">🔍 Front &amp; Back Pair Studio — Option 1B &amp; Option 2B</div>
-    <div class="tsub">Shows Front (Photo + Info) and Matching Back (Big 36mm QR + Details) side-by-side for each design</div>
+    <div class="tsub">Shows Front (Photo + Info) and Matching Back (Big QR + Info) side-by-side for each design</div>
   </div>
   <div style="display:flex; gap:8px; align-items:center;">
     <a href="/print/card-backs" class="btn btn-green">📇 Print QR Back Sheets</a>
@@ -245,8 +458,8 @@
       🌲 Option 1B Pair — Emerald Split (Front &amp; Big QR Back)
     </div>
     <div class="design-caption">
-      Front: Large 22×26mm photo, full 2×2 info tags, emerald wave footer.<br>
-      Back: Matching emerald header, Pakistan flag, <strong>Big 36mm QR code</strong>, student pill, helpline numbers.
+      Front: Large 22×26mm photo, balanced 2×2 info grid (no holes), emerald wave footer.<br>
+      Back: Matching emerald header (no text collisions), <strong>Big 35mm QR code</strong>, student pill, helpline numbers, zero empty space.
     </div>
 
     <div class="pairs-grid">
@@ -288,6 +501,7 @@
                 <div class="c1b-name">{{ s.full_name }}</div>
                 <div class="c1b-father">S/D of {{ s.father_name or 'Guardian' }}</div>
 
+                <!-- Balanced 2x2 grid: Zero empty holes -->
                 <div class="c1b-tags">
                   <div class="c1b-tag">
                     <span class="c1b-tag-lbl">Class</span>
@@ -303,7 +517,7 @@
                   </div>
                   <div class="c1b-tag session">
                     <span class="c1b-tag-lbl">Session</span>
-                    <span class="c1b-tag-val">2026 – 2027</span>
+                    <span class="c1b-tag-val">2026–27</span>
                   </div>
                 </div>
               </div>
@@ -318,14 +532,14 @@
             </div>
           </div>
 
-          <!-- BACK (BIG QR) -->
+          <!-- BACK (BIG QR - WORKING IMAGE & PROPER SPACING) -->
           <div class="side-wrapper">
             <span class="side-tag tag-back">Back Side (Big QR)</span>
             <div class="id-card card-1b-back">
               <div class="b1b-head">
                 <div class="b1b-logo"><img src="/static/img/shaheen_logo_trans.png" alt="Logo"></div>
                 <div class="b1b-titles">
-                  <span class="b1b-ur">شاہین پبلک ہائی سکول</span>
+                  <div class="b1b-ur">شاہین پبلک ہائی سکول</div>
                   <div class="b1b-en">SHAHEEN PUBLIC HIGH SCHOOL</div>
                   <div class="b1b-loc">Loi Shalman &bull; Khyber</div>
                 </div>
@@ -343,14 +557,16 @@
               <div class="b1b-body">
                 <div class="b1b-scan-lbl">Daily Attendance Scan</div>
                 <div class="b1b-qr-box">
-                  <img src="data:image/png;base64,{{ s.qr_image }}" alt="QR {{ s.student_code }}">
+                  <img src="{{ s.qr_image }}" alt="QR {{ s.student_code }}">
                 </div>
                 <div class="b1b-code-pill">{{ s.student_code }}</div>
                 <div class="b1b-name">{{ s.full_name }}</div>
                 <div class="b1b-class">{{ s.class_name }}{% if s.roll_no %} &bull; Roll # {{ s.roll_no }}{% endif %}</div>
+                
                 <div class="b1b-contact">
                   <div class="b1b-contact-addr">Loi Shalman Near Cricket Ground, Ghundakhel</div>
                   <div class="b1b-contact-phone">📞 03359365884 &bull; 💬 03342727432</div>
+                  <div class="b1b-return-notice">کارڈ ملنے کی صورت میں برائے مہربانی واپس کریں یا فون کریں</div>
                 </div>
               </div>
 
@@ -378,7 +594,7 @@
     </div>
     <div class="design-caption">
       Front: Vertical navy sidebar, 22×26mm photo, full-width Class/Roll grid, gold code bar.<br>
-      Back: Matching vertical navy sidebar, <strong>Big 36mm QR code</strong>, student pill, helpline &amp; Ghundakhel address.
+      Back: Matching vertical navy sidebar, full school title (not cut off), <strong>Big 35mm QR code</strong>, helpline &amp; Ghundakhel address.
     </div>
 
     <div class="pairs-grid">
@@ -458,7 +674,7 @@
             </div>
           </div>
 
-          <!-- BACK (BIG QR) -->
+          <!-- BACK (BIG QR - WORKING IMAGE & PROPER SPACING) -->
           <div class="side-wrapper">
             <span class="side-tag tag-back">Back Side (Big QR)</span>
             <div class="id-card card-2b-back">
@@ -470,7 +686,7 @@
 
               <div class="b2b-main">
                 <div class="b2b-head">
-                  <div class="b2b-sch1">SHAHEEN PUBLIC</div>
+                  <div class="b2b-sch1">SHAHEEN PUBLIC HIGH SCHOOL</div>
                   <div class="b2b-ur">شاہین پبلک ہائی سکول لوئی شلمان</div>
                   <div class="b2b-divider"></div>
                 </div>
@@ -478,7 +694,7 @@
                 <div class="b2b-scan-lbl">Scan to Verify Attendance</div>
 
                 <div class="b2b-qr-box">
-                  <img src="data:image/png;base64,{{ s.qr_image }}" alt="QR {{ s.student_code }}">
+                  <img src="{{ s.qr_image }}" alt="QR {{ s.student_code }}">
                 </div>
 
                 <div class="b2b-code-pill">{{ s.student_code }}</div>
@@ -487,7 +703,8 @@
 
                 <div class="b2b-contact">
                   <div class="b2b-contact-addr">Loi Shalman Near Cricket Ground, Ghundakhel</div>
-                  <div class="b2b-contact-phone">📞 03359365884 &bull; 03342727432</div>
+                  <div class="b2b-contact-phone">📞 03359365884 &bull; 💬 03342727432</div>
+                  <div class="b2b-return-notice">اگر یہ کارڈ ملے تو برائے مہربانی واپس کریں</div>
                 </div>
 
                 <div class="b2b-bottom">
