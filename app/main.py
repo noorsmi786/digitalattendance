@@ -102,7 +102,8 @@ def scanner_page(request: Request):
         context={
             "school_name": school_name,
             "classes": settings.get("classes_list", []),
-            "today_scanned": marked_count
+            "today_scanned": marked_count,
+            "cache_bust": int(datetime.now().timestamp()),
         }
     )
 

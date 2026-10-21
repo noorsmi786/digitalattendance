@@ -502,52 +502,75 @@ class AttendanceApp {
   // --- Camera & Scanner ---
   async startScanner() {
     try {
+      if (this.html5QrCode) {
+        try {
+          if (this.html5QrCode.isScanning) {
+            await this.html5QrCode.stop();
+          }
+          this.html5QrCode.clear();
+        } catch (e) {}
+      }
+
       this.html5QrCode = new Html5Qrcode('qr-reader');
       const config = {
-        fps: 25,
+        fps: 20,
         qrbox: (viewfinderWidth, viewfinderHeight) => {
           const edge = Math.floor(Math.min(viewfinderWidth, viewfinderHeight) * 0.72);
-          return { width: Math.max(250, edge), height: Math.max(250, edge) };
+          const safeW = Math.max(160, Math.min(edge, viewfinderWidth - 20));
+          const safeH = Math.max(160, Math.min(edge, viewfinderHeight - 20));
+          return { width: safeW, height: safeH };
         },
         aspectRatio: 1.0,
-        formatsToSupport: [0], // 0 = Html5QrcodeSupportedFormats.QR_CODE (QR code only for maximum speed & focus)
         experimentalFeatures: {
           useBarCodeDetectorIfSupported: true
         }
       };
 
-      // Request High-Definition resolution constraints for sharp focus
-      const hdConstraints = {
-        facingMode: this.currentCamera,
-        width: { ideal: 1920, min: 1280 },
-        height: { ideal: 1080, min: 720 }
+      // Clean mobile constraints (no 'min' width/height which crashes mobile cameras in portrait)
+      const cameraConstraints = {
+        facingMode: this.currentCamera || 'environment'
       };
 
       try {
         await this.html5QrCode.start(
-          hdConstraints,
+          cameraConstraints,
           config,
           (decodedText) => this.onScanSuccess(decodedText),
           () => {} // Ignore scan frame decode misses
         );
-      } catch (hdErr) {
-        console.warn('HD camera constraints not accepted, falling back to standard facingMode:', hdErr);
-        await this.html5QrCode.start(
-          { facingMode: this.currentCamera },
-          config,
-          (decodedText) => this.onScanSuccess(decodedText),
-          () => {}
-        );
+      } catch (camErr) {
+        console.warn('[Scanner] facingMode start failed, trying camera list enumeration fallback:', camErr);
+        // Fallback: enumerate available cameras and start by device ID
+        const devices = await Html5Qrcode.getCameras().catch(() => []);
+        if (devices && devices.length > 0) {
+          const targetCam = devices.find(d => {
+            const label = (d.label || '').toLowerCase();
+            return this.currentCamera === 'user' 
+              ? (label.includes('front') || label.includes('user'))
+              : (label.includes('back') || label.includes('rear') || label.includes('environment'));
+          }) || devices[0];
+
+          await this.html5QrCode.start(
+            targetCam.id,
+            config,
+            (decodedText) => this.onScanSuccess(decodedText),
+            () => {}
+          );
+        } else {
+          throw camErr;
+        }
       }
 
       this.isScanning = true;
-      document.getElementById('camera-status').textContent = 'Camera active • Point QR at screen';
+      const statusEl = document.getElementById('camera-status');
+      if (statusEl) statusEl.textContent = 'Camera active • Point QR at screen';
       
       // Apply hardware continuous autofocus after stream settles
-      setTimeout(() => this.applyHardwareCameraFocus(), 600);
+      setTimeout(() => this.applyHardwareCameraFocus(), 800);
     } catch (err) {
       console.error('Failed to start camera:', err);
-      document.getElementById('camera-status').textContent = 'Camera access denied or error. Check browser permissions.';
+      const statusEl = document.getElementById('camera-status');
+      if (statusEl) statusEl.textContent = 'Camera access denied or error. Check browser permissions.';
       this.showToast('Please allow camera access in browser', 'error');
     }
   }
@@ -629,14 +652,19 @@ class AttendanceApp {
   }
 
   async switchCamera() {
-    if (this.html5QrCode) {
-      try {
-        await this.html5QrCode.stop();
-        this.startScanner();
-        this.showToast(`Switched to ${this.currentCamera === 'environment' ? 'Back' : 'Front'} Camera`, 'info');
-      } catch (err) {
-        console.error('Camera switch error:', err);
+    try {
+      if (this.html5QrCode) {
+        try {
+          if (this.html5QrCode.isScanning) {
+            await this.html5QrCode.stop();
+          }
+          this.html5QrCode.clear();
+        } catch (e) {}
       }
+      await this.startScanner();
+      this.showToast(`Switched to ${this.currentCamera === 'environment' ? 'Back' : 'Front'} Camera`, 'info');
+    } catch (err) {
+      console.error('Camera switch error:', err);
     }
   }
 
