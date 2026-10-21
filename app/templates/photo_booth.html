@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Serial Photo Booth | {{ school_name }}</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+
+    body { background: #090d16; color: #f1f5f9; min-height: 100vh; display: flex; flex-direction: column; }
+
+    header { background: #0f172a; border-bottom: 1px solid #1e293b; padding: 10px 16px;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+
+    .brand-box { display: flex; align-items: center; gap: 10px; }
+    .badge-icon { background: linear-gradient(135deg, #0284c7, #38bdf8); color: #fff;
+      font-weight: 800; font-size: 13px; padding: 6px 10px; border-radius: 8px; }
+    .brand-title { font-size: 15px; font-weight: 700; color: #fff; }
+    .brand-sub { font-size: 11px; color: #94a3b8; }
+    .header-links { display: flex; gap: 8px; }
+    .nav-btn { background: #1e293b; color: #cbd5e1; padding: 6px 12px; border-radius: 6px;
+      text-decoration: none; font-size: 12px; font-weight: 600; border: 1px solid #334155;
+      display: inline-flex; align-items: center; gap: 5px; cursor: pointer; }
+    .nav-btn:hover { background: #334155; color: #fff; }
+
+    .container { display: grid; grid-template-columns: 1fr 380px; gap: 16px;
+      padding: 16px; flex: 1; max-width: 1440px; margin: 0 auto; width: 100%; }
+    @media (max-width: 960px) { .container { grid-template-columns: 1fr; } }
+
+    .stage-card { background: #0f172a; border: 1px solid #1e293b; border-radius: 14px;
+      padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+
+    /* Camera area — canvas for bg-replaced preview */
+    .camera-wrapper { position: relative; width: 100%; height: 480px; max-height: 55vh;
+      background: #000; border-radius: 12px; overflow: hidden;
+      display: flex; align-items: center; justify-content: center; border: 2px solid #334155; }
+
+    /* The live composited output canvas — shown to user */
+    #preview-canvas { width: 100%; height: 100%; object-fit: cover; display: block; }
+    /* Hidden raw video used by MediaPipe */
+    #video-stream { display: none; }
+
+    .face-guide { position: absolute; width: 220px; height: 290px;
+      border: 2.5px dashed rgba(56, 189, 248, 0.7);
+      border-radius: 50% 50% 45% 45% / 60% 60% 40% 40%;
+      box-shadow: 0 0 0 9999px rgba(0,0,0,0.25);
+      pointer-events: none; display: flex; flex-direction: column;
+      align-items: center; justify-content: space-between; padding: 16px 0; }
+    .guide-text { background: rgba(0,0,0,0.75); color: #38bdf8; font-size: 11px;
+      font-weight: 700; padding: 3px 10px; border-radius: 12px;
+      text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* Background picker bar */
+    .bg-picker-bar { display: flex; align-items: center; gap: 8px;
+      background: #1e293b; border-radius: 10px; padding: 8px 12px;
+      border: 1px solid #334155; flex-wrap: wrap; }
+    .bg-picker-label { font-size: 11.5px; font-weight: 700; color: #94a3b8;
+      text-transform: uppercase; letter-spacing: 0.4px; white-space: nowrap; }
+    .bg-swatch { width: 28px; height: 28px; border-radius: 6px; border: 2.5px solid transparent;
+      cursor: pointer; transition: transform 0.15s, border-color 0.15s; flex-shrink: 0; }
+    .bg-swatch:hover { transform: scale(1.12); }
+    .bg-swatch.active { border-color: #38bdf8; box-shadow: 0 0 8px rgba(56,189,248,0.5); transform: scale(1.12); }
+    .bg-swatch-none { background: repeating-linear-gradient(45deg, #334155 0px, #334155 4px, #1e293b 4px, #1e293b 8px);
+      border: 2px solid #475569 !important; }
+
+    .segmentation-status { font-size: 10.5px; color: #64748b; margin-left: auto; white-space: nowrap; }
+    .segmentation-status.ready { color: #10b981; }
+    .segmentation-status.loading { color: #f59e0b; }
+
+    .cam-flip-btn { position: absolute; top: 12px; right: 12px;
+      background: rgba(15,23,42,0.85); color: #fff; border: 1px solid rgba(255,255,255,0.2);
+      padding: 6px 10px; border-radius: 8px; font-size: 12px; cursor: pointer;
+      backdrop-filter: blur(4px); z-index: 10; }
+
+    .active-student-bar { background: linear-gradient(135deg, #1e293b, #0f172a);
+      border: 1px solid #38bdf8; border-radius: 12px; padding: 12px 16px;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .student-badge-pill { background: #0284c7; color: #fff; font-size: 11px;
+      font-weight: 800; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; }
+    .student-main-info h2 { font-size: 20px; font-weight: 800; color: #fff; margin-top: 3px; }
+    .student-meta { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+
+    .controls-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; }
+    @media (max-width: 600px) { .controls-grid { grid-template-columns: 1fr; } }
+
+    .btn-snap { background: linear-gradient(135deg, #059669, #10b981); color: #fff; border: none;
+      border-radius: 10px; padding: 14px; font-size: 16px; font-weight: 800; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      box-shadow: 0 4px 16px rgba(16,185,129,0.35); transition: transform 0.1s, background 0.2s; }
+    .btn-snap:hover { background: #059669; transform: translateY(-1px); }
+    .btn-snap:active { transform: scale(0.98); }
+
+    .btn-skip { background: #78350f; color: #fde68a; border: 1px solid #d97706; border-radius: 10px;
+      padding: 12px; font-size: 13px; font-weight: 700; cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+    .btn-skip:hover { background: #92400e; }
+
+    .btn-prev { background: #1e293b; color: #cbd5e1; border: 1px solid #334155; border-radius: 10px;
+      padding: 12px; font-size: 13px; font-weight: 700; cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+    .btn-prev:hover { background: #334155; color: #fff; }
+
+    /* Queue Sidebar */
+    .queue-card { background: #0f172a; border: 1px solid #1e293b; border-radius: 14px;
+      padding: 14px; display: flex; flex-direction: column; max-height: 82vh; }
+    .queue-header { margin-bottom: 12px; display: flex; flex-direction: column; gap: 8px; }
+    
+    .filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .filter-select { width: 100%; background: #1e293b; color: #fff; border: 1px solid #334155;
+      padding: 7px 8px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
+    .filter-select:focus { border-color: #38bdf8; outline: none; }
+
+    .quick-pills-row { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 2px; }
+    .quick-pill { background: #1e293b; color: #94a3b8; border: 1px solid #334155;
+      padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+    .quick-pill:hover { background: #334155; color: #fff; }
+    .quick-pill.active { background: #0284c7; color: #fff; border-color: #38bdf8; box-shadow: 0 0 8px rgba(56,189,248,0.3); }
+
+    .search-input { background: #1e293b; color: #fff; border: 1px solid #334155;
+      padding: 7px 10px; border-radius: 8px; font-size: 12px; width: 100%; }
+    .search-input:focus { border-color: #38bdf8; outline: none; }
+
+    .progress-bar-wrap { background: #1e293b; border-radius: 8px; height: 8px; overflow: hidden; margin-top: 4px; }
+    .progress-bar-fill { background: linear-gradient(90deg, #0284c7, #10b981); height: 100%; width: 0%; transition: width 0.3s; }
+
+    .student-queue-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding-right: 4px; }
+    .queue-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px;
+      background: #1e293b; border: 1px solid #334155; border-radius: 8px; cursor: pointer; transition: all 0.15s; }
+    .queue-item:hover { background: #253347; border-color: #38bdf8; }
+    .queue-item.active { background: #0369a1; border-color: #38bdf8; box-shadow: 0 0 12px rgba(56,189,248,0.4); }
+    .queue-item.skipped { border-left: 4px solid #f59e0b; }
+    .queue-item.done { border-left: 4px solid #10b981; }
+
+    .queue-thumb { width: 38px; height: 48px; border-radius: 6px; background: #0f172a; overflow: hidden;
+      flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 18px; border: 1px solid #334155; }
+    .queue-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    
+    .queue-info { flex: 1; min-width: 0; }
+    .queue-name { font-size: 13px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .queue-meta { font-size: 11px; color: #94a3b8; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 1px; }
+
+    .gender-pill { display: inline-block; font-size: 9.5px; padding: 1px 5px; border-radius: 4px; font-weight: 700; }
+    .gender-boy { background: rgba(56, 189, 248, 0.18); color: #38bdf8; border: 1px solid rgba(56,189,248,0.3); }
+    .gender-girl { background: rgba(244, 114, 182, 0.18); color: #f472b6; border: 1px solid rgba(244,114,182,0.3); }
+
+    .queue-status-tag { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; }
+    .tag-done { background: #065f46; color: #a7f3d0; }
+    .tag-skipped { background: #78350f; color: #fde68a; }
+    .tag-pending { background: #334155; color: #cbd5e1; }
+
+    .flash-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: #fff; opacity: 0; pointer-events: none; transition: opacity 0.15s ease-out; z-index: 20; }
+    .flash-overlay.snap { opacity: 0.85; }
+
+    .toast { position: fixed; bottom: 20px; right: 20px; background: #0f172a; color: #fff;
+      border: 1px solid #38bdf8; padding: 10px 16px; border-radius: 8px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-size: 13px;
+      opacity: 0; transform: translateY(10px); transition: all 0.25s; z-index: 1000; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand-box">
+      <div class="badge-icon">SPHS</div>
+      <div>
+        <div class="brand-title">📸 Student Serial Photo Booth</div>
+        <div class="brand-sub">{{ school_name }} • Virtual Background ID Station</div>
+      </div>
+    </div>
+    <div class="header-links">
+      <a href="/admin" class="nav-btn">← Admin Dashboard</a>
+      <a href="/scanner" target="_blank" class="nav-btn" style="background:#065f46;border-color:#10b981;color:#fff;">Launch Scanner 📱</a>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Left: Camera & Actions -->
+    <div class="stage-card">
+      <div class="camera-wrapper">
+        <!-- Hidden raw video source -->
+        <video id="video-stream" autoplay playsinline muted></video>
+        <!-- Composited output with virtual background -->
+        <canvas id="preview-canvas"></canvas>
+        <!-- Face guide overlay -->
+        <div class="face-guide">
+          <span class="guide-text">Head Here</span>
+          <span class="guide-text" style="font-size:10px;opacity:0.8;">Shoulders Level</span>
+        </div>
+        <button id="cam-toggle-btn" class="cam-flip-btn">📷 Flip Cam</button>
+        <div id="flash" class="flash-overlay"></div>
+      </div>
+
+      <!-- Background Picker -->
+      <div class="bg-picker-bar">
+        <span class="bg-picker-label">📸 Background:</span>
+
+        <!-- No BG (passthrough) -->
+        <div class="bg-swatch bg-swatch-none active" data-bg="none" title="No virtual background"></div>
+
+        <!-- Classic ID photo backgrounds -->
+        <div class="bg-swatch" data-bg="#1a5276" style="background:#1a5276;" title="Navy Blue (Passport style)"></div>
+        <div class="bg-swatch" data-bg="#0d47a1" style="background:#0d47a1;" title="Royal Blue"></div>
+        <div class="bg-swatch" data-bg="#155724" style="background:#155724;" title="School Green (SPHS)"></div>
+        <div class="bg-swatch" data-bg="#b0bec5" style="background:#b0bec5;" title="Studio Grey"></div>
+        <div class="bg-swatch" data-bg="#f5f5f5" style="background:#f5f5f5;border:1px solid #ccc;" title="Clean White"></div>
+        <div class="bg-swatch" data-bg="#e8d5b0" style="background:#e8d5b0;" title="Cream / Ivory"></div>
+        <div class="bg-swatch" data-bg="#7f1d1d" style="background:#7f1d1d;" title="Deep Red"></div>
+
+        <span id="seg-status" class="segmentation-status loading">⏳ Loading AI...</span>
+      </div>
+
+      <!-- Current Student Card -->
+      <div class="active-student-bar">
+        <div>
+          <span id="cur-class-roll-badge" class="student-badge-pill">Class 1st • Roll 01</span>
+          <h2 id="cur-student-name" class="student-main-info">Loading Student...</h2>
+          <div id="cur-student-meta" class="student-meta">SPS-101 • S/D of Father Name</div>
+        </div>
+        <div style="text-align:right;">
+          <div id="cur-photo-status" style="font-size:11.5px;font-weight:700;color:#f59e0b;">⚪ Needs Photo</div>
+          <div style="font-size:11px;color:#64748b;margin-top:3px;">Space / Tap Screen = Snap</div>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="controls-grid">
+        <button id="snap-btn" class="btn-snap">
+          <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+          SNAP & NEXT (Space)
+        </button>
+        <button id="skip-btn" class="btn-skip">
+          <span>⏭️ Skip (Absent)</span>
+          <span style="font-size:10px;opacity:0.8;">Not in line</span>
+        </button>
+        <button id="prev-btn" class="btn-prev">
+          <span>⏮️ Previous</span>
+          <span style="font-size:10px;opacity:0.8;">Go back</span>
+        </button>
+      </div>
+
+      <!-- Last Captured Preview -->
+      <div id="capture-preview-box" style="display:none;background:#1e293b;border-radius:8px;padding:10px;align-items:center;gap:12px;border:1px solid #10b981;">
+        <img id="last-captured-img" src="" style="width:44px;height:58px;object-fit:cover;border-radius:6px;border:1px solid #10b981;">
+        <div style="flex:1;">
+          <strong id="last-captured-name" style="color:#a7f3d0;font-size:13px;">Photo Saved!</strong>
+          <div id="last-captured-sub" style="color:#94a3b8;font-size:11px;"></div>
+        </div>
+        <button id="retake-btn" class="nav-btn" style="background:#dc2626;border-color:#ef4444;color:#fff;">🔄 Retake</button>
+      </div>
+    </div>
+
+    <!-- Right: Queue with Gender & Photo Filters -->
+    <div class="queue-card">
+      <div class="queue-header">
+        <!-- Filter Row 1: Class & Gender -->
+        <div class="filter-grid">
+          <select id="class-filter" class="filter-select">
+            <option value="">All Classes</option>
+            {% for c in classes %}
+            <option value="{{ c }}" {% if c == selected_class %}selected{% endif %}>Class {{ c }}</option>
+            {% endfor %}
+          </select>
+          <select id="gender-filter" class="filter-select">
+            <option value="all">👥 All Genders</option>
+            <option value="Male">👦 Boys Only</option>
+            <option value="Female">👧 Girls Only</option>
+          </select>
+        </div>
+
+        <!-- Filter Row 2: Photo Status -->
+        <select id="photo-filter" class="filter-select">
+          <option value="all">📷 All Photos</option>
+          <option value="needs">⚪ Needs Photo (Pending)</option>
+          <option value="done">✅ Has Photo (Done)</option>
+        </select>
+
+        <!-- Quick filter pills -->
+        <div class="quick-pills-row">
+          <button type="button" class="quick-pill active" id="pill-all" onclick="setQuickFilter('all')">All ({{ students | length }})</button>
+          <button type="button" class="quick-pill" id="pill-boys-needs" onclick="setQuickFilter('boys-needs')" style="border-color:#38bdf8;color:#38bdf8;">⚡ Boys Needing Photos</button>
+          <button type="button" class="quick-pill" id="pill-needs" onclick="setQuickFilter('needs')">⚪ All Missing</button>
+          <button type="button" class="quick-pill" id="pill-done" onclick="setQuickFilter('done')">✅ Done</button>
+          <button type="button" class="quick-pill" id="pill-girls" onclick="setQuickFilter('girls')">👧 Girls</button>
+        </div>
+
+        <input type="text" id="queue-search" class="search-input" placeholder="Search student name, roll, or code...">
+        
+        <div style="display:flex;justify-content:space-between;font-size:11.5px;color:#94a3b8;margin-top:4px;">
+          <span>Queue Count: <strong id="progress-text" style="color:#38bdf8;">0 / 0</strong></span>
+          <span id="progress-percent" style="font-weight:700;color:#10b981;">0%</span>
+        </div>
+        <div class="progress-bar-wrap">
+          <div id="progress-fill" class="progress-bar-fill"></div>
+        </div>
+      </div>
+      
+      <div id="student-list" class="student-queue-list"></div>
+    </div>
+  </div>
+
+  <canvas id="hidden-canvas" style="display:none;"></canvas>
+  <div id="toast" class="toast"></div>
+
+  <!-- MediaPipe Selfie Segmentation -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation@0.1.1675465747/selfie_segmentation.js" crossorigin="anonymous"></script>
+
+  <script>
+    const rawStudents = {{ students | tojson | safe }};
+    let students = [...rawStudents];
+    let currentIndex = 0;
+    let currentFacingMode = 'environment';
+    let videoStream = null;
+    let audioCtx = null;
+    let skippedIds = new Set();
+
+    // Virtual background state
+    let selectedBg = 'none';
+    let segmentationReady = false;
+    let selfieSegmentation = null;
+    let animFrameId = null;
+
+    // ── Background colour picker ───────────────────────────────
+    document.querySelectorAll('.bg-swatch').forEach(sw => {
+      sw.addEventListener('click', () => {
+        document.querySelectorAll('.bg-swatch').forEach(s => s.classList.remove('active'));
+        sw.classList.add('active');
+        selectedBg = sw.dataset.bg;
+      });
+    });
+
+    // ── MediaPipe Selfie Segmentation ─────────────────────────
+    function initSegmentation() {
+      const statusEl = document.getElementById('seg-status');
+      try {
+        selfieSegmentation = new SelfieSegmentation({
+          locateFile: (file) =>
+            `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation@0.1.1675465747/${file}`
+        });
+        selfieSegmentation.setOptions({ modelSelection: 1 });
+        selfieSegmentation.onResults(onSegmentationResults);
+
+        selfieSegmentation.initialize().then(() => {
+          segmentationReady = true;
+          statusEl.textContent = '✅ AI BG Ready';
+          statusEl.className = 'segmentation-status ready';
+        }).catch(err => {
+          console.warn('MediaPipe init error:', err);
+          statusEl.textContent = '⚠️ No AI (passthrough)';
+          statusEl.className = 'segmentation-status';
+        });
+      } catch (e) {
+        console.warn('MediaPipe not available:', e);
+        statusEl.textContent = '⚠️ No AI BG';
+        statusEl.className = 'segmentation-status';
+      }
+    }
+
+    function onSegmentationResults(results) {
+      const canvas = document.getElementById('preview-canvas');
+      const ctx = canvas.getContext('2d');
+      const videoEl = document.getElementById('video-stream');
+
+      canvas.width = videoEl.videoWidth || 640;
+      canvas.height = videoEl.videoHeight || 480;
+
+      ctx.save();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      if (selectedBg === 'none') {
+        ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
+      } else {
+        ctx.fillStyle = selectedBg;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.drawImage(results.segmentationMask, 0, 0, canvas.width, canvas.height);
+
+        ctx.globalCompositeOperation = 'destination-over';
+        ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
+      }
+
+      ctx.restore();
+    }
+
+    async function renderLoop() {
+      const videoEl = document.getElementById('video-stream');
+      const canvas = document.getElementById('preview-canvas');
+
+      if (!videoEl || videoEl.readyState < 2) {
+        animFrameId = requestAnimationFrame(renderLoop);
+        return;
+      }
+
+      if (canvas.width !== videoEl.videoWidth && videoEl.videoWidth) {
+        canvas.width = videoEl.videoWidth;
+        canvas.height = videoEl.videoHeight;
+      }
+
+      if (selectedBg === 'none' || !segmentationReady || !selfieSegmentation) {
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
+      } else {
+        await selfieSegmentation.send({ image: videoEl }).catch(() => {});
+      }
+
+      animFrameId = requestAnimationFrame(renderLoop);
+    }
+
+    // ── Audio ──────────────────────────────────────────────────
+    function playBeep(success = true) {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        if (success) {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(880, now);
+          osc.frequency.setValueAtTime(1320, now + 0.08);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+          osc.start(now); osc.stop(now + 0.2);
+        } else {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(440, now);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+          osc.start(now); osc.stop(now + 0.15);
+        }
+      } catch (e) {}
+    }
+
+    // ── Camera Init ───────────────────────────────────────────
+    async function startCamera() {
+      if (videoStream) videoStream.getTracks().forEach(t => t.stop());
+      if (animFrameId) cancelAnimationFrame(animFrameId);
+
+      const videoEl = document.getElementById('video-stream');
+      try {
+        videoStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: currentFacingMode, width: { ideal: 1280 }, height: { ideal: 720 } },
+          audio: false
+        });
+        videoEl.srcObject = videoStream;
+        await new Promise(resolve => videoEl.onloadedmetadata = resolve);
+        videoEl.play();
+        renderLoop();
+      } catch (err) {
+        console.warn('HD camera failed, fallback:', err);
+        try {
+          videoStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+          videoEl.srcObject = videoStream;
+          await new Promise(resolve => videoEl.onloadedmetadata = resolve);
+          videoEl.play();
+          renderLoop();
+        } catch (e2) { showToast('Camera access denied. Please allow permissions.', 'error'); }
+      }
+    }
+
+    document.getElementById('cam-toggle-btn').addEventListener('click', () => {
+      currentFacingMode = currentFacingMode === 'environment' ? 'user' : 'environment';
+      startCamera();
+    });
+
+    // ── Unified Client-Side Filter Engine ─────────────────────
+    function applyFilters() {
+      const term = (document.getElementById('queue-search')?.value || '').toLowerCase().trim();
+      const cls = document.getElementById('class-filter')?.value || '';
+      const gender = document.getElementById('gender-filter')?.value || 'all';
+      const photoStatus = document.getElementById('photo-filter')?.value || 'all';
+
+      students = rawStudents.filter(s => {
+        if (cls && s.class_name !== cls) return false;
+        
+        if (term) {
+          const match = (s.full_name || '').toLowerCase().includes(term) ||
+                        (s.roll_no || '').toLowerCase().includes(term) ||
+                        (s.student_code || '').toLowerCase().includes(term) ||
+                        (s.father_name || '').toLowerCase().includes(term);
+          if (!match) return false;
+        }
+
+        if (gender !== 'all') {
+          const sGender = (s.gender || 'Male').toLowerCase();
+          if (sGender !== gender.toLowerCase()) return false;
+        }
+
+        const hasPhoto = Boolean(s.photo_url && s.photo_url.trim());
+        if (photoStatus === 'needs' && hasPhoto) return false;
+        if (photoStatus === 'done' && !hasPhoto) return false;
+
+        return true;
+      });
+
+      updatePillStates(cls, gender, photoStatus);
+
+      if (students.length > 0) {
+        if (currentIndex < 0 || currentIndex >= students.length) currentIndex = 0;
+        selectStudent(currentIndex);
+      } else {
+        currentIndex = -1;
+        document.getElementById('cur-class-roll-badge').textContent = 'Queue Empty';
+        document.getElementById('cur-student-name').textContent = 'No matching students';
+        document.getElementById('cur-student-meta').textContent = 'Try adjusting your filters';
+        document.getElementById('cur-photo-status').textContent = '0 students';
+        renderQueueList();
+      }
+    }
+
+    function setQuickFilter(type) {
+      const classEl = document.getElementById('class-filter');
+      const genderEl = document.getElementById('gender-filter');
+      const photoEl = document.getElementById('photo-filter');
+      const searchEl = document.getElementById('queue-search');
+      if (searchEl) searchEl.value = '';
+
+      if (type === 'boys-needs') {
+        if (genderEl) genderEl.value = 'Male';
+        if (photoEl) photoEl.value = 'needs';
+      } else if (type === 'all') {
+        if (classEl) classEl.value = '';
+        if (genderEl) genderEl.value = 'all';
+        if (photoEl) photoEl.value = 'all';
+      } else if (type === 'needs') {
+        if (genderEl) genderEl.value = 'all';
+        if (photoEl) photoEl.value = 'needs';
+      } else if (type === 'done') {
+        if (genderEl) genderEl.value = 'all';
+        if (photoEl) photoEl.value = 'done';
+      } else if (type === 'girls') {
+        if (genderEl) genderEl.value = 'Female';
+        if (photoEl) photoEl.value = 'all';
+      }
+      applyFilters();
+    }
+
+    function updatePillStates(cls, gender, photoStatus) {
+      document.querySelectorAll('.quick-pill').forEach(p => p.classList.remove('active'));
+      if (gender === 'Male' && photoStatus === 'needs') {
+        document.getElementById('pill-boys-needs')?.classList.add('active');
+      } else if (cls === '' && gender === 'all' && photoStatus === 'all') {
+        document.getElementById('pill-all')?.classList.add('active');
+      } else if (gender === 'all' && photoStatus === 'needs') {
+        document.getElementById('pill-needs')?.classList.add('active');
+      } else if (gender === 'all' && photoStatus === 'done') {
+        document.getElementById('pill-done')?.classList.add('active');
+      } else if (gender === 'Female' && photoStatus === 'all') {
+        document.getElementById('pill-girls')?.classList.add('active');
+      }
+    }
+
+    document.getElementById('class-filter').addEventListener('change', applyFilters);
+    document.getElementById('gender-filter').addEventListener('change', applyFilters);
+    document.getElementById('photo-filter').addEventListener('change', applyFilters);
+    document.getElementById('queue-search').addEventListener('input', applyFilters);
+
+    // ── Student Selection ─────────────────────────────────────
+    function selectStudent(index) {
+      if (index < 0 || index >= students.length) return;
+      currentIndex = index;
+      const s = students[currentIndex];
+      const isGirl = (s.gender || '').toLowerCase() === 'female';
+      const genderLabel = isGirl ? '👧 Girl' : '👦 Boy';
+
+      document.getElementById('cur-class-roll-badge').textContent = `Class ${s.class_name} • Roll ${s.roll_no} • ${genderLabel}`;
+      document.getElementById('cur-student-name').textContent = s.full_name;
+      document.getElementById('cur-student-meta').textContent = `${s.student_code} • S/D of ${s.father_name || 'Father'}`;
+      
+      const statusEl = document.getElementById('cur-photo-status');
+      if (s.photo_url && s.photo_url.trim()) {
+        statusEl.innerHTML = '✅ Photo Captured'; statusEl.style.color = '#10b981';
+      } else if (skippedIds.has(s.id)) {
+        statusEl.innerHTML = '⚠️ Skipped (Absent)'; statusEl.style.color = '#f59e0b';
+      } else {
+        statusEl.innerHTML = isGirl ? '👧 Photo Exempt' : '⚪ Needs Photo';
+        statusEl.style.color = isGirl ? '#f472b6' : '#94a3b8';
+      }
+      renderQueueList();
+      document.querySelector('.queue-item.active')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function renderQueueList() {
+      const listEl = document.getElementById('student-list');
+      const total = students.length;
+      const withPhoto = students.filter(s => s.photo_url && s.photo_url.trim()).length;
+      
+      document.getElementById('progress-text').textContent = `${withPhoto} / ${total}`;
+      const pct = total > 0 ? Math.round((withPhoto / total) * 100) : 0;
+      document.getElementById('progress-percent').textContent = `${pct}%`;
+      document.getElementById('progress-fill').style.width = `${pct}%`;
+
+      if (total === 0) {
+        listEl.innerHTML = `
+          <div style="text-align:center;padding:36px 12px;color:#94a3b8;font-size:12.5px;">
+            <div style="font-size:24px;margin-bottom:8px;">🔍</div>
+            No students match this filter.<br>
+            <span style="font-size:11px;color:#64748b;">Try changing Class, Gender or Photo Status.</span>
+          </div>
+        `;
+        return;
+      }
+
+      listEl.innerHTML = students.map((s, idx) => {
+        const isActive = idx === currentIndex;
+        const isSkipped = skippedIds.has(s.id);
+        const hasPhoto = Boolean(s.photo_url && s.photo_url.trim());
+        const isGirl = (s.gender || '').toLowerCase() === 'female';
+
+        let cls = 'queue-item';
+        if (isActive) cls += ' active';
+        if (hasPhoto) cls += ' done';
+        else if (isSkipped) cls += ' skipped';
+
+        const tag = hasPhoto
+          ? '<span class="queue-status-tag tag-done">Done</span>'
+          : isSkipped ? '<span class="queue-status-tag tag-skipped">Absent</span>'
+          : isGirl ? '<span class="queue-status-tag" style="background:#831843;color:#fbcfe8;">Exempt</span>'
+          : '<span class="queue-status-tag tag-pending">Pending</span>';
+
+        const thumb = hasPhoto
+          ? `<img src="${s.photo_url}" alt="thumb">`
+          : `<span style="font-size:16px;">${isGirl ? '👧' : '👦'}</span>`;
+
+        const genderTag = isGirl
+          ? '<span class="gender-pill gender-girl">Girl</span>'
+          : '<span class="gender-pill gender-boy">Boy</span>';
+
+        return `<div class="${cls}" onclick="selectStudent(${idx})">
+          <div class="queue-thumb">${thumb}</div>
+          <div class="queue-info">
+            <div class="queue-name">Roll ${s.roll_no} – ${s.full_name}</div>
+            <div class="queue-meta">Class ${s.class_name} • ${s.student_code} • ${genderTag}</div>
+          </div>
+          ${tag}
+        </div>`;
+      }).join('');
+    }
+
+    // ── Capture: grab from the COMPOSITED canvas (with virtual bg) ──
+    async function captureAndNext() {
+      if (!students.length || currentIndex < 0 || currentIndex >= students.length) return;
+      const s = students[currentIndex];
+
+      const flash = document.getElementById('flash');
+      flash.classList.add('snap');
+      setTimeout(() => flash.classList.remove('snap'), 200);
+      playBeep(true);
+
+      const previewCanvas = document.getElementById('preview-canvas');
+      const outputCanvas = document.getElementById('hidden-canvas');
+
+      outputCanvas.width = previewCanvas.width || 640;
+      outputCanvas.height = previewCanvas.height || 480;
+      const ctx = outputCanvas.getContext('2d');
+
+      if (currentFacingMode === 'user') {
+        ctx.translate(outputCanvas.width, 0);
+        ctx.scale(-1, 1);
+      }
+      ctx.drawImage(previewCanvas, 0, 0);
+
+      const base64Data = outputCanvas.toDataURL('image/jpeg', 0.92);
+
+      try {
+        const res = await fetch(`/api/students/${s.id}/photo-capture`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image_base64: base64Data })
+        });
+        const data = await res.json();
+        if (data.success) {
+          s.photo_url = data.photo_url;
+          // also update reference in rawStudents
+          const rawMatch = rawStudents.find(item => item.id === s.id);
+          if (rawMatch) rawMatch.photo_url = data.photo_url;
+
+          skippedIds.delete(s.id);
+          document.getElementById('last-captured-img').src = data.photo_url;
+          document.getElementById('last-captured-name').textContent = `✅ Saved: Roll ${s.roll_no} – ${s.full_name}`;
+          document.getElementById('last-captured-sub').textContent = `Saved as ${data.student_code}.jpg`;
+          document.getElementById('capture-preview-box').style.display = 'flex';
+          showToast(`Photo saved for ${s.full_name}!`, 'success');
+
+          if (currentIndex < students.length - 1) {
+            selectStudent(currentIndex + 1);
+          } else {
+            selectStudent(currentIndex);
+            showToast('🎉 All students in this queue completed!', 'info');
+          }
+        } else {
+          showToast(data.message || 'Error saving photo', 'error');
+        }
+      } catch (err) { showToast('Network error saving photo', 'error'); }
+    }
+
+    function skipStudent() {
+      if (!students.length || currentIndex < 0) return;
+      skippedIds.add(students[currentIndex].id);
+      playBeep(false);
+      showToast(`Skipped Roll ${students[currentIndex].roll_no} – marked Absent`, 'warning');
+      if (currentIndex < students.length - 1) selectStudent(currentIndex + 1);
+      else renderQueueList();
+    }
+
+    function prevStudent() { if (currentIndex > 0) selectStudent(currentIndex - 1); }
+
+    document.getElementById('retake-btn').addEventListener('click', () => { if (currentIndex > 0) selectStudent(currentIndex - 1); });
+    document.getElementById('snap-btn').addEventListener('click', captureAndNext);
+    document.getElementById('skip-btn').addEventListener('click', skipStudent);
+    document.getElementById('prev-btn').addEventListener('click', prevStudent);
+
+    window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+      const k = e.key || '';
+      const c = e.code || '';
+      // Support Space, Enter, Volume buttons (if passed by browser/device), and Bluetooth Shutter remotes
+      if (c === 'Space' || k === 'Enter' || k === 'AudioVolumeUp' || k === 'AudioVolumeDown' || c === 'VolumeUp' || c === 'VolumeDown' || k === 'MediaPlayPause') {
+        e.preventDefault();
+        captureAndNext();
+      }
+      else if (k === 'ArrowRight') { e.preventDefault(); skipStudent(); }
+      else if (k === 'ArrowLeft') { e.preventDefault(); prevStudent(); }
+    });
+
+    // Tap anywhere on camera preview to snap (super convenient for mobile shooting)
+    document.getElementById('preview-canvas').addEventListener('click', captureAndNext);
+
+    function showToast(msg, type = 'info') {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      const colors = { error: '#ef4444', warning: '#f59e0b', success: '#10b981', info: '#38bdf8' };
+      toast.style.borderColor = colors[type] || '#38bdf8';
+      toast.className = 'toast show';
+      setTimeout(() => toast.className = 'toast', 2800);
+    }
+
+    // ── Boot ──────────────────────────────────────────────────
+    window.addEventListener('DOMContentLoaded', () => {
+      initSegmentation();
+      startCamera();
+      applyFilters();
+    });
+  </script>
+</body>
+</html>

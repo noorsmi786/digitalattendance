@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Attendance Report - {{ school_name }}</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8fafc; padding: 24px; color: #0f172a; }
+    
+    .toolbar {
+      background: #ffffff;
+      padding: 12px 20px;
+      margin-bottom: 24px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .btn {
+      background: #1e3a8a;
+      color: #fff;
+      padding: 8px 18px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    .report-sheet {
+      background: #ffffff;
+      padding: 20mm;
+      max-width: 210mm;
+      margin: 0 auto;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      border: 1px solid #e2e8f0;
+    }
+
+    .school-letterhead {
+      text-align: center;
+      border-bottom: 2px solid #1e3a8a;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+
+    .school-letterhead h1 {
+      font-size: 20pt;
+      color: #1e3a8a;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .school-letterhead p {
+      font-size: 10pt;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    .report-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f1f5f9;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-size: 10pt;
+      margin-bottom: 16px;
+    }
+
+    .stats-summary {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .stat-box {
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 8px;
+    }
+
+    .stat-num {
+      font-size: 16pt;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .stat-label {
+      font-size: 8pt;
+      color: #64748b;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9pt;
+      margin-bottom: 24px;
+    }
+
+    th {
+      background: #1e3a8a;
+      color: #fff;
+      padding: 8px 10px;
+      text-align: left;
+      font-weight: 700;
+    }
+
+    td {
+      padding: 7px 10px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+
+    .status-badge {
+      font-weight: 700;
+      font-size: 8pt;
+      text-transform: uppercase;
+    }
+
+    .status-present { color: #047857; }
+    .status-late    { color: #b45309; }
+    .status-absent  { color: #b91c1c; }
+    .status-leave   { color: #0369a1; }
+
+    .signature-section {
+      margin-top: 40px;
+      display: flex;
+      justify-content: space-between;
+      padding-top: 20px;
+    }
+
+    .sig-block {
+      text-align: center;
+      width: 50mm;
+      border-top: 1px solid #0f172a;
+      padding-top: 6px;
+      font-size: 9pt;
+      font-weight: 600;
+    }
+
+    @media print {
+      body { background: #fff; padding: 0; }
+      .toolbar { display: none; }
+      .report-sheet {
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <div>
+      <strong>Shaheen Public High School Loi Shalman</strong> — Attendance Report
+    </div>
+    <div style="display: flex; gap: 10px;">
+      <a href="/admin" class="btn" style="background: #64748b;">Back to Dashboard</a>
+      <button onclick="window.print()" class="btn">🖨️ Print Sheet (Ctrl + P)</button>
+    </div>
+  </div>
+
+  <div class="report-sheet">
+    <div class="school-letterhead">
+      <h1>Shaheen Public High School</h1>
+      <p>Loi Shalman • Khyber • Official Daily Attendance Register</p>
+    </div>
+
+    <div class="report-meta">
+      <div>Date: <strong>{{ date }}</strong></div>
+      <div>Class: <strong>{{ class_filter or 'All Classes' }}</strong></div>
+      <div>Generated: <strong>{{ now_time }}</strong></div>
+    </div>
+
+    <div class="stats-summary">
+      <div class="stat-box">
+        <div class="stat-num">{{ summary.total_students }}</div>
+        <div class="stat-label">Total Students</div>
+      </div>
+      <div class="stat-box" style="border-top: 3px solid #10b981;">
+        <div class="stat-num" style="color: #047857;">{{ summary.present }}</div>
+        <div class="stat-label">Present</div>
+      </div>
+      <div class="stat-box" style="border-top: 3px solid #f59e0b;">
+        <div class="stat-num" style="color: #b45309;">{{ summary.late }}</div>
+        <div class="stat-label">Late</div>
+      </div>
+      <div class="stat-box" style="border-top: 3px solid #ef4444;">
+        <div class="stat-num" style="color: #b91c1c;">{{ summary.absent }}</div>
+        <div class="stat-label">Absent</div>
+      </div>
+      <div class="stat-box" style="border-top: 3px solid #0284c7;">
+        <div class="stat-num" style="color: #0369a1;">{{ summary.leave }}</div>
+        <div class="stat-label">Leave</div>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 40px;">#</th>
+          <th>Student Code</th>
+          <th>Full Name</th>
+          <th>Father Name</th>
+          <th>Class</th>
+          <th>Roll</th>
+          <th>Status</th>
+          <th>Time</th>
+          <th>Notes / Reason</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in records %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td><code>{{ r.student_code }}</code></td>
+          <td><strong>{{ r.full_name }}</strong></td>
+          <td>{{ r.father_name }}</td>
+          <td>{{ r.class_name }}</td>
+          <td>{{ r.roll_no }}</td>
+          <td>
+            <span class="status-badge status-{{ r.status.lower() }}">{{ r.status }}</span>
+          </td>
+          <td>{{ r.scan_time or '-' }}</td>
+          <td style="color: #64748b; font-size: 8pt;">{{ r.notes or '' }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="signature-section">
+      <div class="sig-block">Prepared By / Stand Operator</div>
+      <div class="sig-block">School In-Charge</div>
+      <div class="sig-block">Principal Signature & Stamp</div>
+    </div>
+  </div>
+</body>
+</html>

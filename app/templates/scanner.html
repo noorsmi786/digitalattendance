@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Attendance Scanner | {{ school_name }}</title>
+  
+  <link rel="manifest" href="/static/manifest.json">
+  <link rel="icon" type="image/png" href="/static/icons/icon-192.png">
+  <link rel="stylesheet" href="/static/css/scanner.css">
+</head>
+<body>
+  <!-- Full Screen Color Flash on scan -->
+  <div id="screen-flash" class="screen-flash"></div>
+
+  <!-- Header -->
+  <header class="scanner-header">
+    <div class="school-brand">
+      <div class="school-logo-img">SPHS</div>
+      <div class="school-info">
+        <h1>Shaheen Public High School</h1>
+        <p>Loi Shalman • Digital Attendance</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button id="install-app-btn" class="install-pwa-btn" title="Install App on Phone">
+        📲 Install
+      </button>
+      <div id="live-clock" class="clock-display">00:00:00</div>
+      <button id="switch-cam-btn" class="icon-btn" title="Flip Camera" aria-label="Switch Camera">
+        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+        </svg>
+      </button>
+      <button id="mirror-toggle-btn" class="icon-btn" title="Toggle Mirror / Flip Direction" aria-label="Mirror Toggle" style="font-size: 15px;">
+        🪞
+      </button>
+      <button id="voice-toggle-btn" class="icon-btn" title="Toggle Voice Announcement" aria-label="Voice Announcement" style="font-size: 15px;">
+        🔊
+      </button>
+    </div>
+  </header>
+
+  <!-- Network & Sync Status -->
+  <div class="status-bar">
+    <div id="sync-status-badge" class="status-badge online">
+      <span class="dot"></span> Online (All Synced)
+    </div>
+    <button id="sync-btn" class="sync-action-btn" disabled>Sync Now</button>
+  </div>
+
+  <!-- Main Scanner Viewport -->
+  <main class="scanner-container">
+    <div id="qr-reader"></div>
+
+    <!-- Laser & Overlay -->
+    <div class="scanner-overlay">
+      <div class="target-box">
+        <div class="target-corner top-left"></div>
+        <div class="target-corner top-right"></div>
+        <div class="target-corner bottom-left"></div>
+        <div class="target-corner bottom-right"></div>
+        <div class="scanner-laser"></div>
+      </div>
+      <div id="camera-status" class="target-instructions">Align Student QR Code inside box</div>
+    </div>
+
+    <!-- Student Attendance Confirmation Pop-up Card -->
+    <div id="result-card" class="result-card hidden">
+      <div class="result-popup-wrapper">
+        <!-- Top Status Banner -->
+        <div id="res-status-banner" class="status-banner present">
+          <span id="res-status-text">✅ PRESENT</span>
+          <span id="res-scan-time" class="scan-timestamp">08:15:30</span>
+        </div>
+
+        <div class="popup-body">
+          <!-- Student Photo Box -->
+          <div class="popup-photo-box">
+            <img id="res-student-photo" src="" alt="Student Photo" style="display: none;">
+            <div id="res-student-avatar" class="popup-avatar-fallback">👤</div>
+          </div>
+
+          <!-- Student Information -->
+          <div class="popup-info">
+            <h2 id="res-student-name" class="popup-name">Student Name</h2>
+            <div id="res-father-name" class="popup-father">S/D of Father Name</div>
+            <div class="popup-meta-pills">
+              <span id="res-class-pill" class="meta-pill class-pill">Class: 10th</span>
+              <span id="res-roll-pill" class="meta-pill roll-pill">Roll: 01</span>
+              <span id="res-code-pill" class="meta-pill code-pill">SPHS-1001</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pop-up Footer with Undo Button -->
+        <div class="popup-footer">
+          <span id="res-message" class="popup-submsg">Attendance marked successfully</span>
+          <button id="res-undo-btn" type="button" class="undo-scan-btn" title="Undo this scan">
+            ↩️ Undo
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Bottom Bar -->
+  <footer class="bottom-bar">
+    <div class="count-stat">
+      Scanned Today: <strong id="today-total-scanned">{{ today_scanned }}</strong>
+    </div>
+    <div style="display: flex; gap: 8px;">
+      <button id="manual-entry-btn" class="manual-entry-btn">
+        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+        </svg>
+        Roll No
+      </button>
+      <a href="/admin" class="admin-link-btn" title="Principal Dashboard">Admin</a>
+    </div>
+  </footer>
+
+  <!-- Offline Scanned Attendance Drawer / Modal -->
+  <div id="offline-drawer-modal" class="modal-backdrop hidden">
+    <div class="modal-window" style="max-width: 440px; max-height: 85vh; display: flex; flex-direction: column;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #334155; padding-bottom: 8px;">
+        <h3 style="font-size: 15px; margin: 0; color: #fff;">📋 Today's Attendance on Phone</h3>
+        <button id="close-drawer-btn" style="background: transparent; border: none; color: #94a3b8; font-size: 20px; cursor: pointer;">&times;</button>
+      </div>
+
+      <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+        <input type="text" id="drawer-search-input" placeholder="Search student or roll..." style="flex: 1; background: #0f172a; border: 1px solid #334155; color: #fff; padding: 7px 10px; border-radius: 6px; font-size: 13px;">
+        <button id="drawer-export-csv-btn" style="background: #059669; color: #fff; border: none; padding: 7px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap;">
+          📥 Save CSV
+        </button>
+      </div>
+
+      <div style="flex: 1; overflow-y: auto; max-height: 350px;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+          <thead>
+            <tr style="border-bottom: 1px solid #334155; color: #94a3b8; text-align: left;">
+              <th style="padding: 6px 4px;">Time</th>
+              <th style="padding: 6px 4px;">Student / Code</th>
+              <th style="padding: 6px 4px;">Status</th>
+            </tr>
+          </thead>
+          <tbody id="drawer-table-body">
+            <tr><td colspan="3" style="text-align: center; padding: 20px; color: #64748b;">No scans recorded yet today.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid #334155; display: flex; justify-content: space-between; font-size: 11px; color: #94a3b8;">
+        <span>Total on Phone: <strong id="drawer-total-count" style="color: #38bdf8;">0</strong></span>
+        <span>Works 100% Offline</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <!-- Manual Entry Modal -->
+  <div id="manual-modal" class="modal-backdrop hidden">
+    <div class="modal-window">
+      <h3>Manual Attendance Entry</h3>
+      <div class="form-group">
+        <label for="manual-class-select">Class (Optional filter)</label>
+        <select id="manual-class-select">
+          <option value="">-- All Classes --</option>
+          {% for c in classes %}
+          <option value="{{ c }}">{{ c }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="manual-roll-input">Roll No or Student Code</label>
+        <input type="text" id="manual-roll-input" placeholder="e.g. 15 or SPHS-1001" autocomplete="off">
+      </div>
+      <div class="modal-actions">
+        <button id="close-manual-btn" class="btn-secondary">Cancel</button>
+        <button id="submit-manual-btn" class="btn-primary">Mark Attendance</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Install App Guide Modal -->
+  <div id="install-guide-modal" class="modal-backdrop hidden">
+    <div class="modal-window" style="max-width: 420px; padding: 20px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border-bottom: 1px solid #334155; padding-bottom: 10px;">
+        <h3 style="margin: 0; color: #fff; font-size: 16px; display: flex; align-items: center; gap: 8px;">
+          📲 Install Scanner on Phone
+        </h3>
+        <button id="close-install-guide-btn" style="background: transparent; border: none; color: #94a3b8; font-size: 22px; cursor: pointer;">&times;</button>
+      </div>
+
+      <p style="font-size: 12.5px; color: #cbd5e1; margin-bottom: 14px; line-height: 1.4;">
+        Since the server is running on your local school network (<code style="background:#0f172a;padding:2px 6px;border-radius:4px;color:#38bdf8;">http://...</code>), mobile Chrome disables the automatic popup. Use either method below:
+      </p>
+
+      <!-- Method 1: Add to Home Screen (Instant) -->
+      <div style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+        <div style="font-weight: 700; color: #38bdf8; font-size: 13px; margin-bottom: 6px;">
+          ⚡ Method 1: Add to Home Screen (5 Seconds)
+        </div>
+        <ol style="margin-left: 18px; font-size: 12px; color: #e2e8f0; line-height: 1.6;">
+          <li>In Chrome on your phone, tap the <strong>Three Dots (&vellip;)</strong> in the top-right corner.</li>
+          <li>Tap <strong>&ldquo;Add to Home screen&rdquo;</strong> (or <em>Install app</em>).</li>
+          <li>Tap <strong>Add</strong>. Done! The SPHS Scanner app icon is on your phone.</li>
+        </ol>
+      </div>
+
+      <!-- Method 2: Unlock native install button via Chrome Flag -->
+      <div style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px; margin-bottom: 14px;">
+        <div style="font-weight: 700; color: #f59e0b; font-size: 13px; margin-bottom: 6px;">
+          🔧 Method 2: Enable Chrome's Disabled &ldquo;Install App&rdquo; Button
+        </div>
+        <p style="font-size: 11.5px; color: #94a3b8; margin-bottom: 6px;">
+          If you want Chrome's native Install button enabled for local WiFi:
+        </p>
+        <ol style="margin-left: 18px; font-size: 11.5px; color: #cbd5e1; line-height: 1.5;">
+          <li>In phone Chrome address bar, open: <br><code style="font-size:10.5px;color:#fcd34d;">chrome://flags/#unsafely-treat-insecure-origin-as-secure</code></li>
+          <li>Change dropdown to <strong>Enabled</strong>.</li>
+          <li>In the box below, type: <strong style="color:#38bdf8;" id="install-guide-ip-url">http://192.168.1.65:8000</strong></li>
+          <li>Tap <strong>Relaunch</strong> at the bottom.</li>
+        </ol>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end;">
+        <button id="got-it-install-btn" class="btn-primary" style="padding: 8px 18px; font-size: 13px;">Got It</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Offline Bundled Library -->
+  <script src="/static/js/html5-qrcode.min.js"></script>
+  <script src="/static/js/scanner.js"></script>
+
+  <!-- PWA Service Worker Registration & Install Prompt -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/static/sw.js')
+          .then(reg => console.log('[PWA] Service Worker registered:', reg.scope))
+          .catch(err => console.log('[PWA] Service Worker failed:', err));
+      });
+    }
+
+    // PWA Install Handling & Detection
+    let deferredPrompt = null;
+    const installBtn = document.getElementById('install-app-btn');
+    const installModal = document.getElementById('install-guide-modal');
+    const closeInstallBtn = document.getElementById('close-install-guide-btn');
+    const gotItInstallBtn = document.getElementById('got-it-install-btn');
+
+    // Hide button if already installed as standalone PWA
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+    if (isStandalone && installBtn) {
+      installBtn.style.display = 'none';
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      if (installBtn) {
+        installBtn.classList.add('ready-pwa');
+      }
+    });
+
+    if (installBtn) {
+      installBtn.addEventListener('click', async () => {
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          const { outcome } = await deferredPrompt.userChoice;
+          if (outcome === 'accepted') {
+            installBtn.style.display = 'none';
+          }
+          deferredPrompt = null;
+        } else {
+          // Native prompt is unavailable (e.g. HTTP LAN IP or iOS); show friendly visual guide
+          if (installModal) {
+            const ipEl = document.getElementById('install-guide-ip-url');
+            if (ipEl) ipEl.textContent = window.location.origin;
+            installModal.classList.remove('hidden');
+          }
+        }
+      });
+    }
+
+    if (closeInstallBtn && installModal) {
+      closeInstallBtn.addEventListener('click', () => installModal.classList.add('hidden'));
+    }
+    if (gotItInstallBtn && installModal) {
+      gotItInstallBtn.addEventListener('click', () => installModal.classList.add('hidden'));
+    }
+  </script>
+</body>
+</html>

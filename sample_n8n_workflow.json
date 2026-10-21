@@ -1,0 +1,139 @@
+{
+  "name": "SPHS - Attendance WhatsApp Notification Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "attendance-event",
+        "options": {}
+      },
+      "id": "node-webhook",
+      "name": "Webhook: Attendance Event",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "sphs-attendance-webhook"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond-late-or-absent",
+              "leftValue": "={{ $json.body.data.status }}",
+              "rightValue": "Late",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "cond-absent",
+              "leftValue": "={{ $json.body.data.status }}",
+              "rightValue": "Absent",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        }
+      },
+      "id": "node-filter",
+      "name": "Is Late or Absent?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "msg-assign",
+              "name": "whatsapp_text",
+              "value": "=Assalam-o-Alaikum,\nDear Parent, your child *{{ $json.body.data.student_name }}* (Class: *{{ $json.body.data.class_name }}*, Roll: *{{ $json.body.data.roll_no }}*) has been marked *{{ $json.body.data.status }}* today ({{ $json.body.data.date }} {{ $json.body.data.time }}).\n\nIf you have questions, please contact school administration.\n\n— *Shaheen Public High School Loi Shalman*",
+              "type": "string"
+            },
+            {
+              "id": "phone-assign",
+              "name": "recipient_phone",
+              "value": "={{ $json.body.data.parent_phone }}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "node-format",
+      "name": "Format WhatsApp Message",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [720, 260]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://your-whatsapp-gateway.com/send-message",
+        "options": {},
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "phone",
+              "value": "={{ $json.recipient_phone }}"
+            },
+            {
+              "name": "message",
+              "value": "={{ $json.whatsapp_text }}"
+            }
+          ]
+        }
+      },
+      "id": "node-send-whatsapp",
+      "name": "Send WhatsApp via API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [960, 260]
+    }
+  ],
+  "connections": {
+    "Webhook: Attendance Event": {
+      "main": [
+        [
+          {
+            "node": "Is Late or Absent?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Late or Absent?": {
+      "main": [
+        [
+          {
+            "node": "Format WhatsApp Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format WhatsApp Message": {
+      "main": [
+        [
+          {
+            "node": "Send WhatsApp via API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

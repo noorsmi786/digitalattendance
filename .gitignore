@@ -1,0 +1,23 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Database backups (the active app/data/attendance.db is preserved)
+*.bak
+*.bak_*
+app/data/*.bak*
+
+# Scratch and debug files
+scratch/
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini

@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🖨️ Student ID Cards — Shaheen Public High School</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0;
+        -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #f1f5f9; color: #0f172a; padding-bottom: 25mm;
+    }
+
+    .toolbar {
+      position: sticky; top: 0; z-index: 100;
+      background: #fff; border-bottom: 1px solid #cbd5e1;
+      padding: 12px 20px; display: flex; justify-content: space-between;
+      align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .toolbar-left { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .toolbar-title { font-size: 15px; font-weight: 800; color: #0f172a; }
+    .control-group { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #475569; }
+    .control-group select {
+      padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1;
+      font-size: 13px; font-weight: 600; background: #fff; color: #0f172a; cursor: pointer;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #044332; color: #fff; padding: 8px 16px;
+      border-radius: 6px; text-decoration: none; font-weight: 700;
+      font-size: 13px; cursor: pointer; border: none;
+    }
+    .btn:hover { background: #065f46; }
+    .btn-secondary { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
+    .btn-secondary:hover { background: #e2e8f0; }
+
+    /* Grid: 3 portrait cards per row */
+    .cards-container {
+      display: grid;
+      grid-template-columns: repeat(3, 2.125in);
+      gap: 7mm 7mm;
+      justify-content: center;
+      margin: 8mm auto;
+      max-width: 210mm;
+    }
+
+    /* All cards are CR80 portrait size (54mm x 85.6mm) */
+    .id-card {
+      width: 2.125in;
+      height: 3.375in;
+      background: #fff;
+      position: relative;
+      overflow: hidden;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+        /* DESIGN 1: EMERALD CLASSIC */
+    .card-emerald {
+      border-radius: 4.5mm;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      display: flex; flex-direction: column;
+    }
+    .card-emerald .em-top-header {
+      background: #044332; padding: 2.6mm 3mm 2.2mm 3mm;
+      display: flex; align-items: center; gap: 2.2mm; flex-shrink: 0;
+    }
+    .card-emerald .em-logo-left { width: 13.5mm; height: 10mm; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .card-emerald .em-logo-left img { width: 100%; height: 100%; object-fit: contain; }
+    .card-emerald .em-header-divider { width: 1px; height: 9.5mm; background: rgba(255,255,255,0.45); flex-shrink: 0; }
+    .card-emerald .em-header-titles { flex: 1; line-height: 1.1; }
+    .card-emerald .em-school-name-1, .card-emerald .em-school-name-2 {
+      font-size: 8.5pt; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 0.3px;
+    }
+    .card-emerald .em-school-loc { font-size: 5.2pt; color: rgba(255,255,255,0.85); margin-top: 0.5mm; font-weight: 500; }
+    .card-emerald .em-gold-stripe { height: 1.5mm; background: #d97706; flex-shrink: 0; }
+    .card-emerald .em-card-body { padding: 2.2mm 3mm 1.5mm; display: flex; flex-direction: column; align-items: center; position: relative; flex: 1; }
+    .card-emerald .em-watermark { position: absolute; top: 5mm; right: -8mm; width: 32mm; height: 32mm; opacity: 0.07; pointer-events: none; transform: rotate(-10deg); }
+    .card-emerald .em-watermark img { width: 100%; height: 100%; object-fit: contain; }
+    .card-emerald .em-photo-box { width: 20mm; height: 23mm; border: 1.5px solid #044332; border-radius: 3.5mm; padding: 0.8mm; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.06); position: relative; z-index: 2; }
+    .card-emerald .em-photo-inner { width: 100%; height: 100%; border-radius: 2.5mm; background: #cbd5e1; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    .card-emerald .em-photo-img { width: 100%; height: 100%; object-fit: cover; }
+    .card-emerald .em-avatar svg { width: 13mm; height: 13mm; fill: #64748b; }
+    .card-emerald .em-student-name { font-size: 10pt; font-weight: 800; color: #044332; margin-top: 1.4mm; max-width: 48mm; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; position: relative; z-index: 2; }
+    .card-emerald .em-father-name { font-size: 5.5pt; color: #475569; margin-top: 0.3mm; text-align: center; font-weight: 400; position: relative; z-index: 2; }
+    .card-emerald .em-badges-row { display: flex; gap: 2mm; margin-top: 1.4mm; margin-bottom: 1.6mm; position: relative; z-index: 2; }
+    .card-emerald .em-badge-pill { display: flex; align-items: center; border: 1px solid #044332; border-radius: 1.8mm; overflow: hidden; height: 6.4mm; width: 21mm; background: #fff; }
+    .card-emerald .em-badge-icon { width: 6.2mm; height: 100%; background: #044332; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .card-emerald .em-badge-icon svg { width: 3.2mm; height: 3.2mm; fill: #fff; }
+    .card-emerald .em-badge-content { flex: 1; padding: 0 1.2mm; display: flex; flex-direction: column; justify-content: center; }
+    .card-emerald .em-badge-lbl { font-size: 4.5pt; color: #64748b; font-weight: 600; text-transform: uppercase; }
+    .card-emerald .em-badge-val { font-size: 7.2pt; color: #044332; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .card-emerald .em-qr-frame {
+      width: 25mm; height: 25mm;
+      border: 1.5px solid #044332;
+      border-radius: 2.2mm;
+      padding: 1.2mm;
+      background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; z-index: 2;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .card-emerald .em-qr-frame img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .card-emerald .em-bottom-waves { position: absolute; bottom: 0; left: 0; right: 0; height: 10mm; pointer-events: none; }
+    .card-emerald .em-bottom-waves svg { width: 100%; height: 100%; display: block; }
+
+    /* ========================================================
+       DESIGN 1B: EMERALD SPLIT-BOTTOM (ENLARGED 27mm QR & ENLARGED EAGLE)
+       ======================================================== */
+    .card-emerald-side {
+      border-radius: 4.5mm;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      display: flex; flex-direction: column;
+      background: #fff;
+    }
+    .card-emerald-side .es-top-header {
+      background: #044332; padding: 2mm 2.6mm 1.8mm 2.6mm;
+      display: flex; align-items: center; gap: 2.2mm; flex-shrink: 0;
+    }
+    .card-emerald-side .es-logo-left { width: 16mm; height: 12.5mm; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .card-emerald-side .es-logo-left img { width: 100%; height: 100%; object-fit: contain; }
+    .card-emerald-side .es-header-divider { width: 1px; height: 11mm; background: rgba(255,255,255,0.45); flex-shrink: 0; }
+    .card-emerald-side .es-header-titles { flex: 1; line-height: 1.1; }
+    .card-emerald-side .es-school-name-1, .card-emerald-side .es-school-name-2 {
+      font-size: 8.2pt; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 0.25px;
+    }
+    .card-emerald-side .es-school-loc { font-size: 5pt; color: rgba(255,255,255,0.85); margin-top: 0.4mm; font-weight: 500; }
+    .card-emerald-side .es-gold-stripe { height: 1.4mm; background: #d97706; flex-shrink: 0; }
+    .card-emerald-side .es-card-body { padding: 1.8mm 2.6mm 1.2mm; display: flex; flex-direction: column; align-items: center; position: relative; flex: 1; }
+    .card-emerald-side .es-watermark { position: absolute; top: 2mm; left: 50%; transform: translateX(-50%); width: 44mm; height: 44mm; opacity: 0.14; pointer-events: none; z-index: 1; filter: drop-shadow(0 1px 2px rgba(4,67,50,0.10)); }
+    .card-emerald-side .es-watermark img { width: 100%; height: 100%; object-fit: contain; }
+    .card-emerald-side .es-photo-box { width: 20mm; height: 22.5mm; border: 1.5px solid #044332; border-radius: 3.2mm; padding: 0.8mm; background: #fff; box-shadow: 0 2px 6px rgba(4,67,50,0.14); position: relative; z-index: 2; }
+    .card-emerald-side .es-photo-inner { width: 100%; height: 100%; border-radius: 2.4mm; background: #cbd5e1; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    .card-emerald-side .es-photo-img { width: 100%; height: 100%; object-fit: cover; }
+    .card-emerald-side .es-avatar svg { width: 13mm; height: 13mm; fill: #64748b; }
+    .card-emerald-side .es-student-name { font-size: 9.8pt; font-weight: 800; color: #044332; margin-top: 1.2mm; max-width: 48mm; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; position: relative; z-index: 2; }
+    .card-emerald-side .es-father-name { font-size: 5.3pt; color: #475569; margin-top: 0.2mm; text-align: center; font-weight: 400; position: relative; z-index: 2; }
+    .card-emerald-side .es-split-row {
+      display: flex; gap: 2mm; align-items: center; justify-content: space-between;
+      width: 100%; margin-top: 1.8mm; position: relative; z-index: 2;
+    }
+    .card-emerald-side .es-left-tags {
+      flex: 1; display: flex; flex-direction: column; gap: 1.2mm; justify-content: center;
+    }
+    .card-emerald-side .es-tag-line {
+      display: flex; align-items: center; border: 1px solid #044332;
+      border-radius: 1.6mm; overflow: hidden; height: 7.2mm; background: #fff;
+    }
+    .card-emerald-side .es-tag-lbl {
+      background: #044332; color: #fff; font-size: 4.2pt; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.3px; padding: 0 1.2mm;
+      height: 100%; display: flex; align-items: center; justify-content: center;
+      width: 8mm; flex-shrink: 0;
+    }
+    .card-emerald-side .es-tag-val {
+      flex: 1; padding: 0 1.2mm; font-size: 7.2pt; font-weight: 800;
+      color: #044332; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .card-emerald-side .es-code-line {
+      border-color: #d97706;
+    }
+    .card-emerald-side .es-code-line .es-tag-lbl {
+      background: #d97706; color: #fff;
+    }
+    .card-emerald-side .es-code-line .es-tag-val {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 7pt; color: #92400e; font-weight: 800;
+    }
+    .card-emerald-side .es-qr-box {
+      width: 27mm; height: 27mm;
+      border: 1.5px solid #044332;
+      border-radius: 2mm;
+      padding: 1.2mm;
+      background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      flex-shrink: 0;
+    }
+    .card-emerald-side .es-qr-box img { width: 100%; height: 100%; object-fit: contain; display: block; image-rendering: pixelated; }
+    .card-emerald-side .es-bottom-waves { position: absolute; bottom: 0; left: 0; right: 0; height: 7mm; pointer-events: none; }
+    .card-emerald-side .es-bottom-waves svg { width: 100%; height: 100%; display: block; }
+
+    /* ========================================================
+       DESIGN 2 (FIXED): MODERN VERTICAL SPLIT PANEL
+       With ENLARGED 24mm QR Code, ample quiet zone & fast scanning
+       ======================================================== */
+    .card-split {
+      border-radius: 4.5mm;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: row;
+      background: #fff;
+    }
+    .card-split .sp-sidebar {
+      width: 8.5mm;
+      background: #1e3a8a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2.2mm 0;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .card-split .sp-sidebar-logo {
+      width: 6.5mm;
+      height: 6.5mm;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card-split .sp-sidebar-logo img { width: 100%; height: 100%; object-fit: contain; }
+    .card-split .sp-sidebar-text {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      font-size: 4.8pt;
+      font-weight: 600;
+      color: rgba(255,255,255,0.72);
+      letter-spacing: 1.1px;
+      text-transform: uppercase;
+      text-align: center;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      padding: 2mm 0;
+    }
+    .card-split .sp-sidebar-badge {
+      width: 6.8mm;
+      background: #d97706;
+      color: #fff;
+      font-size: 4.2pt;
+      font-weight: 700;
+      text-align: center;
+      padding: 1mm 0;
+      border-radius: 1mm;
+      letter-spacing: 0.2px;
+      line-height: 1.1;
+    }
+    .card-split .sp-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 2.4mm 2.8mm 3mm 2.8mm;
+      overflow: hidden;
+      position: relative;
+    }
+    .card-split .sp-header {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 1.2mm;
+    }
+    .card-split .sp-school-name-1,
+    .card-split .sp-school-name-2 {
+      font-size: 9.2pt;
+      font-weight: 900;
+      color: #1e3a8a;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      line-height: 1.12;
+    }
+    .card-split .sp-school-loc {
+      font-size: 5pt;
+      font-weight: 700;
+      color: #b45309;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-top: 0.4mm;
+    }
+    .card-split .sp-header-divider {
+      width: 26mm;
+      height: 1.2px;
+      background: #d97706;
+      margin-top: 1mm;
+    }
+    .card-split .sp-photo-box {
+      width: 20mm;
+      height: 23mm;
+      border: 1.5px solid #1e3a8a;
+      border-radius: 3.5mm;
+      padding: 0.8mm;
+      background: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card-split .sp-photo-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 2.5mm;
+      background: #cbd5e1;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card-split .sp-photo-inner img,
+    .card-split .sp-photo-box img { width: 100%; height: 100%; object-fit: cover; }
+    .card-split .sp-avatar svg { width: 13mm; height: 13mm; fill: #64748b; }
+    .card-split .sp-name {
+      font-size: 9.8pt;
+      font-weight: 800;
+      color: #0f172a;
+      margin-top: 1.4mm;
+      line-height: 1.15;
+      max-width: 39mm;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .card-split .sp-father {
+      font-size: 5pt;
+      color: #94a3b8;
+      font-weight: 400;
+      margin-top: 0.2mm;
+      line-height: 1;
+    }
+    .card-split .sp-info-row {
+      width: 100%;
+      max-width: 38mm;
+      display: flex;
+      align-items: center;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 1.8mm;
+      padding: 0.8mm 0;
+      margin-top: 1.6mm;
+    }
+    .card-split .sp-info-cell {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .card-split .sp-info-lbl {
+      font-size: 4pt;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .card-split .sp-info-val {
+      font-size: 7.2pt;
+      font-weight: 800;
+      color: #1e3a8a;
+      line-height: 1.1;
+      margin-top: 0.2mm;
+    }
+    .card-split .sp-info-divider {
+      width: 1px;
+      height: 5mm;
+      background: #e2e8f0;
+    }
+    /* ENLARGED 24mm QR CODE WITH CLEAN WHITE QUIET ZONE */
+    .card-split .sp-qr-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 1.8mm;
+    }
+    .card-split .sp-scan-label {
+      font-size: 4.2pt;
+      font-weight: 700;
+      color: #64748b;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      margin-bottom: 1mm;
+    }
+    .card-split .sp-qr-box {
+      width: 24mm;
+      height: 24mm;
+      aspect-ratio: 1 / 1;
+      border: 1.2px solid #1e3a8a;
+      border-radius: 2mm;
+      padding: 1.2mm;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1px 4px rgba(30,58,138,0.10);
+      flex-shrink: 0;
+    }
+    .card-split .sp-qr-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      image-rendering: pixelated;
+      display: block;
+    }
+    .card-split .sp-bottom-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .card-split .sp-bar-gold { height: 0.7mm; background: #d97706; }
+    .card-split .sp-bar-navy { height: 1.8mm; background: #1e3a8a; }
+
+    /* DESIGN 2B: VERTICAL SPLIT MAX (ENLARGED 27mm QR & PROMINENT EAGLE) */
+    .card-split-2b {
+      border-radius: 4.5mm;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      display: flex;
+      flex-direction: row;
+      background: #fff;
+    }
+    .card-split-2b .sp-sidebar {
+      width: 9.5mm;
+      background: #1e3a8a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2.2mm 0;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .card-split-2b .sp-sidebar-logo {
+      width: 8mm;
+      height: 8mm;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.12);
+      border-radius: 1.5mm;
+      padding: 0.5mm;
+    }
+    .card-split-2b .sp-sidebar-logo img { width: 100%; height: 100%; object-fit: contain; }
+    .card-split-2b .sp-sidebar-text {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      font-size: 4.8pt;
+      font-weight: 600;
+      color: rgba(255,255,255,0.78);
+      letter-spacing: 1.1px;
+      text-transform: uppercase;
+      text-align: center;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      padding: 2mm 0;
+    }
+    .card-split-2b .sp-sidebar-badge {
+      width: 7.2mm;
+      background: #d97706;
+      color: #fff;
+      font-size: 4.2pt;
+      font-weight: 700;
+      text-align: center;
+      padding: 1mm 0;
+      border-radius: 1mm;
+      letter-spacing: 0.2px;
+      line-height: 1.1;
+    }
+    .card-split-2b .sp-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 1.8mm 2.2mm 2.2mm 2.2mm;
+      overflow: hidden;
+      position: relative;
+    }
+    .card-split-2b .sp-watermark {
+      position: absolute;
+      top: 11.5mm;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 41mm;
+      height: 41mm;
+      opacity: 0.15;
+      pointer-events: none;
+      z-index: 1;
+      filter: drop-shadow(0 1px 2px rgba(30,58,138,0.10));
+    }
+    .card-split-2b .sp-watermark img { width: 100%; height: 100%; object-fit: contain; }
+    .card-split-2b .sp-header {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 1mm;
+      position: relative;
+      z-index: 2;
+    }
+    .card-split-2b .sp-school-name-1,
+    .card-split-2b .sp-school-name-2 {
+      font-size: 9pt;
+      font-weight: 900;
+      color: #1e3a8a;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      line-height: 1.1;
+    }
+    .card-split-2b .sp-school-loc {
+      font-size: 4.8pt;
+      font-weight: 700;
+      color: #b45309;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-top: 0.3mm;
+    }
+    .card-split-2b .sp-header-divider {
+      width: 24mm;
+      height: 1.2px;
+      background: #d97706;
+      margin-top: 0.8mm;
+    }
+    .card-split-2b .sp-photo-box {
+      width: 19mm;
+      height: 22mm;
+      border: 1.5px solid #1e3a8a;
+      border-radius: 3.2mm;
+      padding: 0.8mm;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(30,58,138,0.14);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 2;
+    }
+    .card-split-2b .sp-photo-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 2.4mm;
+      background: #cbd5e1;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card-split-2b .sp-photo-inner img,
+    .card-split-2b .sp-photo-box img { width: 100%; height: 100%; object-fit: cover; }
+    .card-split-2b .sp-avatar svg { width: 12mm; height: 12mm; fill: #64748b; }
+    .card-split-2b .sp-name {
+      font-size: 9.6pt;
+      font-weight: 800;
+      color: #0f172a;
+      margin-top: 1.1mm;
+      line-height: 1.1;
+      max-width: 39mm;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      position: relative;
+      z-index: 2;
+    }
+    .card-split-2b .sp-father {
+      font-size: 5pt;
+      color: #64748b;
+      font-weight: 400;
+      margin-top: 0.2mm;
+      line-height: 1;
+      position: relative;
+      z-index: 2;
+    }
+    .card-split-2b .sp-info-row {
+      width: 100%;
+      max-width: 38mm;
+      display: flex;
+      align-items: center;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 1.6mm;
+      padding: 0.6mm 0;
+      margin-top: 1.1mm;
+      position: relative;
+      z-index: 2;
+    }
+    .card-split-2b .sp-info-cell {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .card-split-2b .sp-info-lbl {
+      font-size: 3.8pt;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .card-split-2b .sp-info-val {
+      font-size: 7pt;
+      font-weight: 800;
+      color: #1e3a8a;
+      line-height: 1.1;
+      margin-top: 0.1mm;
+    }
+    .card-split-2b .sp-info-divider {
+      width: 1px;
+      height: 4.8mm;
+      background: #e2e8f0;
+    }
+    .card-split-2b .sp-qr-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 1.2mm;
+      position: relative;
+      z-index: 2;
+    }
+    .card-split-2b .sp-scan-label {
+      font-size: 4pt;
+      font-weight: 700;
+      color: #64748b;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      margin-bottom: 0.6mm;
+    }
+    .card-split-2b .sp-qr-box {
+      width: 27mm;
+      height: 27mm;
+      aspect-ratio: 1 / 1;
+      border: 1.3px solid #1e3a8a;
+      border-radius: 2mm;
+      padding: 1.2mm;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1px 4px rgba(30,58,138,0.10);
+      flex-shrink: 0;
+    }
+    .card-split-2b .sp-qr-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      image-rendering: pixelated;
+      display: block;
+    }
+    .card-split-2b .sp-bottom-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .card-split-2b .sp-bar-gold { height: 0.7mm; background: #d97706; }
+    .card-split-2b .sp-bar-navy { height: 1.8mm; background: #1e3a8a; }
+
+
+    /* ========================================================
+       DESIGN 3: ROYAL MINIMALIST (Ivory & Gold Crest)
+       ======================================================== */
+    .card-royal {
+      border-radius: 4.5mm;
+      border: 1.5px solid #044332;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      background: #fafaf9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1.8mm 2.5mm 1.4mm;
+      position: relative;
+    }
+    .card-royal::before {
+      content: "";
+      position: absolute;
+      top: 1mm; left: 1mm; right: 1mm; bottom: 1mm;
+      border: 0.8px solid #d97706;
+      border-radius: 3.8mm;
+      pointer-events: none;
+    }
+    .card-royal .ry-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-bottom: 0.8mm;
+      width: 100%;
+      flex-shrink: 0;
+    }
+    .card-royal .ry-logo {
+      width: 9mm; height: 9mm;
+      margin-bottom: 0.3mm;
+      flex-shrink: 0;
+    }
+    .card-royal .ry-logo img { width: 100%; height: 100%; object-fit: contain; }
+    .card-royal .ry-title-1,
+    .card-royal .ry-title-2 {
+      font-size: 8.5pt;
+      font-weight: 900;
+      color: #044332;
+      text-transform: uppercase;
+      letter-spacing: 0.35px;
+      line-height: 1.08;
+    }
+    .card-royal .ry-sub {
+      font-size: 4.6pt;
+      font-weight: 700;
+      color: #b45309;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+      margin-top: 0.2mm;
+    }
+    .card-royal .ry-divider {
+      width: 22mm;
+      height: 1px;
+      background: #d97706;
+      margin-top: 0.5mm;
+    }
+    .card-royal .ry-photo-box {
+      width: 19mm; height: 21.5mm; border-radius: 3.2mm;
+      border: 1.5px solid #044332; background: #fff;
+      padding: 0.6mm;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      flex-shrink: 0;
+      position: relative; z-index: 2;
+    }
+    .card-royal .ry-photo-inner {
+      width: 100%; height: 100%; border-radius: 2.5mm;
+      background: #cbd5e1; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .card-royal .ry-photo-inner img,
+    .card-royal .ry-photo-box img { width: 100%; height: 100%; object-fit: cover; }
+    .card-royal .ry-avatar svg,
+    .card-royal .ry-photo-box svg { width: 12mm; height: 12mm; fill: #64748b; }
+    .card-royal .ry-name {
+      font-size: 9.6pt; font-weight: 800; color: #044332;
+      text-align: center; margin-top: 1.2mm; max-width: 48mm;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.15;
+      flex-shrink: 0; display: block; position: relative; z-index: 2;
+    }
+    .card-royal .ry-father {
+      font-size: 5.2pt; color: #475569; font-weight: 400;
+      text-align: center; margin-top: 0.2mm; line-height: 1;
+      flex-shrink: 0; position: relative; z-index: 2;
+    }
+    .card-royal .ry-tags {
+      display: flex; gap: 2mm; margin-top: 1mm; width: 100%; justify-content: center;
+      flex-shrink: 0; position: relative; z-index: 2;
+    }
+    .card-royal .ry-tag {
+      background: #f1f5f9; border: 1px solid #cbd5e1;
+      border-radius: 1.5mm; padding: 0.5mm 2.2mm; text-align: center;
+      display: flex; gap: 1.2mm; align-items: center;
+    }
+    .card-royal .ry-tag-lbl { font-size: 4.2pt; color: #64748b; font-weight: 600; text-transform: uppercase; }
+    .card-royal .ry-tag-val { font-size: 7pt; font-weight: 800; color: #044332; }
+    .card-royal .ry-qr {
+      width: 18.5mm; height: 18.5mm; border: 1px solid #d97706;
+      border-radius: 2mm; padding: 0.6mm; background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 1mm; flex-shrink: 0; position: relative; z-index: 2;
+    }
+    .card-royal .ry-qr img { width: 100%; height: 100%; object-fit: contain; }
+    .card-royal .ry-footer {
+      font-size: 4pt; color: #64748b; font-weight: 600;
+      letter-spacing: 0.6px; text-transform: uppercase; margin-top: 0.8mm;
+      flex-shrink: 0; position: relative; z-index: 2;
+    }
+
+    /* ========================================================
+       DESIGN 5: EXECUTIVE DAILY SCANNER (27mm QR)
+       ======================================================== */
+    .card-exec {
+      border-radius: 4.5mm;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+    }
+    .card-exec .ex-header {
+      background: #0f172a;
+      padding: 2.4mm 3mm 2.2mm 3mm;
+      display: flex;
+      align-items: center;
+      gap: 2.2mm;
+      flex-shrink: 0;
+    }
+    .card-exec .ex-logo {
+      width: 13.5mm; height: 10.5mm;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .card-exec .ex-logo img { width: 100%; height: 100%; object-fit: contain; }
+    .card-exec .ex-header-divider {
+      width: 1px;
+      height: 9.5mm;
+      background: rgba(255,255,255,0.35);
+      flex-shrink: 0;
+    }
+    .card-exec .ex-header-titles { flex: 1; line-height: 1.1; }
+    .card-exec .ex-school-name-1,
+    .card-exec .ex-school-name-2 {
+      font-size: 8.8pt;
+      font-weight: 900;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 0.35px;
+    }
+    .card-exec .ex-school-loc {
+      font-size: 5.2pt;
+      color: #f59e0b;
+      font-weight: 600;
+      margin-top: 0.4mm;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .card-exec .ex-gold-bar { height: 1.2mm; background: #d97706; flex-shrink: 0; }
+    .card-exec .ex-body {
+      padding: 2.2mm 2.8mm 2mm;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+    }
+    .card-exec .ex-mid-row {
+      display: flex;
+      gap: 2.5mm;
+      align-items: center;
+      width: 100%;
+      margin-bottom: 2mm;
+    }
+    .card-exec .ex-photo-box {
+      width: 18.5mm; height: 22.5mm;
+      border: 1.2px solid #0f172a;
+      border-radius: 2mm;
+      background: #e2e8f0;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .card-exec .ex-photo-box img { width: 100%; height: 100%; object-fit: cover; }
+    .card-exec .ex-photo-box svg { width: 11mm; height: 11mm; fill: #94a3b8; }
+    .card-exec .ex-details {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .card-exec .ex-name {
+      font-size: 8.8pt; font-weight: 800; color: #0f172a;
+      line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      text-transform: uppercase;
+    }
+    .card-exec .ex-father {
+      font-size: 5pt; color: #64748b; font-weight: 400;
+      margin-top: 0.3mm; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .card-exec .ex-badge-grid {
+      display: flex; flex-direction: column; gap: 0.9mm; margin-top: 1.4mm;
+    }
+    .card-exec .ex-badge-line {
+      display: flex; justify-content: space-between; align-items: center;
+      background: #f8fafc; border: 1px solid #e2e8f0;
+      border-radius: 1.2mm; padding: 0.4mm 1.5mm;
+    }
+    .card-exec .ex-badge-line .lbl {
+      font-size: 4.2pt; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px;
+    }
+    .card-exec .ex-badge-line .val {
+      font-size: 6.8pt; color: #0f172a; font-weight: 800;
+    }
+    .card-exec .ex-code-line {
+      background: #eef2ff; border-color: #c7d2fe;
+    }
+    .card-exec .ex-code-line .lbl { color: #4338ca; }
+    .card-exec .ex-code-line .val {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 7.2pt; color: #1e1b4b; font-weight: 900; letter-spacing: 0.3px;
+    }
+    .card-exec .ex-scan-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+    .card-exec .ex-scan-title {
+      font-size: 4.6pt;
+      font-weight: 700;
+      color: #475569;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 1.4mm;
+      display: flex;
+      align-items: center;
+      gap: 1.2mm;
+    }
+    .card-exec .ex-scan-title::before,
+    .card-exec .ex-scan-title::after {
+      content: "";
+      width: 5mm; height: 1px;
+      background: #cbd5e1;
+    }
+    .card-exec .ex-qr-box {
+      width: 27mm;
+      height: 27mm;
+      aspect-ratio: 1 / 1;
+      border: 1px solid #cbd5e1;
+      border-radius: 1.5mm;
+      padding: 1.8mm;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      flex-shrink: 0;
+    }
+    .card-exec .ex-qr-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      image-rendering: pixelated;
+      display: block;
+    }
+    .card-exec .ex-footer {
+      background: #0f172a;
+      padding: 1.8mm 2mm;
+      text-align: center;
+      flex-shrink: 0;
+      height: 6.2mm;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card-exec .ex-footer-text {
+      font-size: 4.6pt;
+      color: rgba(255,255,255,0.88);
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    /* ========================================================
+       ECO / INK-SAVER MODE
+       ======================================================== */
+    .eco-mode .id-card {
+      background: #fff !important;
+      border: 1.5px solid #000 !important;
+      box-shadow: none !important;
+    }
+    .eco-mode .em-top-header,
+    .eco-mode .es-top-header,
+    .eco-mode .sp-sidebar,
+    .eco-mode .ex-header,
+    .eco-mode .ex-footer {
+      background: #fff !important;
+    }
+    .eco-mode .sp-sidebar { border-right: 1px solid #000 !important; }
+    .eco-mode .sp-sidebar-text { color: #000 !important; }
+    .eco-mode .sp-sidebar-badge { background: #000 !important; color: #fff !important; }
+    .eco-mode .sp-bar-gold, .eco-mode .sp-bar-navy { background: #000 !important; }
+    .eco-mode .em-school-name-1, .eco-mode .em-school-name-2,
+    .eco-mode .es-school-name-1, .eco-mode .es-school-name-2,
+    .eco-mode .sp-school-name-1, .eco-mode .sp-school-name-2,
+    .eco-mode .ry-title-1, .eco-mode .ry-title-2,
+    .eco-mode .ex-school-name-1, .eco-mode .ex-school-name-2,
+    .eco-mode .ex-footer-text { color: #000 !important; }
+    .eco-mode .em-gold-stripe, .eco-mode .es-gold-stripe, .eco-mode .ex-gold-bar { background: #000 !important; }
+    .eco-mode .sp-header-divider, .eco-mode .ry-divider, .eco-mode .ex-header-divider { background: #000 !important; }
+    .eco-mode .em-bottom-waves, .eco-mode .es-bottom-waves { display: none !important; }
+    .eco-mode .sp-photo-box, .eco-mode .em-photo-box, .eco-mode .ry-photo-box { border-color: #000 !important; }
+    .eco-mode .ex-qr-box, .eco-mode .es-qr-box, .eco-mode .em-qr-frame, .eco-mode .sp-qr-box, .eco-mode .ry-qr { border-color: #000 !important; }
+    .eco-mode .es-tag-line { border-color: #000 !important; }
+    .eco-mode .es-tag-lbl { background: #000 !important; color: #fff !important; }
+
+    /* Print */
+    @media print {
+      body { background: #fff; padding: 0; }
+      .toolbar { display: none !important; }
+      .cards-container {
+        grid-template-columns: repeat(3, 54mm) !important;
+        gap: 5mm 6mm !important;
+        margin: 4mm auto !important;
+        width: 180mm !important;
+      }
+      .id-card { box-shadow: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <div class="toolbar-title">🖨️ ID Card Studio &mdash; {{ students|length }} Cards Ready</div>
+      <div class="control-group">
+        <label for="design-select">Card Template:</label>
+        <select id="design-select">
+          <option value="emerald">1 — Emerald Classic (Option 1: 25mm Centered QR)</option>
+          <option value="emerald-side">1B — Emerald Split (Large 27mm QR + Large Eagle)</option>
+          <option value="split">2 — Vertical Split Panel (Original: 24mm QR)</option>
+          <option value="split-2b" selected>2B — Vertical Split Max (Enlarged 27mm QR + Eagle Watermark)</option>
+          <option value="royal">3 — Royal Minimalist (Ivory &amp; Gold Crest)</option>
+          <option value="exec">5 — Executive Daily Scanner (Large 27mm QR + Fast Scan)</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label style="cursor:pointer;display:flex;align-items:center;gap:4px;">
+          <input type="checkbox" id="eco-checkbox">
+          <span>Ink-Saver Mode</span>
+        </label>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <a href="/print/comparison" class="btn" style="background:#044332;color:#fff;">📄 All 5 on 1 A4 (Test Sheet)</a>
+      <a href="/admin" class="btn btn-secondary">&#8592; Back to Dashboard</a>
+      <button onclick="window.print()" class="btn">🖨️ Print Now</button>
+    </div>
+  </div>
+
+  <div id="cards-container" class="cards-container">
+    {% for s in students %}
+    <div class="card-wrapper" data-student-code="{{ s.student_code }}">
+
+      <!-- ==== OPTION 1: DESIGN 1 (EMERALD CLASSIC - 25mm Centered QR) ==== -->
+      <div class="id-card card-emerald design-view design-emerald" style="display:none;">
+        <div class="em-top-header">
+          <div class="em-logo-left"><img src="/static/img/shaheen_logo_trans.png" alt="Logo"></div>
+          <div class="em-header-divider"></div>
+          <div class="em-header-titles">
+            <div class="em-school-name-1">SHAHEEN PUBLIC</div>
+            <div class="em-school-name-2">HIGH SCHOOL</div>
+            <div class="em-school-loc">Loi Shalman &bull; Khyber</div>
+          </div>
+        </div>
+        <div class="em-gold-stripe"></div>
+        <div class="em-card-body">
+          <div class="em-watermark"><img src="/static/img/shaheen_logo_trans.png" alt=""></div>
+          <div class="em-photo-box">
+            <div class="em-photo-inner">
+              {% if s.photo_url %}<img src="{{ s.photo_url }}" class="em-photo-img" alt="">
+              {% else %}<div class="em-avatar"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>{% endif %}
+            </div>
+          </div>
+          <div class="em-student-name">{{ s.full_name }}</div>
+          <div class="em-father-name">S/D of {{ s.father_name or 'Guardian' }}</div>
+          <div class="em-badges-row">
+            <div class="em-badge-pill">
+              <div class="em-badge-icon"><svg viewBox="0 0 24 24"><path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/></svg></div>
+              <div class="em-badge-content"><span class="em-badge-lbl">Class</span><span class="em-badge-val">{{ s.class_name }}</span></div>
+            </div>
+            <div class="em-badge-pill">
+              <div class="em-badge-icon"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+              <div class="em-badge-content"><span class="em-badge-lbl">Roll No.</span><span class="em-badge-val">{{ s.roll_no }}</span></div>
+            </div>
+          </div>
+          <div class="em-qr-frame"><img src="{{ s.qr_image }}" alt="QR"></div>
+        </div>
+        <div class="em-bottom-waves">
+          <svg viewBox="0 0 100 28" preserveAspectRatio="none">
+            <path d="M0,12 C25,24 45,26 60,26 C78,26 90,18 100,14 L100,28 L0,28 Z" fill="#044332"/>
+            <path d="M0,20 C25,26 48,28 65,27 C82,26 92,22 100,19 L100,28 L0,28 Z" fill="#022a1f" opacity="0.6"/>
+            <path d="M0,10 C25,22 45,24.5 60,24.5 C78,24.5 90,16.5 100,12.5 L100,14 C90,18 78,26 60,26 C45,26 25,24 0,12 Z" fill="#d97706"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- ==== OPTION 2: DESIGN 1B (EMERALD SPLIT-BOTTOM) ==== -->
+      <div class="id-card card-emerald-side design-view design-emerald-side" style="display:none;">
+        <div class="es-top-header">
+          <div class="es-logo-left"><img src="/static/img/shaheen_logo_trans.png" alt="Logo"></div>
+          <div class="es-header-divider"></div>
+          <div class="es-header-titles">
+            <div class="es-school-name-1">SHAHEEN PUBLIC</div>
+            <div class="es-school-name-2">HIGH SCHOOL</div>
+            <div class="es-school-loc">Loi Shalman &bull; Khyber</div>
+          </div>
+        </div>
+        <div class="es-gold-stripe"></div>
+        <div class="es-card-body">
+          <div class="es-watermark"><img src="/static/img/shaheen_logo_trans.png" alt=""></div>
+          <div class="es-photo-box">
+            <div class="es-photo-inner">
+              {% if s.photo_url %}<img src="{{ s.photo_url }}" class="es-photo-img" alt="">
+              {% else %}<div class="es-avatar"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>{% endif %}
+            </div>
+          </div>
+          <div class="es-student-name">{{ s.full_name }}</div>
+          <div class="es-father-name">S/D of {{ s.father_name or 'Guardian' }}</div>
+          <div class="es-split-row">
+            <div class="es-left-tags">
+              <div class="es-tag-line">
+                <span class="es-tag-lbl">Class</span>
+                <span class="es-tag-val">{{ s.class_name }}</span>
+              </div>
+              <div class="es-tag-line">
+                <span class="es-tag-lbl">Roll</span>
+                <span class="es-tag-val">{{ s.roll_no }}</span>
+              </div>
+              <div class="es-tag-line es-code-line">
+                <span class="es-tag-lbl">Code</span>
+                <span class="es-tag-val">{{ s.student_code }}</span>
+              </div>
+            </div>
+            <div class="es-qr-box">
+              <img src="{{ s.qr_image }}" alt="QR">
+            </div>
+          </div>
+        </div>
+        <div class="es-bottom-waves">
+          <svg viewBox="0 0 100 28" preserveAspectRatio="none">
+            <path d="M0,12 C25,24 45,26 60,26 C78,26 90,18 100,14 L100,28 L0,28 Z" fill="#044332"/>
+            <path d="M0,20 C25,26 48,28 65,27 C82,26 92,22 100,19 L100,28 L0,28 Z" fill="#022a1f" opacity="0.6"/>
+            <path d="M0,10 C25,22 45,24.5 60,24.5 C78,24.5 90,16.5 100,12.5 L100,14 C90,18 78,26 60,26 C45,26 25,24 0,12 Z" fill="#d97706"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- ==== DESIGN 2 (FIXED): VERTICAL SPLIT PANEL ==== -->
+      <div class="id-card card-split design-view design-split">
+        <div class="sp-sidebar">
+          <div class="sp-sidebar-logo">
+            <img src="/static/img/shaheen_logo_trans.png" alt="Logo">
+          </div>
+          <div class="sp-sidebar-text">Shaheen Public High School</div>
+          <div class="sp-sidebar-badge">26-27</div>
+        </div>
+        <div class="sp-main">
+          <div class="sp-header">
+            <div class="sp-school-name-1">SHAHEEN PUBLIC</div>
+            <div class="sp-school-name-2">HIGH SCHOOL</div>
+            <div class="sp-school-loc">Loi Shalman &bull; Khyber</div>
+            <div class="sp-header-divider"></div>
+          </div>
+          <div class="sp-photo-box">
+            <div class="sp-photo-inner">
+              {% if s.photo_url %}<img src="{{ s.photo_url }}" alt="{{ s.full_name }}">
+              {% else %}<div class="sp-avatar"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>{% endif %}
+            </div>
+          </div>
+          <div class="sp-name">{{ s.full_name }}</div>
+          <div class="sp-father">S/D of {{ s.father_name or 'Guardian' }}</div>
+          <div class="sp-info-row">
+            <div class="sp-info-cell">
+              <span class="sp-info-lbl">Class</span>
+              <span class="sp-info-val">{{ s.class_name }}</span>
+            </div>
+            <div class="sp-info-divider"></div>
+            <div class="sp-info-cell">
+              <span class="sp-info-lbl">Roll No</span>
+              <span class="sp-info-val">{{ s.roll_no }}</span>
+            </div>
+          </div>
+          <!-- ENLARGED 24mm QR CODE WITH CLEAN WHITE QUIET ZONE -->
+          <div class="sp-qr-section">
+            <div class="sp-scan-label">Scan to Verify</div>
+            <div class="sp-qr-box">
+              <img src="{{ s.qr_image }}" alt="QR">
+            </div>
+          </div>
+          <div class="sp-bottom-bar">
+            <div class="sp-bar-gold"></div>
+            <div class="sp-bar-navy"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==== OPTION 2B: DESIGN 2B (VERTICAL SPLIT MAX - 27mm QR + Large Eagle) ==== -->
+      <div class="id-card card-split-2b design-view design-split-2b" style="display:none;">
+        <div class="sp-sidebar">
+          <div class="sp-sidebar-logo">
+            <img src="/static/img/shaheen_logo_trans.png" alt="Logo">
+          </div>
+          <div class="sp-sidebar-text">Shaheen Public High School</div>
+          <div class="sp-sidebar-badge">26-27</div>
+        </div>
+        <div class="sp-main">
+          <div class="sp-watermark">
+            <img src="/static/img/shaheen_logo_trans.png" alt="">
+          </div>
+          <div class="sp-header">
+            <div class="sp-school-name-1">SHAHEEN PUBLIC</div>
+            <div class="sp-school-name-2">HIGH SCHOOL</div>
+            <div class="sp-school-loc">Loi Shalman &bull; Khyber</div>
+            <div class="sp-header-divider"></div>
+          </div>
+          <div class="sp-photo-box">
+            <div class="sp-photo-inner">
+              {% if s.photo_url %}<img src="{{ s.photo_url }}" alt="{{ s.full_name }}">
+              {% else %}<div class="sp-avatar"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>{% endif %}
+            </div>
+          </div>
+          <div class="sp-name">{{ s.full_name }}</div>
+          <div class="sp-father">S/D of {{ s.father_name or 'Guardian' }}</div>
+          <div class="sp-info-row">
+            <div class="sp-info-cell">
+              <span class="sp-info-lbl">Class</span>
+              <span class="sp-info-val">{{ s.class_name }}</span>
+            </div>
+            <div class="sp-info-divider"></div>
+            <div class="sp-info-cell">
+              <span class="sp-info-lbl">Roll No</span>
+              <span class="sp-info-val">{{ s.roll_no }}</span>
+            </div>
+          </div>
+          <div class="sp-qr-section">
+            <div class="sp-scan-label">Daily Attendance Scan</div>
+            <div class="sp-qr-box">
+              <img src="{{ s.qr_image }}" alt="QR">
+            </div>
+          </div>
+          <div class="sp-bottom-bar">
+            <div class="sp-bar-gold"></div>
+            <div class="sp-bar-navy"></div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ==== DESIGN 3: ROYAL MINIMALIST ==== -->
+      <div class="id-card card-royal design-view design-royal" style="display:none;">
+        <div class="ry-header">
+          <div class="ry-logo"><img src="/static/img/shaheen_logo_trans.png" alt="Logo"></div>
+          <div class="ry-title-1">SHAHEEN PUBLIC</div>
+          <div class="ry-title-2">HIGH SCHOOL</div>
+          <div class="ry-sub">Loi Shalman &bull; Khyber</div>
+          <div class="ry-divider"></div>
+        </div>
+        <div class="ry-photo-box">
+          <div class="ry-photo-inner">
+            {% if s.photo_url %}<img src="{{ s.photo_url }}" alt="{{ s.full_name }}">
+            {% else %}<div class="ry-avatar"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>{% endif %}
+          </div>
+        </div>
+        <div class="ry-name">{{ s.full_name }}</div>
+        <div class="ry-father">S/D of {{ s.father_name or 'Guardian' }}</div>
+        <div class="ry-tags">
+          <div class="ry-tag"><span class="ry-tag-lbl">Class:</span><span class="ry-tag-val">{{ s.class_name }}</span></div>
+          <div class="ry-tag"><span class="ry-tag-lbl">Roll:</span><span class="ry-tag-val">{{ s.roll_no }}</span></div>
+        </div>
+        <div class="ry-qr"><img src="{{ s.qr_image }}" alt="QR"></div>
+        <div class="ry-footer">Student Identity Card &bull; 2026-27</div>
+      </div>
+
+      <!-- ==== DESIGN 5: EXECUTIVE DAILY SCANNER ==== -->
+      <div class="id-card card-exec design-view design-exec" style="display:none;">
+        <div class="ex-header">
+          <div class="ex-logo"><img src="/static/img/shaheen_logo_trans.png" alt="Logo"></div>
+          <div class="ex-header-divider"></div>
+          <div class="ex-header-titles">
+            <div class="ex-school-name-1">SHAHEEN PUBLIC</div>
+            <div class="ex-school-name-2">HIGH SCHOOL</div>
+            <div class="ex-school-loc">Loi Shalman &bull; Khyber</div>
+          </div>
+        </div>
+        <div class="ex-gold-bar"></div>
+        <div class="ex-body">
+          <div class="ex-mid-row">
+            <div class="ex-photo-box">
+              {% if s.photo_url %}<img src="{{ s.photo_url }}" alt="{{ s.full_name }}">
+              {% else %}<svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>{% endif %}
+            </div>
+            <div class="ex-details">
+              <div class="ex-name">{{ s.full_name }}</div>
+              <div class="ex-father">S/D of {{ s.father_name or 'Guardian' }}</div>
+              <div class="ex-badge-grid">
+                <div class="ex-badge-line"><span class="lbl">Class</span><span class="val">{{ s.class_name }}</span></div>
+                <div class="ex-badge-line"><span class="lbl">Roll No</span><span class="val">{{ s.roll_no }}</span></div>
+                <div class="ex-badge-line ex-code-line"><span class="lbl">Code</span><span class="val">{{ s.student_code }}</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="ex-scan-area">
+            <div class="ex-scan-title">Scan For Daily Attendance</div>
+            <div class="ex-qr-box">
+              <img src="{{ s.qr_image }}" alt="QR Code">
+            </div>
+          </div>
+        </div>
+        <div class="ex-footer">
+          <div class="ex-footer-text">Session 2026&ndash;27 &bull; Student ID</div>
+        </div>
+      </div>
+
+    </div>
+    {% endfor %}
+  </div>
+
+  <script>
+    const designSelect = document.getElementById('design-select');
+    const ecoCheckbox = document.getElementById('eco-checkbox');
+
+    function updateDesign() {
+      const selected = designSelect.value;
+      document.querySelectorAll('.design-view').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.design-' + selected).forEach(el => el.style.display = 'flex');
+      localStorage.setItem('sphs_card_design', selected);
+    }
+
+    designSelect.addEventListener('change', updateDesign);
+    ecoCheckbox.addEventListener('change', () => {
+      document.body.classList.toggle('eco-mode', ecoCheckbox.checked);
+    });
+
+    const saved = localStorage.getItem('sphs_card_design') || 'split';
+    if (['emerald','emerald-side','split','split-2b','royal','exec'].includes(saved)) {
+      designSelect.value = saved;
+    }
+    updateDesign();
+  </script>
+</body>
+</html>

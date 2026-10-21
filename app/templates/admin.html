@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | {{ settings.school_name }}</title>
+  <link rel="stylesheet" href="/static/css/admin.css">
+</head>
+<body>
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <div class="nav-brand">
+      <div class="brand-badge">SPHS</div>
+      <div>
+        <div class="brand-title">{{ settings.school_name }}</div>
+        <div class="brand-subtitle">{{ settings.school_address }} • Principal Portal</div>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <a href="/photo-booth" target="_blank" class="scanner-launch-btn" style="background: #0284c7; border-color: #38bdf8;" title="Student Serial Photo Booth">
+        📸 Photo Booth
+      </a>
+      <a href="/scanner" target="_blank" class="scanner-launch-btn" title="Open Phone Scanner">
+        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path>
+        </svg>
+        Launch Scanner
+      </a>
+      <button id="logout-btn" class="logout-btn">Logout</button>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="tabs-bar">
+    <button class="tab-btn active" data-tab="tab-overview">
+      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+      Overview & Live Feed
+    </button>
+    <button class="tab-btn" data-tab="tab-students">
+      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+      Students Management
+    </button>
+    <button class="tab-btn" data-tab="tab-cards">
+      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+      Print Cards & Stickers
+    </button>
+    <button class="tab-btn" data-tab="tab-reports">
+      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+      Reports & Analytics
+    </button>
+    <button class="tab-btn" data-tab="tab-leaves">
+      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+      Leave Management
+    </button>
+    <button class="tab-btn" data-tab="tab-settings">
+      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+      Settings & n8n
+    </button>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="main-content">
+    
+    <!-- ================== TAB 1: OVERVIEW ================== -->
+    <div id="tab-overview" class="tab-content active">
+      <!-- Date Bar and Action Buttons -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <input type="date" id="overview-date" class="input-field" value="{{ today_date }}">
+          <button id="overview-refresh-btn" class="btn btn-secondary btn-sm">Refresh</button>
+        </div>
+        <div style="display: flex; gap: 6px;">
+          <button id="auto-mark-absentees-btn" class="btn btn-danger btn-sm" title="Marks all unscanned students as Absent">
+            ⚡ Close Day
+          </button>
+          <a id="overview-print-btn" href="/print/report?date={{ today_date }}" target="_blank" class="btn btn-secondary btn-sm">
+            🖨️ Print Sheet
+          </a>
+          <a id="overview-export-excel-btn" href="/api/reports/export-excel?start_date={{ today_date }}&end_date={{ today_date }}" class="btn btn-success btn-sm">
+            📥 Excel
+          </a>
+        </div>
+      </div>
+
+      <!-- KPI Summary Cards -->
+      <div class="kpi-grid">
+        <div class="kpi-card total">
+          <div>
+            <div class="kpi-label">Total Students</div>
+            <div id="kpi-total" class="kpi-value">-</div>
+            <div class="kpi-sub">Enrolled active</div>
+          </div>
+          <div class="kpi-icon">👥</div>
+        </div>
+        <div class="kpi-card present">
+          <div>
+            <div class="kpi-label">Present Today</div>
+            <div id="kpi-present" class="kpi-value">-</div>
+            <div id="kpi-rate" class="kpi-sub">0% attendance rate</div>
+          </div>
+          <div class="kpi-icon">✅</div>
+        </div>
+        <div class="kpi-card late">
+          <div>
+            <div class="kpi-label">Late Arrival</div>
+            <div id="kpi-late" class="kpi-value">-</div>
+            <div class="kpi-sub">After {{ settings.late_threshold_time }}</div>
+          </div>
+          <div class="kpi-icon">⚠️</div>
+        </div>
+        <div class="kpi-card absent">
+          <div>
+            <div class="kpi-label">Absent</div>
+            <div id="kpi-absent" class="kpi-value">-</div>
+            <div class="kpi-sub">Not arrived</div>
+          </div>
+          <div class="kpi-icon">❌</div>
+        </div>
+        <div class="kpi-card leave">
+          <div>
+            <div class="kpi-label">On Leave</div>
+            <div id="kpi-leave" class="kpi-value">-</div>
+            <div class="kpi-sub">Approved leave</div>
+          </div>
+          <div class="kpi-icon">📅</div>
+        </div>
+      </div>
+
+      <!-- Class-wise Progress Cards -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-title">Class-by-Class Attendance Progress</div>
+          <span style="font-size: 12px; color: var(--text-muted);">Real-time count for selected date</span>
+        </div>
+        <div id="class-progress-grid" class="class-grid">
+          <!-- Dynamic class cards injected here -->
+        </div>
+      </div>
+
+      <!-- Live Attendance List -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-title">Attendance Register & Log</div>
+          <div class="filter-controls">
+            <select id="overview-class-filter" class="select-field">
+              <option value="">All Classes</option>
+              {% for c in settings.classes_list %}
+              <option value="{{ c }}">{{ c }}</option>
+              {% endfor %}
+            </select>
+            <select id="overview-status-filter" class="select-field">
+              <option value="">All Statuses</option>
+              <option value="Present">Present</option>
+              <option value="Late">Late</option>
+              <option value="Absent">Absent</option>
+              <option value="Leave">Leave</option>
+              <option value="Unmarked">Unmarked / Pending</option>
+            </select>
+            <input type="text" id="overview-search" class="input-field" placeholder="Search student or roll...">
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Roll</th>
+                <th>Student Name</th>
+                <th>Father Name</th>
+                <th>Class</th>
+                <th>Status</th>
+                <th>Scan Time</th>
+                <th>Method</th>
+                <th>Notes / Reason</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="overview-table-body">
+              <tr><td colspan="10" style="text-align: center; padding: 30px;">Loading attendance records...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ================== TAB 2: STUDENTS ================== -->
+    <div id="tab-students" class="tab-content">
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-title">Enrolled Students Database</div>
+          <div class="filter-controls">
+            <select id="student-class-filter" class="select-field">
+              <option value="">All Classes</option>
+              {% for c in settings.classes_list %}
+              <option value="{{ c }}">{{ c }}</option>
+              {% endfor %}
+            </select>
+            <select id="student-gender-filter" class="select-field">
+              <option value="">All Genders</option>
+              <option value="Male">👦 Boys Only</option>
+              <option value="Female">👧 Girls Only</option>
+            </select>
+            <select id="student-photo-filter" class="select-field">
+              <option value="">All Photos</option>
+              <option value="missing">⚪ Missing Photo</option>
+              <option value="has">✅ Has Photo</option>
+            </select>
+            <input type="text" id="student-search-input" class="input-field" placeholder="Search by name, roll, or code...">
+            <button id="add-student-btn" class="btn btn-primary">+ Add Student</button>
+            <a href="/photo-booth" target="_blank" class="btn btn-primary" style="background: #0284c7; border-color: #38bdf8; text-decoration: none;" title="Open Serial Photo Booth">📸 Serial Photo Booth</a>
+            <button id="bulk-upload-btn" class="btn btn-secondary">📥 Bulk Excel</button>
+            <button id="batch-photos-btn" class="btn btn-secondary">📸 Batch Photos</button>
+            <a href="/api/students/template" class="btn btn-secondary" title="Download sample template">📄 Template</a>
+          </div>
+        </div>
+        
+        <!-- Quick Filter Preset Bar & Live Counter -->
+        <div style="display: flex; gap: 8px; padding: 10px 16px; background: #f8fafc; border-bottom: 1px solid var(--border); align-items: center; flex-wrap: wrap;">
+          <span style="font-size: 11.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Quick Filter:</span>
+          <button type="button" id="quick-filter-all" class="btn btn-secondary btn-sm admin-quick-filter-btn" onclick="setAdminStudentQuickFilter('all')" style="padding: 4px 10px; font-size: 11.5px; cursor: pointer;">All Enrolled (232)</button>
+          <button type="button" id="quick-filter-boys-missing" class="btn btn-secondary btn-sm admin-quick-filter-btn" onclick="setAdminStudentQuickFilter('boys-missing')" style="padding: 4px 10px; font-size: 11.5px; border-color: #0284c7; color: #0284c7; font-weight: 700; background: #e0f2fe; cursor: pointer;">⚡ Boys Needing Photos (51)</button>
+          <button type="button" id="quick-filter-boys-done" class="btn btn-secondary btn-sm admin-quick-filter-btn" onclick="setAdminStudentQuickFilter('boys-done')" style="padding: 4px 10px; font-size: 11.5px; color: #059669; cursor: pointer;">✅ Boys With Photos (145)</button>
+          <button type="button" id="quick-filter-girls" class="btn btn-secondary btn-sm admin-quick-filter-btn" onclick="setAdminStudentQuickFilter('girls')" style="padding: 4px 10px; font-size: 11.5px; color: #db2777; cursor: pointer;">👧 Girls (36 - Photos Exempt)</button>
+          <button type="button" id="quick-filter-missing-father" class="btn btn-secondary btn-sm admin-quick-filter-btn" onclick="setAdminStudentQuickFilter('missing-father')" style="padding: 4px 10px; font-size: 11.5px; color: #b45309; border-color: #f59e0b; background: #fffbeb; cursor: pointer;">⚠️ Missing Father Name (5)</button>
+          <span id="student-count-badge" style="margin-left: auto; font-size: 11.5px; font-weight: 700; padding: 4px 10px; border-radius: 6px; background: #0284c7; color: #fff;">Showing 232 Students</span>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Student Code</th>
+                <th>Roll</th>
+                <th>Full Name</th>
+                <th>Father Name</th>
+                <th>Class</th>
+                <th>Parent WhatsApp</th>
+                <th>Gender</th>
+                <th>QR Code</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="students-table-body">
+              <tr><td colspan="9" style="text-align: center; padding: 30px;">Loading students...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ================== TAB 3: PRINT CARDS & STICKERS ================== -->
+    <div id="tab-cards" class="tab-content">
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-title">Print Student ID Cards & QR Stickers</div>
+        </div>
+        <div style="padding: 16px;">
+          <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 16px; flex-wrap: wrap;">
+            <select id="print-class-select" class="select-field" style="width: 180px;">
+              <option value="">All Classes</option>
+              {% for c in settings.classes_list %}
+              <option value="{{ c }}">{{ c }}</option>
+              {% endfor %}
+            </select>
+            <button id="launch-print-cards-btn" class="btn btn-primary">
+              🖨️ Full ID Cards Studio
+            </button>
+            <a href="/print/comparison" class="btn btn-secondary" style="background:#044332;color:#fff;text-decoration:none;display:inline-flex;align-items:center;">
+              📄 1-Page Design Test Sheet (All 5 on 1 A4)
+            </a>
+            <button id="launch-print-stickers-btn" class="btn btn-secondary">
+              🏷️ QR Sticker Sheets
+            </button>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px;">
+            <div style="border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; background: #fafafa;">
+              <strong style="color: var(--primary); font-size: 12.5px;">Full ID Cards</strong>
+              <p style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px;">
+                Standard CR80 size (85.6mm × 54mm) with 4 themes (Royal, Emerald Lanyard, Cyber Navy, Crimson) plus Ink-Saver Eco print.
+              </p>
+            </div>
+            <div style="border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; background: #fafafa;">
+              <strong style="color: var(--text-main); font-size: 12.5px;">QR Sticker Sheet</strong>
+              <p style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px;">
+                Compact peel-and-stick labels to paste on existing cards you already have.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ================== TAB 4: REPORTS & ANALYTICS ================== -->
+    <div id="tab-reports" class="tab-content">
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-title">Attendance Reports & Analytics</div>
+          <div class="filter-controls">
+            <input type="date" id="rep-start-date" class="input-field" value="{{ today_date }}">
+            <span>to</span>
+            <input type="date" id="rep-end-date" class="input-field" value="{{ today_date }}">
+            <select id="rep-class-select" class="select-field">
+              <option value="">All Classes</option>
+              {% for c in settings.classes_list %}
+              <option value="{{ c }}">{{ c }}</option>
+              {% endfor %}
+            </select>
+            <button id="rep-load-btn" class="btn btn-primary">Generate Report</button>
+            <button id="rep-excel-btn" class="btn btn-success">📥 Download Excel (.xlsx)</button>
+          </div>
+        </div>
+        <div style="padding: 20px;">
+          <!-- Period Metrics -->
+          <div class="kpi-grid">
+            <div class="kpi-card total">
+              <div>
+                <div class="kpi-label">Active Students</div>
+                <div id="rep-stat-total" class="kpi-value">-</div>
+              </div>
+            </div>
+            <div class="kpi-card present">
+              <div>
+                <div class="kpi-label">Total Present Marks</div>
+                <div id="rep-stat-present" class="kpi-value">-</div>
+              </div>
+            </div>
+            <div class="kpi-card late">
+              <div>
+                <div class="kpi-label">Total Late Marks</div>
+                <div id="rep-stat-late" class="kpi-value">-</div>
+              </div>
+            </div>
+            <div class="kpi-card absent">
+              <div>
+                <div class="kpi-label">Total Absent Marks</div>
+                <div id="rep-stat-absent" class="kpi-value">-</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Consecutive Absentees Alert Section -->
+          <div style="margin-top: 24px; border: 1px solid #fecaca; background: #fff5f5; border-radius: 8px; padding: 16px;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+              <span style="font-size: 18px;">⚠️</span>
+              <strong style="color: #991b1b; font-size: 14px;">High Priority: Students with Consecutive Absences (Follow-up needed)</strong>
+            </div>
+            <div id="consecutive-absent-list" style="font-size: 13px; color: #7f1d1d;">
+              Checking consecutive absences...
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ================== TAB 5: LEAVE MANAGEMENT ================== -->
+    <div id="tab-leaves" class="tab-content">
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-title">Student Leave Records</div>
+          <button id="add-leave-btn" class="btn btn-primary">+ Register Student Leave</button>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Student Code</th>
+                <th>Student Name</th>
+                <th>Class</th>
+                <th>Roll</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Leave Type</th>
+                <th>Reason</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="leaves-table-body">
+              <tr><td colspan="9" style="text-align: center; padding: 30px;">Loading leave entries...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ================== TAB 6: SETTINGS & N8N ================== -->
+    <div id="tab-settings" class="tab-content">
+      <!-- School Info Settings -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-title">School Information & Timing Rules</div>
+          <button id="save-settings-btn" class="btn btn-primary">Save Settings</button>
+        </div>
+        <div class="settings-box">
+          <h3>School Profile</h3>
+          <p>Displayed on ID cards, reports, and scanner app.</p>
+          <div class="form-grid" style="padding: 0;">
+            <div class="form-field">
+              <label>School Name</label>
+              <input type="text" id="set-school-name" value="{{ settings.school_name }}">
+            </div>
+            <div class="form-field">
+              <label>School Area / Location</label>
+              <input type="text" id="set-school-address" value="{{ settings.school_address }}">
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-box">
+          <h3>Daily School Timings & Late Threshold</h3>
+          <p>Configure exactly what time arrival marks as Present vs Late vs Absent.</p>
+          <div class="form-grid" style="padding: 0;">
+            <div class="form-field">
+              <label>School Start Time (Arrival Begins)</label>
+              <input type="time" id="set-start-time" value="{{ settings.school_start_time }}">
+              <small>Default: 07:50 AM</small>
+            </div>
+            <div class="form-field">
+              <label>Late Threshold Time (Scans after this = Late)</label>
+              <input type="time" id="set-late-time" value="{{ settings.late_threshold_time }}">
+              <small>Arrivals between this and end time are marked Late</small>
+            </div>
+            <div class="form-field">
+              <label>School Dismissal / Cutoff Time</label>
+              <input type="time" id="set-end-time" value="{{ settings.school_end_time }}">
+              <small>Default: 12:30 PM</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-box">
+          <h3>Classes List</h3>
+          <p>Comma-separated list of classes available in the school.</p>
+          <div class="form-field">
+            <input type="text" id="set-classes-list" value="{{ settings.classes_list|join(', ') }}">
+            <small>e.g. KG, 1st, 2nd, 3rd, 4th, 5th, 6th, 7th, 8th, 9th, 10th</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- WhatsApp & n8n Integration Box -->
+      <div class="section-card">
+        <div class="section-header">
+          <div style="display: flex; align-items: center;">
+            <div class="section-title">WhatsApp Parent Notifications via n8n</div>
+            <span class="n8n-badge">Coming Soon / Pre-Wired</span>
+          </div>
+          <button id="save-n8n-btn" class="btn btn-primary">Save n8n Config</button>
+        </div>
+        <div style="padding: 20px;">
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+            The backend is <strong>pre-wired</strong> to trigger WhatsApp notifications via your Hostinger KVM4 VPS n8n instance whenever a student is marked Absent or Late. You can configure your n8n Webhook URL below and test the connection right now!
+          </p>
+
+          <div class="form-grid" style="padding: 0; margin-bottom: 16px;">
+            <div class="form-field" style="grid-column: 1 / -1;">
+              <label style="display: flex; align-items: center; gap: 8px;">
+                <input type="checkbox" id="set-n8n-enabled" {% if settings.n8n_notifications_enabled == '1' %}checked{% endif %}>
+                Enable Automated Webhook Dispatch to n8n
+              </label>
+            </div>
+            <div class="form-field" style="grid-column: 1 / 3;">
+              <label>n8n Webhook URL</label>
+              <input type="url" id="set-n8n-url" placeholder="https://your-n8n-domain/webhook/attendance-event" value="{{ settings.n8n_webhook_url }}">
+              <small>Your n8n webhook node production URL</small>
+            </div>
+            <div class="form-field">
+              <label>X-Webhook-Secret (Optional Header)</label>
+              <input type="text" id="set-n8n-secret" placeholder="Optional security token" value="{{ settings.n8n_webhook_secret }}">
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 12px; align-items: center;">
+            <button id="test-n8n-btn" class="btn btn-secondary">⚡ Test n8n Connection Ping</button>
+            <span id="n8n-test-result" style="font-size: 13px; font-weight: 600;"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Change Password Box -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-title">Principal Security & Password</div>
+        </div>
+        <div style="padding: 20px;">
+          <div class="form-grid" style="padding: 0; max-width: 500px;">
+            <div class="form-field">
+              <label>Current Password</label>
+              <input type="password" id="pwd-current" placeholder="Current password">
+            </div>
+            <div class="form-field">
+              <label>New Password</label>
+              <input type="password" id="pwd-new" placeholder="New password">
+            </div>
+          </div>
+          <button id="update-pwd-btn" class="btn btn-secondary" style="margin-top: 14px;">Update Password</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ================== MODALS ================== -->
+
+  <!-- Manual Correction Modal -->
+  <div id="correction-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3>Manual Attendance Correction</h3>
+        <button class="modal-close-btn" onclick="closeModal('correction-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="corr-student-id">
+        <input type="hidden" id="corr-date">
+        <div style="margin-bottom: 12px;">
+          <strong id="corr-student-name">Student Name</strong>
+          <div id="corr-meta" style="font-size: 12px; color: var(--text-muted);">Class: 10th | Date: 2026-10-19</div>
+        </div>
+        <div class="form-field" style="margin-bottom: 12px;">
+          <label>Attendance Status</label>
+          <select id="corr-status-select" class="select-field">
+            <option value="Present">Present</option>
+            <option value="Late">Late</option>
+            <option value="Absent">Absent</option>
+            <option value="Leave">Leave</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Reason / Audit Note</label>
+          <input type="text" id="corr-reason" class="input-field" placeholder="e.g. Card damaged, Principal verified presence">
+        </div>
+      </div>
+      <div class="modal-foot" style="display: flex; justify-content: space-between; align-items: center;">
+        <button id="delete-correction-btn" type="button" class="btn btn-danger" style="background: #dc2626;">
+          🗑️ Remove Entry
+        </button>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-secondary" onclick="closeModal('correction-modal')">Cancel</button>
+          <button id="save-correction-btn" class="btn btn-primary">Save Correction</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add / Edit Student Modal -->
+  <div id="student-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3 id="student-modal-title">Add New Student</h3>
+        <button class="modal-close-btn" onclick="closeModal('student-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="stu-id">
+        <div class="form-field" style="margin-bottom: 10px;">
+          <label>Full Name *</label>
+          <input type="text" id="stu-name" required placeholder="e.g. Muhammad Ali">
+        </div>
+        <div class="form-field" style="margin-bottom: 10px;">
+          <label>Father Name</label>
+          <input type="text" id="stu-father" placeholder="e.g. Tariq Khan">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+          <div class="form-field">
+            <label>Class *</label>
+            <select id="stu-class">
+              {% for c in settings.classes_list %}
+              <option value="{{ c }}">{{ c }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Roll No *</label>
+            <input type="text" id="stu-roll" required placeholder="e.g. 05">
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+          <div class="form-field">
+            <label>Parent WhatsApp Phone</label>
+            <input type="text" id="stu-phone" placeholder="e.g. +923001234567">
+          </div>
+          <div class="form-field">
+            <label>Gender</label>
+            <select id="stu-gender">
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-field">
+          <label>Address / Village</label>
+          <input type="text" id="stu-address" value="Loi Shalman">
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-secondary" onclick="closeModal('student-modal')">Cancel</button>
+        <button id="save-student-btn" class="btn btn-primary">Save Student</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bulk Excel Upload Modal -->
+  <div id="bulk-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3>Bulk Upload Students from Excel</h3>
+        <button class="modal-close-btn" onclick="closeModal('bulk-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 14px;">
+          Upload an Excel file (.xlsx) or CSV containing your student roster. QR codes will be generated automatically for every student!
+        </p>
+        <div style="margin-bottom: 14px;">
+          <a href="/api/students/template" class="btn btn-secondary btn-sm">📄 Download Sample Excel Template</a>
+        </div>
+        <div class="form-field">
+          <label>Select Excel (.xlsx) or CSV File</label>
+          <input type="file" id="bulk-file-input" accept=".xlsx, .csv">
+        </div>
+        <div id="bulk-status-box" style="margin-top: 14px; font-size: 13px; display: none;"></div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-secondary" onclick="closeModal('bulk-modal')">Cancel</button>
+        <button id="submit-bulk-upload-btn" class="btn btn-primary">Upload & Import</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Automatic Batch Photos Upload Modal -->
+  <div id="photos-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3>📸 Automatic Batch Photos Upload</h3>
+        <button class="modal-close-btn" onclick="closeModal('photos-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px; line-height: 1.4;">
+          Upload multiple student photos (or a <strong>.ZIP</strong> archive). The system automatically links each photo to the student:
+        </p>
+        <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 6px; padding: 10px; margin-bottom: 12px; font-size: 11.5px; color: #334155;">
+          <div>• <strong>By Roll Number</strong>: e.g. <code>01.jpg</code>, <code>02.png</code></div>
+          <div>• <strong>By Student Code</strong>: e.g. <code>SPHS-1001.jpg</code></div>
+          <div>• <strong>By Student Name</strong>: e.g. <code>Muhammad_Ali.jpg</code></div>
+        </div>
+        <div class="form-field">
+          <label>Select Photos (Multi-select) or .ZIP File</label>
+          <input type="file" id="batch-photos-input" multiple accept="image/*,.zip">
+        </div>
+        <div id="photos-status-box" style="margin-top: 12px; font-size: 12px; display: none;"></div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-secondary" onclick="closeModal('photos-modal')">Cancel</button>
+        <button id="submit-batch-photos-btn" class="btn btn-primary">Upload & Auto-Match</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Register Leave Modal -->
+  <div id="leave-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3>Register Student Leave</h3>
+        <button class="modal-close-btn" onclick="closeModal('leave-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-field" style="margin-bottom: 10px;">
+          <label>Select Student *</label>
+          <select id="leave-student-select" class="select-field">
+            <option value="">-- Choose student --</option>
+          </select>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+          <div class="form-field">
+            <label>Start Date</label>
+            <input type="date" id="leave-start-date" value="{{ today_date }}">
+          </div>
+          <div class="form-field">
+            <label>End Date</label>
+            <input type="date" id="leave-end-date" value="{{ today_date }}">
+          </div>
+        </div>
+        <div class="form-field" style="margin-bottom: 10px;">
+          <label>Leave Type</label>
+          <select id="leave-type-select">
+            <option value="Sick">Sick Leave</option>
+            <option value="Family">Family / Personal</option>
+            <option value="Casual">Casual Leave</option>
+            <option value="Emergency">Emergency</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Reason / Note</label>
+          <input type="text" id="leave-reason" placeholder="e.g. Fever and doctor appointment">
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-secondary" onclick="closeModal('leave-modal')">Cancel</button>
+        <button id="save-leave-btn" class="btn btn-primary">Register Leave</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QR Code View Modal -->
+  <div id="qr-view-modal" class="modal-overlay hidden">
+    <div class="modal-box" style="text-align: center; max-width: 320px;">
+      <div class="modal-head">
+        <h3 id="qr-view-title">Student QR Code</h3>
+        <button class="modal-close-btn" onclick="closeModal('qr-view-modal')">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 24px;">
+        <img id="qr-view-img" src="" alt="QR" style="width: 200px; height: 200px; margin: 0 auto; display: block; border: 1px solid var(--border); border-radius: 8px;">
+        <p id="qr-view-code" style="font-family: monospace; font-size: 13px; font-weight: 700; margin-top: 10px; color: var(--primary);"></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/admin.js?v={{ cache_bust }}"></script>
+  <script>
+    // Direct event listener attachment to guarantee instant filtering
+    document.addEventListener('DOMContentLoaded', () => {
+      const gFilter = document.getElementById('student-gender-filter');
+      const pFilter = document.getElementById('student-photo-filter');
+      const cFilter = document.getElementById('student-class-filter');
+      const sInput = document.getElementById('student-search-input');
+      
+      const runFilter = () => {
+        if (typeof window.currentMissingDetailsFilter !== 'undefined') {
+          // If a dropdown is manually changed, reset the special missing-details filter
+          window.currentMissingDetailsFilter = null;
+        }
+        if (typeof renderStudentsTable === 'function') {
+          renderStudentsTable();
+        }
+      };
+
+      if (gFilter) gFilter.addEventListener('change', runFilter);
+      if (pFilter) pFilter.addEventListener('change', runFilter);
+      if (cFilter) cFilter.addEventListener('change', runFilter);
+      if (sInput) sInput.addEventListener('input', runFilter);
+    });
+  </script>
+</body>
+</html>

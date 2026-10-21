@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Print QR Code Stickers - {{ school_name }}</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8fafc; padding: 20px; }
+    
+    .toolbar {
+      background: #ffffff;
+      padding: 12px 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .btn {
+      background: #1e3a8a;
+      color: #fff;
+      padding: 8px 18px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    .stickers-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 63.5mm);
+      gap: 3mm 4mm;
+      justify-content: center;
+    }
+
+    /* Sticker label size: 63.5mm x 38mm (24 per A4 page) */
+    .sticker-item {
+      width: 63.5mm;
+      height: 38mm;
+      border: 1px dashed #cbd5e1;
+      border-radius: 2mm;
+      background: #ffffff;
+      padding: 2mm 3mm;
+      display: flex;
+      align-items: center;
+      gap: 2mm;
+      page-break-inside: avoid;
+    }
+
+    .sticker-qr {
+      width: 25mm;
+      height: 25mm;
+      flex-shrink: 0;
+    }
+
+    .sticker-qr img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .sticker-info {
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .sticker-school {
+      font-size: 6pt;
+      font-weight: 800;
+      color: #1e3a8a;
+      text-transform: uppercase;
+      line-height: 1.1;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 1mm;
+      margin-bottom: 1mm;
+    }
+
+    .sticker-name {
+      font-size: 8.5pt;
+      font-weight: 700;
+      color: #0f172a;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sticker-meta {
+      font-size: 7pt;
+      color: #475569;
+      margin-top: 1mm;
+      font-weight: 600;
+    }
+
+    .sticker-code {
+      font-size: 6pt;
+      color: #94a3b8;
+      font-family: monospace;
+      margin-top: 1mm;
+    }
+
+    @media print {
+      body { background: #fff; padding: 0; }
+      .toolbar { display: none; }
+      .stickers-grid {
+        gap: 2mm 3mm;
+        margin: 4mm auto;
+      }
+      .sticker-item {
+        border: 1px dotted #94a3b8;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <div>
+      <strong>Shaheen Public High School Loi Shalman</strong> — QR Code Stickers
+      <span style="color: #64748b; margin-left: 10px;">(Peel & Stick on existing cards • {{ students|length }} stickers)</span>
+    </div>
+    <div style="display: flex; gap: 10px;">
+      <a href="/admin" class="btn" style="background: #64748b;">Back to Dashboard</a>
+      <button onclick="window.print()" class="btn">🖨️ Print Sticker Sheet (Ctrl + P)</button>
+    </div>
+  </div>
+
+  <div class="stickers-grid">
+    {% for s in students %}
+    <div class="sticker-item">
+      <div class="sticker-qr">
+        <img src="{{ s.qr_image }}" alt="QR">
+      </div>
+      <div class="sticker-info">
+        <div class="sticker-school">Shaheen Public School</div>
+        <div class="sticker-name">{{ s.full_name }}</div>
+        <div class="sticker-meta">Class: <strong>{{ s.class_name }}</strong> | Roll: <strong>{{ s.roll_no }}</strong></div>
+        <div class="sticker-code">{{ s.student_code }}</div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</body>
+</html>
