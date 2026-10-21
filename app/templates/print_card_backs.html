@@ -2,13 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>ID Card Backs (Master A4 Sheet) - Shaheen Public High School</title>
+  <title>ID Card Backs (3 Pakistani Design Concepts) - Shaheen Public High School</title>
   <link rel="icon" type="image/png" href="/static/icons/icon-192.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Urdu & Professional Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@500;700;800&family=Noto+Sans+Arabic:wght@500;700;800&family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
       background: #e2e8f0;
       color: #0f172a;
       -webkit-print-color-adjust: exact;
@@ -24,7 +30,7 @@
       flex-wrap: wrap; gap: 12px;
     }
     .toolbar-left { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
-    .toolbar-title { font-size: 15px; font-weight: 800; color: #044332; display: flex; align-items: center; gap: 8px; }
+    .toolbar-title { font-size: 15px; font-weight: 800; color: #01411C; display: flex; align-items: center; gap: 8px; }
     .control-group { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #334155; font-weight: 600; }
     .control-group select {
       padding: 6px 10px; border-radius: 6px; border: 1px solid #cbd5e1;
@@ -32,7 +38,7 @@
     }
     .btn {
       display: inline-flex; align-items: center; gap: 6px;
-      background: #044332; color: #fff; padding: 8px 16px;
+      background: #01411C; color: #fff; padding: 8px 16px;
       border-radius: 6px; text-decoration: none; font-weight: 700;
       font-size: 13px; cursor: pointer; border: none; transition: background 0.15s;
     }
@@ -40,7 +46,7 @@
     .btn-secondary { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
     .btn-secondary:hover { background: #e2e8f0; }
 
-    /* A4 Page / Sheet Container */
+    /* A4 Container */
     .sheet-wrapper {
       padding: 15px 0 30px;
       display: flex;
@@ -94,27 +100,30 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 3mm 3.2mm 2.8mm;
+      padding: 3mm 3mm 2.6mm;
       box-sizing: border-box;
       overflow: hidden;
     }
 
-    /* Eagle Watermark */
-    .card-back .watermark {
+    /* Common Watermark SVG */
+    .watermark-container {
       position: absolute;
-      top: 50%;
+      top: 52%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 38mm;
-      height: 38mm;
-      opacity: 0.045;
+      width: 40mm;
+      height: 40mm;
+      opacity: 0.055;
       pointer-events: none;
       z-index: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
-    .card-back .watermark img {
+    .watermark-container svg {
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      fill: #01411C;
     }
 
     .card-back > * {
@@ -122,217 +131,398 @@
       z-index: 1;
     }
 
-    /* Header Section */
-    .cb-header {
+    /* Urdu typography helpers */
+    .ur-text {
+      font-family: 'Noto Nastaliq Urdu', 'Noto Sans Arabic', 'Urdu Typesetting', Tahoma, sans-serif;
+      direction: rtl;
+      text-align: right;
+    }
+    .ur-center {
       text-align: center;
+      direction: rtl;
+    }
+
+    /* ========================================================
+       CONCEPT 1: PATRIOTIC CRESCENT & EAGLE (قومی وقار)
+       ======================================================== */
+    .c1-header {
+      border-bottom: 1.2px solid #01411C;
+      padding-bottom: 1.4mm;
       display: flex;
       flex-direction: column;
       align-items: center;
-      border-bottom: 1.2px solid #044332;
-      padding-bottom: 1.8mm;
+      position: relative;
     }
-    .cb-logo-wrap {
-      width: 9.5mm;
-      height: 9.5mm;
+    .c1-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
       margin-bottom: 0.8mm;
     }
-    .cb-logo-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
+    .c1-logo { width: 8.5mm; height: 8.5mm; }
+    .c1-logo img { width: 100%; height: 100%; object-fit: contain; }
+    .c1-flag-badge {
+      width: 8.5mm;
+      height: 5.6mm;
+      border: 0.5px solid #cbd5e1;
+      border-radius: 1px;
+      overflow: hidden;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
     }
-    .cb-school-title {
-      font-size: 6.8pt;
-      font-weight: 900;
-      color: #044332;
+    .c1-ur-title {
+      font-size: 7.2pt;
+      font-weight: 800;
+      color: #01411C;
+      line-height: 1.35;
+      margin-top: -0.6mm;
+    }
+    .c1-en-title {
+      font-size: 4.6pt;
+      font-weight: 800;
+      color: #1e293b;
       letter-spacing: 0.4px;
-      line-height: 1.15;
       text-transform: uppercase;
+      margin-top: 0.2mm;
     }
-    .cb-school-campus {
-      font-size: 4.8pt;
-      font-weight: 700;
-      color: #d97706;
-      letter-spacing: 0.8px;
-      margin-top: 0.3mm;
-      text-transform: uppercase;
-    }
-    .cb-motto {
-      font-size: 4.2pt;
-      font-weight: 600;
-      color: #475569;
-      font-style: italic;
-      margin-top: 0.3mm;
+    .c1-gold-line {
+      width: 100%;
+      height: 0.6mm;
+      background: #d97706;
+      margin-top: 0.8mm;
     }
 
-    /* Rules & Instructions Section */
-    .cb-rules-box {
-      margin: 1.5mm 0;
-    }
-    .cb-rules-heading {
-      font-size: 5pt;
+    .c1-rules-heading {
+      font-size: 5.2pt;
       font-weight: 800;
-      color: #044332;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
+      color: #01411C;
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 3px;
-      margin-bottom: 1mm;
-      border-bottom: 0.6px solid #e2e8f0;
-      padding-bottom: 0.4mm;
+      margin: 1.2mm 0 0.8mm;
+      border-bottom: 0.5px solid #e2e8f0;
+      padding-bottom: 0.3mm;
     }
-    .cb-rules-list {
+    .c1-rules-list {
       list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 0.9mm;
+      gap: 0.8mm;
     }
-    .cb-rule-item {
+    .c1-rule-item {
       display: flex;
       align-items: flex-start;
-      gap: 2.2px;
-      font-size: 4.4pt;
-      line-height: 1.22;
-      color: #1e293b;
+      gap: 2.5px;
+      font-size: 4.5pt;
+      line-height: 1.3;
+      color: #0f172a;
     }
-    .cb-rule-num {
+    .c1-rule-bullet {
+      color: #01411C;
       font-weight: 800;
-      color: #044332;
-      font-size: 4.4pt;
-      min-width: 2.6mm;
+      font-size: 4.8pt;
+      min-width: 2.4mm;
       flex-shrink: 0;
     }
-    .cb-rule-text {
-      font-weight: 500;
-    }
 
-    /* Contact & Lost-and-Found Box */
-    .cb-contact-box {
+    .c1-contact-box {
       background: #f0fdf4;
       border: 0.8px solid #86efac;
       border-radius: 1.5mm;
       padding: 1.2mm 1.8mm;
-      margin-top: 0.6mm;
+      margin: 1.2mm 0 0.8mm;
+      position: relative;
     }
-    .cb-contact-title {
-      font-size: 4.3pt;
+    .c1-contact-label {
+      font-size: 4.4pt;
       font-weight: 800;
       color: #166534;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 2px;
-      margin-bottom: 0.4mm;
+      margin-bottom: 0.3mm;
     }
-    .cb-contact-addr {
-      font-size: 4.2pt;
+    .c1-contact-addr {
+      font-size: 4.4pt;
       font-weight: 700;
       color: #0f172a;
-      line-height: 1.2;
+      line-height: 1.25;
     }
-    .cb-contact-phones {
-      font-size: 4.5pt;
-      font-weight: 800;
-      color: #044332;
-      margin-top: 0.5mm;
+    .c1-contact-phone {
+      font-size: 4.8pt;
+      font-weight: 900;
+      color: #01411C;
+      margin-top: 0.4mm;
       letter-spacing: 0.2px;
+      direction: ltr;
+      text-align: left;
     }
 
-    /* Footer Section (Session & Principal Signature) */
-    .cb-footer {
+    .c1-footer {
       border-top: 0.8px solid #cbd5e1;
-      padding-top: 1.2mm;
+      padding-top: 1mm;
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
     }
-    .cb-session {
-      font-size: 4.5pt;
+    .c1-session {
+      font-size: 4.3pt;
       font-weight: 800;
-      color: #044332;
-      display: flex;
-      flex-direction: column;
+      color: #01411C;
     }
-    .cb-session span {
-      font-size: 3.8pt;
-      color: #64748b;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-    .cb-sign-box {
+    .c1-sign {
       text-align: right;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
     }
-    .cb-sign-line {
+    .c1-sign-line {
       width: 17mm;
       border-bottom: 0.7px solid #475569;
       margin-bottom: 0.6mm;
     }
-    .cb-sign-text {
-      font-size: 4pt;
+    .c1-sign-label {
+      font-size: 4.1pt;
       font-weight: 700;
       color: #334155;
+    }
+
+
+    /* ========================================================
+       CONCEPT 2: BILINGUAL ACADEMIC SPLIT (دو لسانی)
+       ======================================================== */
+    .c2-card {
+      padding: 0 !important;
+    }
+    .c2-top-bar {
+      background: #01411C;
+      color: #ffffff;
+      padding: 2.2mm 3mm 1.8mm;
+      display: flex;
+      align-items: center;
+      gap: 2mm;
+      position: relative;
+    }
+    .c2-top-bar::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 0.7mm;
+      background: #d97706;
+    }
+    .c2-logo { width: 7.5mm; height: 7.5mm; flex-shrink: 0; }
+    .c2-logo img { width: 100%; height: 100%; object-fit: contain; }
+    .c2-title-block { flex: 1; text-align: center; }
+    .c2-ur-main {
+      font-size: 6.8pt;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+    .c2-en-sub {
+      font-size: 4.2pt;
+      font-weight: 700;
+      color: #fef08a;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      margin-top: 0.3mm;
+    }
+
+    .c2-body {
+      padding: 2mm 3mm 2.2mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: calc(100% - 13.5mm);
+      box-sizing: border-box;
+    }
+
+    .c2-section-tag {
+      font-size: 4.4pt;
+      font-weight: 800;
+      color: #01411C;
+      background: #f1f5f9;
+      padding: 0.6mm 1.5mm;
+      border-radius: 1mm;
+      display: inline-block;
+      margin-bottom: 0.6mm;
+    }
+
+    .c2-ur-rules {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6mm;
+      margin-bottom: 1.2mm;
+    }
+    .c2-ur-rules li {
+      font-size: 4.5pt;
+      line-height: 1.25;
+      color: #0f172a;
+    }
+
+    .c2-en-rules {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6mm;
+      border-top: 0.5px dashed #cbd5e1;
+      padding-top: 1mm;
+      margin-bottom: 1.2mm;
+    }
+    .c2-en-rules li {
+      font-size: 4.2pt;
+      line-height: 1.2;
+      color: #334155;
+    }
+
+    .c2-contact-strip {
+      background: #eff6ff;
+      border: 0.7px solid #bfdbfe;
+      border-radius: 1.2mm;
+      padding: 1.2mm 1.6mm;
+    }
+    .c2-contact-txt {
+      font-size: 4.2pt;
+      font-weight: 700;
+      color: #1e3a8a;
+      line-height: 1.2;
+    }
+    .c2-phone-txt {
+      font-size: 4.6pt;
+      font-weight: 900;
+      color: #01411C;
+      margin-top: 0.4mm;
+    }
+
+    .c2-footer {
+      border-top: 0.6px solid #cbd5e1;
+      padding-top: 0.8mm;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.8mm;
+    }
+
+
+    /* ========================================================
+       CONCEPT 3: URDU FIRST COMMUNITY & SAFETY (کمیونٹی و تحفظ)
+       ======================================================== */
+    .c3-header {
+      background: linear-gradient(135deg, #01411C 0%, #047857 100%);
+      color: #fff;
+      padding: 2.2mm 2.8mm 1.8mm;
+      margin: -3mm -3mm 1.5mm -3mm;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1mm solid #f59e0b;
+    }
+    .c3-logo-col {
+      display: flex;
+      align-items: center;
+      gap: 1.5mm;
+    }
+    .c3-logo { width: 8.5mm; height: 8.5mm; }
+    .c3-logo img { width: 100%; height: 100%; object-fit: contain; }
+    .c3-crescent-svg { width: 6.5mm; height: 6.5mm; fill: #ffffff; }
+    .c3-title-box { text-align: right; }
+    .c3-ur-main {
+      font-size: 7.2pt;
+      font-weight: 800;
+      line-height: 1.2;
+      color: #ffffff;
+    }
+    .c3-en-sub {
+      font-size: 4.2pt;
+      font-weight: 700;
+      color: #fef08a;
+      letter-spacing: 0.3px;
+    }
+
+    .c3-alert-banner {
+      background: #fef3c7;
+      border: 0.8px solid #f59e0b;
+      border-radius: 1.5mm;
+      padding: 1.2mm 1.8mm;
+      margin-bottom: 1.2mm;
+      text-align: center;
+    }
+    .c3-alert-title {
+      font-size: 4.8pt;
+      font-weight: 900;
+      color: #92400e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+    }
+    .c3-alert-body {
+      font-size: 4.4pt;
+      font-weight: 700;
+      color: #78350f;
+      margin-top: 0.3mm;
+      line-height: 1.25;
+    }
+
+    .c3-rules-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.9mm;
+      margin-bottom: 1.2mm;
+    }
+    .c3-rules-list li {
+      font-size: 4.5pt;
+      line-height: 1.3;
+      color: #0f172a;
+      display: flex;
+      align-items: flex-start;
+      gap: 3px;
+    }
+    .c3-rules-list .num {
+      color: #01411C;
+      font-weight: 900;
+    }
+
+    .c3-helpline-box {
+      background: #01411C;
+      color: #ffffff;
+      border-radius: 1.8mm;
+      padding: 1.5mm 2mm;
+      text-align: center;
+      margin-bottom: 1mm;
+    }
+    .c3-help-title {
+      font-size: 4.4pt;
+      font-weight: 700;
+      color: #86efac;
+      letter-spacing: 0.4px;
       text-transform: uppercase;
     }
-
-    /* ================= THEME 2: INK-SAVER ECO MODE ================= */
-    .theme-eco .card-cutout-box {
-      border-color: #000000 !important;
+    .c3-help-numbers {
+      font-size: 5.6pt;
+      font-weight: 900;
+      color: #ffffff;
+      margin: 0.4mm 0 0.2mm;
+      letter-spacing: 0.3px;
     }
-    .theme-eco .card-back {
-      background: #ffffff !important;
-    }
-    .theme-eco .watermark {
-      display: none !important;
-    }
-    .theme-eco .cb-header {
-      border-bottom-color: #000000 !important;
-    }
-    .theme-eco .cb-school-title,
-    .theme-eco .cb-rule-num,
-    .theme-eco .cb-rules-heading,
-    .theme-eco .cb-contact-phones,
-    .theme-eco .cb-session {
-      color: #000000 !important;
-    }
-    .theme-eco .cb-school-campus {
-      color: #333333 !important;
-    }
-    .theme-eco .cb-contact-box {
-      background: #ffffff !important;
-      border: 0.8px solid #000000 !important;
-    }
-    .theme-eco .cb-contact-title {
-      color: #000000 !important;
-    }
-    .theme-eco .cb-sign-line {
-      border-bottom-color: #000000 !important;
+    .c3-help-addr {
+      font-size: 4.2pt;
+      font-weight: 600;
+      color: #d1fae5;
     }
 
-    /* ================= THEME 3: ROYAL BLUE / NAVY ================= */
-    .theme-navy .cb-header {
-      border-bottom-color: #1e3a8a;
+    .c3-footer {
+      border-top: 0.7px solid #cbd5e1;
+      padding-top: 0.8mm;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    .theme-navy .cb-school-title,
-    .theme-navy .cb-rule-num,
-    .theme-navy .cb-rules-heading,
-    .theme-navy .cb-contact-phones,
-    .theme-navy .cb-session {
-      color: #1e3a8a;
-    }
-    .theme-navy .cb-school-campus {
-      color: #b45309;
-    }
-    .theme-navy .cb-contact-box {
-      background: #eff6ff;
-      border-color: #93c5fd;
-    }
-    .theme-navy .cb-contact-title {
-      color: #1e40af;
+    .c3-sign-lbl {
+      font-size: 4.2pt;
+      font-weight: 700;
+      color: #01411C;
     }
 
     /* Print Media Rules */
@@ -376,14 +566,15 @@
   <div class="toolbar">
     <div class="toolbar-left">
       <div class="toolbar-title">
-        📇 ID Card Backs Studio &mdash; Master A4 Sheet
+        🇵🇰 ID Card Backs Studio &mdash; Pakistani Urdu &amp; Flag Edition
       </div>
       <div class="control-group">
-        <label for="theme-select">Back Style:</label>
-        <select id="theme-select">
-          <option value="emerald" selected>🌲 Official Emerald &amp; Gold</option>
-          <option value="navy">⚓ Royal Navy Accent</option>
-          <option value="eco">🌱 Ink-Saver Eco Mode (Pure Black &amp; White)</option>
+        <label for="concept-select">Design Concept:</label>
+        <select id="concept-select">
+          <option value="c1" selected>⭐ Concept 1: Patriotic Crescent &amp; Eagle (قومی وقار)</option>
+          <option value="c2">🌐 Concept 2: Bilingual Academic Split (دو لسانی)</option>
+          <option value="c3">🛡️ Concept 3: Urdu First Community &amp; Safety (تحفظ و رابطہ)</option>
+          <option value="compare">📄 Compare All 3 on 1 A4 Test Sheet (1 Row Each)</option>
         </select>
       </div>
       <div class="control-group">
@@ -409,77 +600,10 @@
   <div class="sheet-wrapper" id="sheets-container">
     {% for s in range(sheets) %}
     <div class="a4-sheet">
-      <div class="cards-grid">
+      <div class="cards-grid" id="grid-page-{{ s }}">
         {% for i in range(9) %}
-        <div class="card-cutout-box">
-          <div class="card-back">
-            <!-- Center Watermark -->
-            <div class="watermark">
-              <img src="/static/img/shaheen_logo_trans.png" alt="">
-            </div>
-
-            <!-- Header -->
-            <div class="cb-header">
-              <div class="cb-logo-wrap">
-                <img src="/static/img/shaheen_logo_trans.png" alt="Logo">
-              </div>
-              <div class="cb-school-title">{{ school_name }}</div>
-              <div class="cb-school-campus">LOI SHALMAN &bull; KHYBER</div>
-              <div class="cb-motto">&ldquo;Knowledge is Light &bull; Discipline &bull; Character&rdquo;</div>
-            </div>
-
-            <!-- Rules & Regulations -->
-            <div class="cb-rules-box">
-              <div class="cb-rules-heading">
-                <span>🛡️</span>
-                <span>Card Regulations &amp; Terms</span>
-              </div>
-              <ul class="cb-rules-list">
-                <li class="cb-rule-item">
-                  <span class="cb-rule-num">1.</span>
-                  <span class="cb-rule-text">Must be carried &amp; worn visibly at all times on school grounds.</span>
-                </li>
-                <li class="cb-rule-item">
-                  <span class="cb-rule-num">2.</span>
-                  <span class="cb-rule-text">Required for morning gate QR scanning, classroom, &amp; exams.</span>
-                </li>
-                <li class="cb-rule-item">
-                  <span class="cb-rule-num">3.</span>
-                  <span class="cb-rule-text">Strictly non-transferable; valid only for authorized student.</span>
-                </li>
-                <li class="cb-rule-item">
-                  <span class="cb-rule-num">4.</span>
-                  <span class="cb-rule-text">Report loss or damage immediately to Administration Office.</span>
-                </li>
-                <li class="cb-rule-item">
-                  <span class="cb-rule-num">5.</span>
-                  <span class="cb-rule-text">If found, please return to the school campus address below.</span>
-                </li>
-              </ul>
-            </div>
-
-            <!-- Campus Address & Contacts -->
-            <div class="cb-contact-box">
-              <div class="cb-contact-title">
-                <span>📍</span>
-                <span>Campus Location &amp; Helpline:</span>
-              </div>
-              <div class="cb-contact-addr">{{ school_address }}</div>
-              <div class="cb-contact-phones">📞 / 💬 {{ school_phone }}</div>
-            </div>
-
-            <!-- Footer: Session & Signature -->
-            <div class="cb-footer">
-              <div class="cb-session">
-                <span>Academic Session</span>
-                2026&ndash;2027
-              </div>
-              <div class="cb-sign-box">
-                <div class="cb-sign-line"></div>
-                <div class="cb-sign-text">Principal Signature</div>
-              </div>
-            </div>
-          </div>
+        <div class="card-cutout-box" data-slot="{{ i }}">
+          <!-- Injected via JavaScript based on chosen concept -->
         </div>
         {% endfor %}
       </div>
@@ -487,30 +611,300 @@
     {% endfor %}
   </div>
 
+  <!-- ================= TEMPLATES (HIDDEN IN DOM FOR JS RE-USE) ================= -->
+  <div id="templates" style="display: none;">
+
+    <!-- TEMPLATE 1: PATRIOTIC CRESCENT & EAGLE (قومی وقار) -->
+    <div id="tmpl-c1">
+      <div class="card-back">
+        <!-- Crescent & Star Watermark -->
+        <div class="watermark-container">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 50 10 A 40 40 0 1 0 86 68 A 34 34 0 1 1 50 18 Z" />
+            <polygon points="68,26 71.5,37 83,37 73.5,44 77,55 68,48 59,55 62.5,44 53,37 64.5,37" />
+          </svg>
+        </div>
+
+        <!-- Header -->
+        <div class="c1-header">
+          <div class="c1-top-row">
+            <div class="c1-logo">
+              <img src="/static/img/shaheen_logo_trans.png" alt="Logo">
+            </div>
+            <div class="ur-center" style="flex: 1;">
+              <div class="c1-ur-title ur-text">شاہین پبلک ہائی سکول اینڈ کالج</div>
+              <div class="c1-en-title">Shaheen Public High School &bull; Loi Shalman</div>
+            </div>
+            <div class="c1-flag-badge">
+              <svg viewBox="0 0 60 40" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                <rect width="60" height="40" fill="#01411C"/>
+                <rect width="15" height="40" fill="#FFFFFF"/>
+                <circle cx="37" cy="20" r="10" fill="#FFFFFF"/>
+                <circle cx="40" cy="18" r="8.5" fill="#01411C"/>
+                <polygon points="41,12 42.5,16 46.5,16 43.5,18.5 44.5,22.5 41,20 37.5,22.5 38.5,18.5 35.5,16 39.5,16" fill="#FFFFFF"/>
+              </svg>
+            </div>
+          </div>
+          <div class="c1-gold-line"></div>
+        </div>
+
+        <!-- Rules (Urdu) -->
+        <div class="c1-rules-box">
+          <div class="c1-rules-heading ur-text">
+            <span>🛡️ ضروری ہدایات و قواعد:</span>
+            <span style="font-size: 4pt; color: #64748b; font-family: sans-serif;">REGULATIONS</span>
+          </div>
+          <ul class="c1-rules-list ur-text">
+            <li class="c1-rule-item">
+              <span class="c1-rule-bullet">۱۔</span>
+              <span>یہ کارڈ سکول اوقات میں گلے میں پہننا لازمی ہے۔</span>
+            </li>
+            <li class="c1-rule-item">
+              <span class="c1-rule-bullet">۲۔</span>
+              <span>صبح گیٹ پر ڈیجیٹل حاضری اور امتحانات کے لیے ضروری ہے۔</span>
+            </li>
+            <li class="c1-rule-item">
+              <span class="c1-rule-bullet">۳۔</span>
+              <span>کارڈ ناقابلِ انتقال ہے، صرف متعلقہ طالب علم استعمال کرے۔</span>
+            </li>
+            <li class="c1-rule-item">
+              <span class="c1-rule-bullet">۴۔</span>
+              <span>کارڈ گم یا خراب ہونے پر فوری سکول آفس کو مطلع کریں۔</span>
+            </li>
+            <li class="c1-rule-item">
+              <span class="c1-rule-bullet">۵۔</span>
+              <span>گمشدہ کارڈ ملنے پر برائے مہربانی نیچے دیے گئے پتے پر پہنچائیں۔</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Contact Box -->
+        <div class="c1-contact-box">
+          <div class="c1-contact-label ur-text">
+            <span>📍 کیمپس پتہ و ہنگامی رابطہ:</span>
+            <span style="font-size: 3.8pt; color: #15803d; font-family: sans-serif;">HELPLINE</span>
+          </div>
+          <div class="c1-contact-addr ur-text">
+            لوئی شلمان، نزد کرکٹ گراؤنڈ، غنڈہ خیل
+          </div>
+          <div class="c1-contact-phone">
+            📞 03359365884 &bull; 💬 03342727432
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="c1-footer">
+          <div class="c1-session ur-text">
+            سیشن: 2026&ndash;2027
+          </div>
+          <div class="c1-sign">
+            <div class="c1-sign-line"></div>
+            <div class="c1-sign-label ur-text">دستخط پرنسپل (Principal)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- TEMPLATE 2: BILINGUAL ACADEMIC SPLIT (دو لسانی) -->
+    <div id="tmpl-c2">
+      <div class="card-back c2-card">
+        <!-- Top Bar with Urdu + English -->
+        <div class="c2-top-bar">
+          <div class="c2-logo">
+            <img src="/static/img/shaheen_logo_trans.png" alt="Logo">
+          </div>
+          <div class="c2-title-block">
+            <div class="c2-ur-main ur-text">شاہین پبلک ہائی سکول لوئی شلمان</div>
+            <div class="c2-en-sub">SHAHEEN PUBLIC HIGH SCHOOL &bull; KHYBER</div>
+          </div>
+          <div style="width: 7.5mm; height: 5mm; border-radius: 1px; overflow: hidden;">
+            <svg viewBox="0 0 60 40" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+              <rect width="60" height="40" fill="#01411C"/>
+              <rect width="15" height="40" fill="#FFFFFF"/>
+              <circle cx="37" cy="20" r="10" fill="#FFFFFF"/>
+              <circle cx="40" cy="18" r="8.5" fill="#01411C"/>
+              <polygon points="41,12 42.5,16 46.5,16 43.5,18.5 44.5,22.5 41,20 37.5,22.5 38.5,18.5 35.5,16 39.5,16" fill="#FFFFFF"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="c2-body">
+          <!-- Urdu Section -->
+          <div>
+            <div class="c2-section-tag ur-text">ضروری ہدایات (Urdu)</div>
+            <ul class="c2-ur-rules ur-text">
+              <li>&bull; یہ کارڈ سکول اوقات میں پہننا اور سنبھال کر رکھنا لازمی ہے۔</li>
+              <li>&bull; روزانہ صبح گیٹ پر ڈیجیٹل حاضری اسکیننگ کے لیے پیش کریں۔</li>
+              <li>&bull; کارڈ گم ہونے کی صورت میں فوری طور پر دفتر کو مطلع کریں۔</li>
+            </ul>
+          </div>
+
+          <!-- English Section -->
+          <div>
+            <div class="c2-section-tag">Terms &amp; Instructions (English)</div>
+            <ul class="c2-en-rules">
+              <li>1. Card must be visibly worn at all times during school hours.</li>
+              <li>2. Non-transferable; valid only for authorized student.</li>
+              <li>3. If found, please return to school address below.</li>
+            </ul>
+          </div>
+
+          <!-- Contact Strip -->
+          <div class="c2-contact-strip">
+            <div class="c2-contact-txt">
+              <strong>Campus:</strong> Loi Shalman Near Cricket Ground, Ghundakhel
+            </div>
+            <div class="c2-phone-txt">
+              📞 Phone/WhatsApp: 03359365884 &bull; 03342727432
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <div class="c2-footer">
+            <div style="font-size: 4.2pt; font-weight: 800; color: #01411C;">
+              Session 2026&ndash;27
+            </div>
+            <div style="font-size: 4.2pt; font-weight: 700; color: #334155; text-align: right;">
+              Authorized Signature
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- TEMPLATE 3: URDU FIRST COMMUNITY & SAFETY (کمیونٹی و تحفظ) -->
+    <div id="tmpl-c3">
+      <div class="card-back">
+        <!-- Header -->
+        <div class="c3-header">
+          <div class="c3-logo-col">
+            <div class="c3-logo">
+              <img src="/static/img/shaheen_logo_trans.png" alt="Logo">
+            </div>
+            <svg class="c3-crescent-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <path d="M 50 10 A 40 40 0 1 0 86 68 A 34 34 0 1 1 50 18 Z" />
+              <polygon points="68,26 71.5,37 83,37 73.5,44 77,55 68,48 59,55 62.5,44 53,37 64.5,37" />
+            </svg>
+          </div>
+          <div class="c3-title-box">
+            <div class="c3-ur-main ur-text">شاہین پبلک ہائی سکول</div>
+            <div class="c3-en-sub">LOI SHALMAN &bull; GHUNDAKHEL</div>
+          </div>
+        </div>
+
+        <!-- Alert Callout -->
+        <div class="c3-alert-banner">
+          <div class="c3-alert-title ur-text">
+            <span>⚠️</span>
+            <span>گمشدہ کارڈ کی واپسی کی اپیل:</span>
+          </div>
+          <div class="c3-alert-body ur-text">
+            اگر یہ کارڈ کسی کو ملے تو برائے مہربانی سکول آفس یا نیچے دیے گئے نمبرز پر مطلع فرمائیں۔
+          </div>
+        </div>
+
+        <!-- Rules -->
+        <ul class="c3-rules-list ur-text">
+          <li>
+            <span class="num">۱۔</span>
+            <span>سکول اوقات کے دوران کارڈ گلے میں پہننا لازمی ہے۔</span>
+          </li>
+          <li>
+            <span class="num">۲۔</span>
+            <span>گیٹ پر حاضری، کلاس اور امتحانات میں شرکت کے لیے لازمی ہے۔</span>
+          </li>
+          <li>
+            <span class="num">۳۔</span>
+            <span>کارڈ کا غلط استعمال یا کسی اور کو دینا سخت منع ہے۔</span>
+          </li>
+          <li>
+            <span class="num">۴۔</span>
+            <span>گم ہونے پر فوری رابطہ کر کے نیا کارڈ حاصل کریں۔</span>
+          </li>
+        </ul>
+
+        <!-- Helpline Box -->
+        <div class="c3-helpline-box">
+          <div class="c3-help-title">EMERGENCY &amp; CAMPUS HELPLINE</div>
+          <div class="c3-help-numbers">
+            03359365884 &bull; 03342727432
+          </div>
+          <div class="c3-help-addr ur-text">
+            پتہ: لوئی شلمان، نزد کرکٹ گراؤنڈ، غنڈہ خیل
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="c3-footer">
+          <div style="font-size: 4.2pt; font-weight: 800; color: #01411C;" class="ur-text">
+            تعلیمی سیشن: 2026&ndash;2027
+          </div>
+          <div class="c3-sign-lbl ur-text">
+            دستخط پرنسپل: __________
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Interactive Logic -->
   <script>
-    const themeSelect = document.getElementById('theme-select');
+    const conceptSelect = document.getElementById('concept-select');
     const sheetsSelect = document.getElementById('sheets-select');
     const container = document.getElementById('sheets-container');
 
-    // Theme switching
-    themeSelect.addEventListener('change', (e) => {
-      document.body.classList.remove('theme-eco', 'theme-navy');
-      if (e.target.value === 'eco') {
-        document.body.classList.add('theme-eco');
-      } else if (e.target.value === 'navy') {
-        document.body.classList.add('theme-navy');
-      }
-    });
+    const tmplC1 = document.getElementById('tmpl-c1').innerHTML;
+    const tmplC2 = document.getElementById('tmpl-c2').innerHTML;
+    const tmplC3 = document.getElementById('tmpl-c3').innerHTML;
 
-    // Dynamic sheets generation without reloading
-    sheetsSelect.addEventListener('change', (e) => {
-      const count = parseInt(e.target.value) || 1;
-      const singleSheetHtml = container.children[0].outerHTML;
+    function renderCards() {
+      const concept = conceptSelect.value;
+      const numSheets = parseInt(sheetsSelect.value) || 1;
+
       container.innerHTML = '';
-      for (let i = 0; i < count; i++) {
-        container.insertAdjacentHTML('beforeend', singleSheetHtml);
+
+      for (let s = 0; s < numSheets; s++) {
+        const sheetDiv = document.createElement('div');
+        sheetDiv.className = 'a4-sheet';
+
+        const gridDiv = document.createElement('div');
+        gridDiv.className = 'cards-grid';
+
+        for (let i = 0; i < 9; i++) {
+          const cutout = document.createElement('div');
+          cutout.className = 'card-cutout-box';
+
+          if (concept === 'compare') {
+            // Row 1 (0,1,2): Concept 1
+            // Row 2 (3,4,5): Concept 2
+            // Row 3 (6,7,8): Concept 3
+            if (i < 3) cutout.innerHTML = tmplC1;
+            else if (i < 6) cutout.innerHTML = tmplC2;
+            else cutout.innerHTML = tmplC3;
+          } else if (concept === 'c1') {
+            cutout.innerHTML = tmplC1;
+          } else if (concept === 'c2') {
+            cutout.innerHTML = tmplC2;
+          } else if (concept === 'c3') {
+            cutout.innerHTML = tmplC3;
+          }
+
+          gridDiv.appendChild(cutout);
+        }
+
+        sheetDiv.appendChild(gridDiv);
+        container.appendChild(sheetDiv);
       }
-    });
+    }
+
+    conceptSelect.addEventListener('change', renderCards);
+    sheetsSelect.addEventListener('change', renderCards);
+
+    // Initial render
+    renderCards();
   </script>
 </body>
 </html>
