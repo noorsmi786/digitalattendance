@@ -182,6 +182,8 @@ def print_card_preview_noqr(request: Request):
         "SELECT * FROM students WHERE is_active = 1 ORDER BY class_name ASC, CAST(roll_no AS INTEGER) ASC LIMIT 6"
     ).fetchall()]
     conn.close()
+    for s in students:
+        s["qr_image"] = generate_qr_base64(s["qr_payload"])
     return templates.TemplateResponse(
         request=request,
         name="print_card_preview_noqr.html",
