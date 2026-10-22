@@ -403,7 +403,27 @@ def api_scanner_info():
     return {
         "school_name": get_setting("school_name", "Shaheen Public High School Loi Shalman"),
         "today_scanned_count": marked_count,
+        "reset_token": get_setting("attendance_reset_token", "0"),
         "server_time": datetime.now(PKT).strftime("%H:%M:%S")
+    }
+
+@app.post("/api/attendance/clear-today")
+def api_clear_today_attendance(request: Request):
+    require_auth(request)
+    today_str = get_current_school_date()
+    conn = get_db_connection()
+    deleted_cnt = conn.execute("DELETE FROM attendance WHERE date = ?", (today_str,)).rowcount
+    conn.commit()
+    conn.close()
+    # Issue a new reset token so active scanner clients immediately wipe their local cache
+    new_token = str(int(datetime.now(PKT).timestamp()))
+    set_setting("attendance_reset_token", new_token)
+    return {
+        "success": True,
+        "deleted_count": deleted_cnt,
+        "date": today_str,
+        "reset_token": new_token,
+        "message": f"Cleared {deleted_cnt} attendance records for today ({today_str})."
     }
 
 @app.get("/api/attendance/summary")

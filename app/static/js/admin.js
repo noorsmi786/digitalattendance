@@ -1122,6 +1122,39 @@ function initAuth() {
   }
 }
 
+// --- RESET TODAY ATTENDANCE HELPER ---
+window.confirmClearTodayAttendance = async function() {
+  const confirmed = confirm('⚠️ Are you sure you want to completely RESET all attendance scans for TODAY?\n\nThis will remove all scans from the server and instruct all scanner phones to clear their local queues. This cannot be undone.');
+  if (!confirmed) return;
+
+  const btn = document.getElementById('clear-today-attendance-btn');
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Clearing...';
+  }
+
+  try {
+    const res = await fetch('/api/attendance/clear-today', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    const data = await res.json();
+    if (data.success) {
+      alert(`✅ ${data.message}\nAll active scanners will now start fresh at 0.`);
+      window.location.reload();
+    } else {
+      alert('Error: ' + (data.message || 'Could not clear attendance'));
+    }
+  } catch (err) {
+    alert('Network error while resetting today attendance');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = '🗑️ Reset Today';
+    }
+  }
+};
+
 // --- SCANNER SECURITY & KIOSK LINK HELPERS ---
 window.copyKioskLinkToClipboard = function() {
   const kioskInput = document.getElementById('kiosk-full-link');

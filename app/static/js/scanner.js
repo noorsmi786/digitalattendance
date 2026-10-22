@@ -39,9 +39,9 @@ class AttendanceApp {
     this.setupTapToFocus();
     await this.updatePendingCountUI();
 
-    const localCount = this.getOfflineHistory().length;
-    const countEl = document.getElementById('today-total-scanned');
-    if (countEl && localCount > 0) countEl.textContent = localCount;
+    // Check server reset token & fetch latest count before doing anything
+    await this.updateTodayStats();
+    setInterval(() => this.updateTodayStats(), 15000);
 
     // Auto sync on boot
     if (this.isOnline) {
@@ -120,6 +120,21 @@ class AttendanceApp {
         const tx = this.db.transaction('pending_scans', 'readwrite');
         const store = tx.objectStore('pending_scans');
         syncIds.forEach(id => store.delete(id));
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => resolve();
+      } catch (err) {
+        resolve();
+      }
+    });
+  }
+
+  clearAllPendingDB() {
+    return new Promise((resolve) => {
+      if (!this.db) return resolve();
+      try {
+        const tx = this.db.transaction('pending_scans', 'readwrite');
+        const store = tx.objectStore('pending_scans');
+        store.clear();
         tx.oncomplete = () => resolve();
         tx.onerror = () => resolve();
       } catch (err) {
@@ -535,6 +550,20 @@ class AttendanceApp {
     link.click();
     document.body.removeChild(link);
     this.showToast('CSV downloaded to your phone!', 'success');
+  }
+
+  async clearLocalTodayHistory() {
+    try {
+      localStorage.removeItem(this.getTodayKey());
+      await this.clearAllPendingDB();
+      await this.updatePendingCountUI();
+      const countEl = document.getElementById('today-total-scanned');
+      if (countEl) countEl.textContent = '0';
+      this.renderOfflineDrawer();
+      this.showToast('Local scan cache cleared', 'info');
+    } catch (e) {
+      console.warn('Error clearing local cache:', e);
+    }
   }
 
   // --- Security Access Control (Method 2: 52186) ---
@@ -1211,8 +1240,17 @@ class AttendanceApp {
       const res = await fetch('/api/scanner-info');
       if (res.ok) {
         const info = await res.json();
+        const serverResetToken = String(info.reset_token || '0');
+        const clientResetToken = localStorage.getItem('sphs_reset_token') || '0';
+
+        // If server was reset and client hasn't cleared local queue yet
+        if (serverResetToken !== '0' && serverResetToken !== clientResetToken) {
+          localStorage.setItem('sphs_reset_token', serverResetToken);
+          await this.clearLocalTodayHistory();
+        }
+
         const countEl = document.getElementById('today-total-scanned');
-        if (countEl) countEl.textContent = info.today_scanned_count || '0';
+        if (countEl) countEl.textContent = info.today_scanned_count ?? '0';
       }
     } catch (e) {}
   }
