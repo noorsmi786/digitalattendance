@@ -106,7 +106,8 @@ def init_db():
         "n8n_webhook_secret": "",
         "n8n_notifications_enabled": "0",
         "sound_enabled": "1",
-        "allow_manual_entry_on_scanner": "1"
+        "allow_manual_entry_on_scanner": "1",
+        "scanner_access_code": "52186"
     }
 
     for k, v in defaults.items():

@@ -21,6 +21,8 @@ class AttendanceApp {
     this.soundMode = localStorage.getItem('sphs_sound_mode') || 'voice';
     this.db = null;
     this.pendingSyncInProgress = false;
+    this.scannerKey = localStorage.getItem('sphs_scanner_key') || '';
+    this.isLocked = true;
 
     this.init();
   }
@@ -53,8 +55,8 @@ class AttendanceApp {
       }
     }, 20000);
 
-    // Initialize scanner
-    this.startScanner();
+    // Verify key before starting scanner
+    await this.checkScannerAccess();
   }
 
   // --- IndexedDB for 100% Offline Resilience ---
@@ -535,6 +537,110 @@ class AttendanceApp {
     this.showToast('CSV downloaded to your phone!', 'success');
   }
 
+  // --- Security Access Control (Method 2: 52186) ---
+  async checkScannerAccess() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlKey = urlParams.get('key');
+    const candidateKey = urlKey || localStorage.getItem('sphs_scanner_key') || '';
+
+    if (candidateKey) {
+      const isValid = await this.verifyKeyWithServer(candidateKey);
+      if (isValid) {
+        localStorage.setItem('sphs_scanner_key', candidateKey);
+        this.scannerKey = candidateKey;
+        this.isLocked = false;
+        this.hideLockOverlay();
+        if (urlKey) {
+          try {
+            history.replaceState({}, document.title, window.location.pathname);
+          } catch (e) {}
+        }
+        await this.startScanner();
+        return;
+      }
+    }
+
+    // Lock if no valid key
+    this.isLocked = true;
+    this.showLockOverlay();
+  }
+
+  async verifyKeyWithServer(code) {
+    if (!navigator.onLine) {
+      return Boolean(localStorage.getItem('sphs_scanner_key'));
+    }
+    try {
+      const res = await fetch('/api/scanner/verify-key', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: code })
+      });
+      const data = await res.json();
+      return Boolean(data.success);
+    } catch (err) {
+      return Boolean(localStorage.getItem('sphs_scanner_key'));
+    }
+  }
+
+  showLockOverlay() {
+    const overlay = document.getElementById('scanner-lock-overlay');
+    if (overlay) overlay.classList.remove('hidden');
+    const input = document.getElementById('lock-passcode-input');
+    if (input) {
+      input.value = '';
+      setTimeout(() => input.focus(), 300);
+      input.oninput = (e) => {
+        if (e.target.value.length === 5) {
+          window.submitScannerPasscode();
+        }
+      };
+    }
+  }
+
+  hideLockOverlay() {
+    const overlay = document.getElementById('scanner-lock-overlay');
+    if (overlay) overlay.classList.add('hidden');
+  }
+
+  async unlockWithCode(code) {
+    const errorEl = document.getElementById('lock-error-msg');
+    const submitBtn = document.getElementById('lock-submit-btn');
+    if (errorEl) errorEl.style.display = 'none';
+
+    const cleanCode = (code || '').trim();
+    if (!cleanCode) {
+      if (errorEl) {
+        errorEl.textContent = 'Please enter the access code';
+        errorEl.style.display = 'block';
+      }
+      return;
+    }
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Verifying...';
+    }
+
+    const isValid = await this.verifyKeyWithServer(cleanCode);
+    if (isValid) {
+      localStorage.setItem('sphs_scanner_key', cleanCode);
+      this.scannerKey = cleanCode;
+      this.isLocked = false;
+      this.hideLockOverlay();
+      this.showToast('✅ Scanner unlocked successfully!', 'success');
+      await this.startScanner();
+    } else {
+      if (errorEl) {
+        errorEl.textContent = '❌ Invalid Access Code. Try again.';
+        errorEl.style.display = 'block';
+      }
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Unlock Scanner';
+      }
+    }
+  }
+
   // --- Camera & Scanner ---
   async startScanner() {
     try {
@@ -742,7 +848,10 @@ class AttendanceApp {
       try {
         const response = await fetch('/api/scan', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Scanner-Key': this.scannerKey || localStorage.getItem('sphs_scanner_key') || ''
+          },
           body: JSON.stringify({
             qr_payload: qrPayload,
             timestamp: timestamp,
@@ -939,7 +1048,10 @@ class AttendanceApp {
     try {
       const res = await fetch('/api/scan/undo', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Scanner-Key': this.scannerKey || localStorage.getItem('sphs_scanner_key') || ''
+        },
         body: JSON.stringify({
           student_id: studentId,
           date: dateStr || getLocalDateString()
@@ -1023,7 +1135,10 @@ class AttendanceApp {
     try {
       const response = await fetch('/api/sync', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Scanner-Key': this.scannerKey || localStorage.getItem('sphs_scanner_key') || ''
+        },
         body: JSON.stringify({ scans: pendingList })
       });
 
@@ -1073,3 +1188,10 @@ class AttendanceApp {
 window.addEventListener('DOMContentLoaded', () => {
   window.app = new AttendanceApp();
 });
+
+window.submitScannerPasscode = function() {
+  const input = document.getElementById('lock-passcode-input');
+  if (input && window.app) {
+    window.app.unlockWithCode(input.value);
+  }
+};

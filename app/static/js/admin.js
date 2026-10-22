@@ -973,6 +973,17 @@ function initSettings() {
   const testN8nBtn = document.getElementById('test-n8n-btn');
   const updatePwdBtn = document.getElementById('update-pwd-btn');
 
+  // Dynamic Kiosk Link setup
+  const kioskInput = document.getElementById('kiosk-full-link');
+  const scannerCodeInput = document.getElementById('set-scanner-code');
+  if (kioskInput && scannerCodeInput) {
+    const code = scannerCodeInput.value.trim() || '52186';
+    kioskInput.value = `${window.location.origin}/scanner?key=${code}`;
+    scannerCodeInput.addEventListener('input', () => {
+      kioskInput.value = `${window.location.origin}/scanner?key=${scannerCodeInput.value.trim()}`;
+    });
+  }
+
   if (saveSettingsBtn) {
     saveSettingsBtn.addEventListener('click', async () => {
       const schoolName = document.getElementById('set-school-name').value.trim();
@@ -994,7 +1005,8 @@ function initSettings() {
             school_start_time: startTime,
             late_threshold_time: lateTime,
             school_end_time: endTime,
-            classes: JSON.stringify(classesArray)
+            classes: JSON.stringify(classesArray),
+            scanner_access_code: document.getElementById('set-scanner-code')?.value.trim() || '52186'
           })
         });
         const data = await res.json();
@@ -1109,6 +1121,53 @@ function initAuth() {
     });
   }
 }
+
+// --- SCANNER SECURITY & KIOSK LINK HELPERS ---
+window.copyKioskLinkToClipboard = function() {
+  const kioskInput = document.getElementById('kiosk-full-link');
+  if (!kioskInput) return;
+  kioskInput.select();
+  navigator.clipboard.writeText(kioskInput.value).then(() => {
+    const copyBtn = document.getElementById('copy-kiosk-link-btn');
+    if (copyBtn) {
+      const orig = copyBtn.innerHTML;
+      copyBtn.innerHTML = '✅ Copied to Clipboard!';
+      copyBtn.style.background = '#059669';
+      copyBtn.style.color = '#fff';
+      setTimeout(() => {
+        copyBtn.innerHTML = orig;
+        copyBtn.style.background = '';
+        copyBtn.style.color = '';
+      }, 2500);
+    }
+  }).catch(() => {
+    alert('Link copied: ' + kioskInput.value);
+  });
+};
+
+window.saveScannerSecuritySettings = async function() {
+  const codeEl = document.getElementById('set-scanner-code');
+  const code = (codeEl ? codeEl.value : '').trim();
+  if (!code) {
+    alert('Please enter a valid scanner access code (e.g. 52186)');
+    return;
+  }
+  try {
+    const res = await fetch('/api/settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ scanner_access_code: code })
+    });
+    const data = await res.json();
+    if (data.success) {
+      alert(`Scanner Access Key saved as ${code}! Any device without this key will now be locked.`);
+      const kioskInput = document.getElementById('kiosk-full-link');
+      if (kioskInput) kioskInput.value = `${window.location.origin}/scanner?key=${code}`;
+    }
+  } catch (e) {
+    alert('Error saving scanner security settings');
+  }
+};
 
 // Security HTML escaper
 function escapeHtml(str) {

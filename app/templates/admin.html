@@ -457,6 +457,38 @@
         </div>
       </div>
 
+      <!-- Gatekeeper Scanner Security & Kiosk Link -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-title">🔒 Gatekeeper Scanner Security & Access Key</div>
+          <button id="save-scanner-code-btn" class="btn btn-primary" onclick="saveScannerSecuritySettings()">Save Scanner Key</button>
+        </div>
+        <div style="padding: 20px;">
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+            Protects your camera scanner from unauthorized access. Only devices with the correct 5-digit code or authorized kiosk link can scan student attendance.
+          </p>
+          <div class="form-grid" style="padding: 0; margin-bottom: 16px;">
+            <div class="form-field">
+              <label>Scanner 5-Digit Access Code</label>
+              <input type="text" id="set-scanner-code" maxlength="10" value="{{ settings.scanner_access_code or '52186' }}" style="font-family: monospace; font-size: 18px; font-weight: 700; letter-spacing: 4px; color: #0284c7; width: 180px;">
+              <small>Default: <strong>52186</strong> (Changing this instantly locks out any old or lost phones)</small>
+            </div>
+            <div class="form-field" style="grid-column: 1 / -1;">
+              <label>Authorized Kiosk Link (Send to Gatekeeper via WhatsApp)</label>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <input type="text" id="kiosk-full-link" readonly value="" style="background: #f1f5f9; color: #0369a1; font-family: monospace; font-size: 13px; font-weight: 600; flex: 1; padding: 9px 12px; border: 1px solid var(--border); border-radius: 6px;">
+                <button type="button" id="copy-kiosk-link-btn" class="btn btn-secondary" onclick="copyKioskLinkToClipboard()" style="white-space: nowrap; cursor: pointer;">
+                  📋 Copy WhatsApp Link
+                </button>
+              </div>
+              <small style="margin-top: 6px; display: block; color: var(--text-muted);">
+                Opening this link once on the gatekeeper's phone permanently remembers their device so they never need to enter the code again.
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- WhatsApp & n8n Integration Box -->
       <div class="section-card">
         <div class="section-header">

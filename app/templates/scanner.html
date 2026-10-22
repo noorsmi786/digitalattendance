@@ -235,6 +235,35 @@
     </div>
   </div>
 
+  <!-- Scanner Access Lock Screen (Method 2: Access Code) -->
+  <div id="scanner-lock-overlay" class="modal-backdrop hidden" style="z-index: 99999; background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; position: fixed; inset: 0;">
+    <div class="modal-window" style="max-width: 360px; width: 90%; text-align: center; padding: 28px 24px; border: 1px solid #334155; border-radius: 16px; background: #1e293b; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);">
+      <div style="width: 56px; height: 56px; border-radius: 50%; background: #0369a1; color: #38bdf8; display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 16px auto; box-shadow: 0 0 20px rgba(56,189,248,0.3);">
+        🔒
+      </div>
+      <h3 style="color: #fff; font-size: 18px; margin: 0 0 6px 0; font-weight: 700;">Scanner Restricted</h3>
+      <p style="color: #94a3b8; font-size: 13px; margin: 0 0 20px 0; line-height: 1.4;">
+        This device is not authorized yet. Enter the 5-digit Access Code or open the authorized link provided by the Principal.
+      </p>
+
+      <form id="lock-screen-form" onsubmit="event.preventDefault(); window.submitScannerPasscode();">
+        <div style="margin-bottom: 16px;">
+          <input type="password" id="lock-passcode-input" inputmode="numeric" pattern="[0-9]*" maxlength="10" placeholder="•••••" autofocus style="width: 100%; box-sizing: border-box; text-align: center; font-size: 24px; letter-spacing: 8px; padding: 12px; background: #0f172a; border: 2px solid #334155; color: #38bdf8; border-radius: 10px; outline: none; font-family: monospace;">
+        </div>
+
+        <div id="lock-error-msg" style="color: #f87171; font-size: 12.5px; font-weight: 600; margin-bottom: 14px; min-height: 18px; display: none;"></div>
+
+        <button type="submit" id="lock-submit-btn" style="width: 100%; padding: 12px; background: #0284c7; color: #fff; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s;">
+          Unlock Scanner
+        </button>
+      </form>
+
+      <div style="margin-top: 18px; border-top: 1px solid #334155; padding-top: 14px;">
+        <a href="/login" style="color: #64748b; font-size: 12px; text-decoration: none;">Are you the Principal? Log in here &rarr;</a>
+      </div>
+    </div>
+  </div>
+
   <!-- Offline Bundled Library -->
   <script src="/static/js/html5-qrcode.min.js"></script>
   <script src="/static/js/scanner.js?v={{ cache_bust }}"></script>

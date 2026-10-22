@@ -106,6 +106,7 @@ def scanner_page(request: Request):
             "school_name": school_name,
             "classes": settings.get("classes_list", []),
             "today_scanned": marked_count,
+            "url_key": request.query_params.get("key", ""),
             "cache_bust": int(datetime.now(PKT).timestamp()),
         }
     )
@@ -345,13 +346,36 @@ def photo_booth_page(request: Request, class_name: Optional[str] = None):
 
 # ==================== SCANNER & ATTENDANCE API ====================
 
+def verify_scanner_access(request: Request) -> bool:
+    """Verifies scanner key from header, query param, or admin session"""
+    if is_authenticated(request):
+        return True
+    configured_code = get_setting("scanner_access_code", "52186").strip()
+    if not configured_code:
+        return True
+    header_key = request.headers.get("X-Scanner-Key", "").strip()
+    query_key = request.query_params.get("key", "").strip()
+    return header_key == configured_code or query_key == configured_code
+
+class VerifyScannerKeyRequest(BaseModel):
+    code: str
+
+@app.post("/api/scanner/verify-key")
+def api_verify_scanner_key(payload: VerifyScannerKeyRequest, request: Request):
+    configured_code = get_setting("scanner_access_code", "52186").strip()
+    if is_authenticated(request) or (configured_code and payload.code.strip() == configured_code):
+        return {"success": True, "message": "Access granted"}
+    return {"success": False, "message": "Invalid scanner access code"}
+
 class ScanRequest(BaseModel):
     qr_payload: str
     timestamp: Optional[str] = None
     sync_id: Optional[str] = None
 
 @app.post("/api/scan")
-def api_scan_single(payload: ScanRequest):
+def api_scan_single(payload: ScanRequest, request: Request):
+    if not verify_scanner_access(request):
+        raise HTTPException(status_code=403, detail="Scanner access restricted. Invalid key.")
     result = process_scan(
         qr_payload=payload.qr_payload,
         scan_timestamp=payload.timestamp,
@@ -364,7 +388,9 @@ class BatchSyncRequest(BaseModel):
     scans: List[Dict[str, Any]]
 
 @app.post("/api/sync")
-def api_sync_batch(payload: BatchSyncRequest):
+def api_sync_batch(payload: BatchSyncRequest, request: Request):
+    if not verify_scanner_access(request):
+        raise HTTPException(status_code=403, detail="Scanner access restricted. Invalid key.")
     result = sync_batch_scans(payload.scans)
     return result
 
@@ -429,7 +455,9 @@ def api_delete_attendance(
     return result
 
 @app.post("/api/scan/undo")
-def api_undo_scan(payload: AttendanceDeleteRequest):
+def api_undo_scan(payload: AttendanceDeleteRequest, request: Request):
+    if not verify_scanner_access(request):
+        raise HTTPException(status_code=403, detail="Scanner access restricted. Invalid key.")
     # Allows phone scanner to immediately undo/remove a scan if made by mistake
     dt = payload.date or get_current_school_date()
     result = delete_attendance_entry(
