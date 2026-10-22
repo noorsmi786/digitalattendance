@@ -541,7 +541,7 @@ class AttendanceApp {
   async checkScannerAccess() {
     const urlParams = new URLSearchParams(window.location.search);
     const urlKey = urlParams.get('key');
-    const candidateKey = urlKey || localStorage.getItem('sphs_scanner_key') || '';
+    const candidateKey = (urlKey || localStorage.getItem('sphs_scanner_key') || '').trim();
 
     if (candidateKey) {
       const isValid = await this.verifyKeyWithServer(candidateKey);
@@ -567,7 +567,8 @@ class AttendanceApp {
 
   async verifyKeyWithServer(code) {
     if (!navigator.onLine) {
-      return Boolean(localStorage.getItem('sphs_scanner_key'));
+      const saved = localStorage.getItem('sphs_scanner_key');
+      return Boolean(saved && saved === code);
     }
     try {
       const res = await fetch('/api/scanner/verify-key', {
@@ -575,17 +576,35 @@ class AttendanceApp {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code: code })
       });
-      const data = await res.json();
-      return Boolean(data.success);
+      if (res.ok) {
+        const data = await res.json();
+        return Boolean(data.success);
+      }
+      return false;
     } catch (err) {
-      return Boolean(localStorage.getItem('sphs_scanner_key'));
+      console.warn('Network error during verify-key:', err);
+      if (!navigator.onLine) {
+        const saved = localStorage.getItem('sphs_scanner_key');
+        return Boolean(saved && saved === code);
+      }
+      return false;
     }
   }
 
   showLockOverlay() {
     const overlay = document.getElementById('scanner-lock-overlay');
-    if (overlay) overlay.classList.remove('hidden');
+    if (overlay) {
+      overlay.classList.remove('hidden');
+      overlay.style.setProperty('display', 'flex', 'important');
+    }
     const input = document.getElementById('lock-passcode-input');
+    const submitBtn = document.getElementById('lock-submit-btn');
+    const errorEl = document.getElementById('lock-error-msg');
+    if (errorEl) errorEl.style.display = 'none';
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Unlock Scanner';
+    }
     if (input) {
       input.value = '';
       setTimeout(() => input.focus(), 300);
@@ -599,10 +618,16 @@ class AttendanceApp {
 
   hideLockOverlay() {
     const overlay = document.getElementById('scanner-lock-overlay');
-    if (overlay) overlay.classList.add('hidden');
+    if (overlay) {
+      overlay.classList.add('hidden');
+      overlay.style.setProperty('display', 'none', 'important');
+    }
   }
 
   async unlockWithCode(code) {
+    if (this.isVerifyingCode) return;
+    this.isVerifyingCode = true;
+
     const errorEl = document.getElementById('lock-error-msg');
     const submitBtn = document.getElementById('lock-submit-btn');
     if (errorEl) errorEl.style.display = 'none';
@@ -613,6 +638,7 @@ class AttendanceApp {
         errorEl.textContent = 'Please enter the access code';
         errorEl.style.display = 'block';
       }
+      this.isVerifyingCode = false;
       return;
     }
 
@@ -621,20 +647,38 @@ class AttendanceApp {
       submitBtn.textContent = 'Verifying...';
     }
 
-    const isValid = await this.verifyKeyWithServer(cleanCode);
-    if (isValid) {
-      localStorage.setItem('sphs_scanner_key', cleanCode);
-      this.scannerKey = cleanCode;
-      this.isLocked = false;
-      this.hideLockOverlay();
-      this.showToast('✅ Scanner unlocked successfully!', 'success');
-      await this.startScanner();
-    } else {
+    try {
+      const isValid = await this.verifyKeyWithServer(cleanCode);
+      if (isValid) {
+        localStorage.setItem('sphs_scanner_key', cleanCode);
+        this.scannerKey = cleanCode;
+        this.isLocked = false;
+        this.hideLockOverlay();
+        this.showToast('✅ Scanner unlocked successfully!', 'success');
+        try {
+          await this.startScanner();
+        } catch (camErr) {
+          console.error('Camera init error after unlock:', camErr);
+        }
+      } else {
+        if (errorEl) {
+          errorEl.textContent = '❌ Invalid Access Code. Try again.';
+          errorEl.style.display = 'block';
+        }
+        const input = document.getElementById('lock-passcode-input');
+        if (input) {
+          input.value = '';
+          setTimeout(() => input.focus(), 100);
+        }
+      }
+    } catch (err) {
       if (errorEl) {
-        errorEl.textContent = '❌ Invalid Access Code. Try again.';
+        errorEl.textContent = 'Connection error. Please try again.';
         errorEl.style.display = 'block';
       }
-      if (submitBtn) {
+    } finally {
+      this.isVerifyingCode = false;
+      if (submitBtn && this.isLocked) {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Unlock Scanner';
       }
