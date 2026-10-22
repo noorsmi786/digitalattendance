@@ -501,12 +501,63 @@ function initStudents() {
   }
 }
 
+function updateQuickFilterBadges(students) {
+  if (!students) return;
+  const total = students.length;
+  let boysMissing = 0;
+  let boysDone = 0;
+  let girls = 0;
+  let missingFather = 0;
+
+  students.forEach(s => {
+    const isGirl = (s.gender || '').toLowerCase() === 'female';
+    const hasPhoto = Boolean(s.photo_url && s.photo_url.trim());
+    const fn = (s.father_name || '').trim();
+    const isMissingFather = !fn || fn === '-' || fn === 'N/A' || fn === 'Unknown';
+
+    if (isGirl) {
+      girls++;
+    } else {
+      if (hasPhoto) {
+        boysDone++;
+      } else {
+        boysMissing++;
+      }
+    }
+
+    if (isMissingFather) {
+      missingFather++;
+    }
+  });
+
+  const elAll = document.getElementById('cnt-filter-all');
+  if (elAll) elAll.textContent = total;
+
+  const elBoysMissing = document.getElementById('cnt-filter-boys-missing');
+  if (elBoysMissing) elBoysMissing.textContent = boysMissing;
+
+  const elBoysDone = document.getElementById('cnt-filter-boys-done');
+  if (elBoysDone) elBoysDone.textContent = boysDone;
+
+  const elGirls = document.getElementById('cnt-filter-girls');
+  if (elGirls) elGirls.textContent = girls;
+
+  const elFather = document.getElementById('cnt-filter-missing-father');
+  if (elFather) elFather.textContent = missingFather;
+
+  const btnFather = document.getElementById('quick-filter-missing-father');
+  if (btnFather) {
+    btnFather.style.display = missingFather > 0 ? 'inline-block' : 'none';
+  }
+}
+
 async function loadStudents() {
   try {
     const res = await fetch('/api/students');
     const data = await res.json();
     allStudentsMasterList = data.students || [];
     studentsList = allStudentsMasterList;
+    updateQuickFilterBadges(allStudentsMasterList);
     renderStudentsTable();
     populateLeaveStudentSelector(allStudentsMasterList);
   } catch (err) {

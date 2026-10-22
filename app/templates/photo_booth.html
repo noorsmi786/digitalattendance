@@ -283,11 +283,11 @@
 
         <!-- Quick filter pills -->
         <div class="quick-pills-row">
-          <button type="button" class="quick-pill active" id="pill-all" onclick="setQuickFilter('all')">All ({{ students | length }})</button>
-          <button type="button" class="quick-pill" id="pill-boys-needs" onclick="setQuickFilter('boys-needs')" style="border-color:#38bdf8;color:#38bdf8;">⚡ Boys Needing Photos</button>
-          <button type="button" class="quick-pill" id="pill-needs" onclick="setQuickFilter('needs')">⚪ All Missing</button>
-          <button type="button" class="quick-pill" id="pill-done" onclick="setQuickFilter('done')">✅ Done</button>
-          <button type="button" class="quick-pill" id="pill-girls" onclick="setQuickFilter('girls')">👧 Girls</button>
+          <button type="button" class="quick-pill active" id="pill-all" onclick="setQuickFilter('all')">All (<span id="pb-cnt-all">{{ students | length }}</span>)</button>
+          <button type="button" class="quick-pill" id="pill-boys-needs" onclick="setQuickFilter('boys-needs')" style="border-color:#38bdf8;color:#38bdf8;">⚡ Boys Needing Photos (<span id="pb-cnt-boys-needs">0</span>)</button>
+          <button type="button" class="quick-pill" id="pill-needs" onclick="setQuickFilter('needs')">⚪ All Missing (<span id="pb-cnt-needs">0</span>)</button>
+          <button type="button" class="quick-pill" id="pill-done" onclick="setQuickFilter('done')">✅ Done (<span id="pb-cnt-done">0</span>)</button>
+          <button type="button" class="quick-pill" id="pill-girls" onclick="setQuickFilter('girls')">👧 Girls (<span id="pb-cnt-girls">0</span>)</button>
         </div>
 
         <input type="text" id="queue-search" class="search-input" placeholder="Search student name, roll, or code...">
@@ -543,6 +543,37 @@
       applyFilters();
     }
 
+    function updatePhotoBoothPillCounts() {
+      if (!rawStudents) return;
+      let boysNeeds = 0;
+      let allNeeds = 0;
+      let done = 0;
+      let girls = 0;
+
+      rawStudents.forEach(s => {
+        const isGirl = (s.gender || '').toLowerCase() === 'female';
+        const hasPhoto = Boolean(s.photo_url && s.photo_url.trim());
+        if (isGirl) girls++;
+        if (hasPhoto) {
+          done++;
+        } else {
+          allNeeds++;
+          if (!isGirl) boysNeeds++;
+        }
+      });
+
+      const elAll = document.getElementById('pb-cnt-all');
+      if (elAll) elAll.textContent = rawStudents.length;
+      const elBoys = document.getElementById('pb-cnt-boys-needs');
+      if (elBoys) elBoys.textContent = boysNeeds;
+      const elNeeds = document.getElementById('pb-cnt-needs');
+      if (elNeeds) elNeeds.textContent = allNeeds;
+      const elDone = document.getElementById('pb-cnt-done');
+      if (elDone) elDone.textContent = done;
+      const elGirls = document.getElementById('pb-cnt-girls');
+      if (elGirls) elGirls.textContent = girls;
+    }
+
     function updatePillStates(cls, gender, photoStatus) {
       document.querySelectorAll('.quick-pill').forEach(p => p.classList.remove('active'));
       if (gender === 'Male' && photoStatus === 'needs') {
@@ -684,6 +715,7 @@
           if (rawMatch) rawMatch.photo_url = data.photo_url;
 
           skippedIds.delete(s.id);
+          updatePhotoBoothPillCounts();
           document.getElementById('last-captured-img').src = data.photo_url;
           document.getElementById('last-captured-name').textContent = `✅ Saved: Roll ${s.roll_no} – ${s.full_name}`;
           document.getElementById('last-captured-sub').textContent = `Saved as ${data.student_code}.jpg`;
@@ -747,6 +779,7 @@
     window.addEventListener('DOMContentLoaded', () => {
       initSegmentation();
       startCamera();
+      updatePhotoBoothPillCounts();
       applyFilters();
     });
   </script>
