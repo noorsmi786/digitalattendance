@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sphs-attendance-v2';
+const CACHE_NAME = 'sphs-attendance-v4';
 const ASSETS_TO_CACHE = [
   '/scanner',
   '/static/manifest.json',

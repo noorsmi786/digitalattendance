@@ -146,6 +146,13 @@ class AttendanceApp {
 
   // --- Web Audio Synthesizer (Zero asset dependencies) ---
   setupAudio() {
+    if ('speechSynthesis' in window) {
+      this.cachedVoices = window.speechSynthesis.getVoices();
+      window.speechSynthesis.onvoiceschanged = () => {
+        this.cachedVoices = window.speechSynthesis.getVoices();
+      };
+    }
+
     const initCtx = () => {
       if (!this.audioCtx) {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -217,15 +224,30 @@ class AttendanceApp {
     }
   }
 
-  // --- Voice Announcements (Web Speech API) ---
+  // --- Voice Announcements (Native Urdu / Subcontinental Phonetics) ---
+  getUrduVoice() {
+    if (!('speechSynthesis' in window)) return null;
+    const voices = (this.cachedVoices && this.cachedVoices.length > 0)
+      ? this.cachedVoices
+      : window.speechSynthesis.getVoices();
+    if (!voices || voices.length === 0) return null;
+
+    // 1. Look for native Urdu (Pakistan / India)
+    let v = voices.find(v => v.lang && (v.lang.toLowerCase() === 'ur-pk' || v.lang.toLowerCase() === 'ur_pk' || v.lang.toLowerCase().startsWith('ur')));
+    if (v) return v;
+
+    // 2. Look for subcontinental phonetic voices that pronounce regional names accurately
+    v = voices.find(v => v.lang && (v.lang.toLowerCase().includes('ur') || v.lang.toLowerCase().includes('hi-in') || v.lang.toLowerCase().includes('pa-pk') || v.lang.toLowerCase().includes('en-in')));
+    return v || null;
+  }
+
   speakAnnouncement(fullName, status) {
     if (this.soundMode !== 'voice' || !('speechSynthesis' in window)) return;
 
-    // Extract preferred call name (e.g. "Muhammad Huzaifa" -> "Huzaifa", "Sudais" -> "Sudais")
-    let callName = (fullName || 'Student').trim();
+    // Extract preferred call name (e.g. "Muhammad Sohail" -> "Sohail")
+    let callName = (fullName || 'طالب علم').trim();
     const parts = callName.split(/\s+/);
     if (parts.length > 1) {
-      // If starts with "Muhammad" or "M.", use the second part for natural addressing
       if (['muhammad', 'mohammad', 'm.', 'md'].includes(parts[0].toLowerCase()) && parts[1]) {
         callName = parts[1];
       } else {
@@ -233,13 +255,13 @@ class AttendanceApp {
       }
     }
 
-    let phrase = `Welcome ${callName}`;
+    let phrase = `${callName}، حاضر`;
     if (status === 'already') {
-      phrase = `Already marked, ${callName}`;
+      phrase = `${callName}، پہلے سے حاضر ہے`;
     } else if (status === 'late') {
-      phrase = `Welcome ${callName}, marked late`;
+      phrase = `${callName}، لیٹ حاضری`;
     } else if (status === 'leave') {
-      phrase = `${callName} is on leave`;
+      phrase = `${callName}، رخصت پر ہے`;
     }
 
     this.speakVoice(phrase);
@@ -248,10 +270,16 @@ class AttendanceApp {
   speakVoice(text) {
     if (!('speechSynthesis' in window)) return;
     try {
-      // Instantly cancel any previous speech to avoid queue buildup
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 1.05; // Slightly brisk for school entry queue
+      const v = this.getUrduVoice();
+      if (v) {
+        utterance.voice = v;
+        utterance.lang = v.lang || 'ur-PK';
+      } else {
+        utterance.lang = 'ur-PK';
+      }
+      utterance.rate = 1.0;
       utterance.pitch = 1.0;
       utterance.volume = 1.0;
       window.speechSynthesis.speak(utterance);
@@ -329,19 +357,19 @@ class AttendanceApp {
       });
     }
 
-    // 3-Way Sound mode toggle button (🗣️ Voice -> 🔔 Beep -> 🔇 Mute)
+    // 3-Way Sound mode toggle button (🗣️ Urdu Voice -> 🔔 Beep Chime -> 🔇 Mute)
     const soundBtn = document.getElementById('voice-toggle-btn');
     if (soundBtn) {
       const updateSoundUI = () => {
         if (this.soundMode === 'voice') {
           soundBtn.textContent = '🗣️';
-          soundBtn.title = 'Sound Mode: Spoken Voice (Tap for Beep chime)';
+          soundBtn.title = 'آواز: اردو آواز (Urdu Voice) — کلک کر کے صرف بیپ کریں';
         } else if (this.soundMode === 'beep') {
           soundBtn.textContent = '🔔';
-          soundBtn.title = 'Sound Mode: Electronic Beep Chime (Tap to Mute)';
+          soundBtn.title = 'آواز: صرف بیپ چائم (Beep Only) — کلک کر کے خاموش کریں';
         } else {
           soundBtn.textContent = '🔇';
-          soundBtn.title = 'Sound Mode: Muted / Silent (Tap for Voice)';
+          soundBtn.title = 'آواز: خاموش (Muted) — کلک کر کے اردو آواز چلائیں';
         }
       };
 
@@ -350,15 +378,15 @@ class AttendanceApp {
       soundBtn.addEventListener('click', () => {
         if (this.soundMode === 'voice') {
           this.soundMode = 'beep';
-          this.showToast('Sound Mode: Classic Beep Chime 🔔', 'info');
+          this.showToast('🔔 آواز: صرف بیپ چائم (Beep Only)', 'info');
           this.playBeep('success');
         } else if (this.soundMode === 'beep') {
           this.soundMode = 'mute';
-          this.showToast('Sound Mode: Silent / Muted 🔇', 'info');
+          this.showToast('🔇 آواز: خاموش (Muted)', 'info');
         } else {
           this.soundMode = 'voice';
-          this.showToast('Sound Mode: Spoken Voice ("Welcome") 🗣️', 'info');
-          this.speakVoice('Welcome');
+          this.showToast('🗣️ آواز: اردو آواز (Urdu Voice)', 'info');
+          this.speakVoice('خوش آمدید');
         }
         localStorage.setItem('sphs_sound_mode', this.soundMode);
         updateSoundUI();
