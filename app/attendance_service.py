@@ -1,17 +1,21 @@
 from datetime import datetime, time
 from typing import Dict, Any, List, Optional
 import sqlite3
+from zoneinfo import ZoneInfo
 from app.database import get_db_connection, get_setting
 from app.qr_service import verify_qr_payload
 from app.webhook_service import trigger_n8n_event
 
+# Pakistan Standard Time (PKT, UTC+5)
+PKT = ZoneInfo("Asia/Karachi")
+
 def get_current_school_date() -> str:
-    """Returns YYYY-MM-DD"""
-    return datetime.now().strftime("%Y-%m-%d")
+    """Returns YYYY-MM-DD in Asia/Karachi (PKT) timezone"""
+    return datetime.now(PKT).strftime("%Y-%m-%d")
 
 def get_current_school_time() -> str:
-    """Returns HH:MM:SS"""
-    return datetime.now().strftime("%H:%M:%S")
+    """Returns HH:MM:SS in Asia/Karachi (PKT) timezone"""
+    return datetime.now(PKT).strftime("%H:%M:%S")
 
 def parse_time_str(t_str: str) -> time:
     """Parses HH:MM or HH:MM:SS string to time object"""
@@ -83,14 +87,20 @@ def process_scan(
     student = dict(student_row)
     student_id = student["id"]
 
-    # Parse scan date and time
+    # Parse scan date and time (always convert to Pakistan Standard Time PKT)
     if scan_timestamp:
         try:
-            # Format expected: ISO string or 'YYYY-MM-DD HH:MM:SS'
+            # Format expected: ISO string (e.g. 2026-10-22T03:15:00.000Z) or 'YYYY-MM-DD HH:MM:SS'
             if "T" in scan_timestamp:
                 dt = datetime.fromisoformat(scan_timestamp.replace("Z", "+00:00"))
             else:
                 dt = datetime.strptime(scan_timestamp, "%Y-%m-%d %H:%M:%S")
+
+            if dt.tzinfo is not None:
+                dt = dt.astimezone(PKT)
+            else:
+                dt = dt.replace(tzinfo=PKT)
+
             scan_date = dt.strftime("%Y-%m-%d")
             scan_time = dt.strftime("%H:%M:%S")
         except Exception:
@@ -128,7 +138,7 @@ def process_scan(
         status = determine_status_for_time(scan_time)
         notes = ""
 
-    now_iso = datetime.now().isoformat()
+    now_iso = datetime.now(PKT).isoformat()
     cursor.execute("""
         INSERT INTO attendance (student_id, date, scan_time, status, scan_method, sync_id, notes, updated_by, updated_at)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -210,7 +220,7 @@ def manual_attendance_update(
     """Allows the principal to manually mark or correct attendance for any student"""
     conn = get_db_connection()
     cursor = conn.cursor()
-    now_iso = datetime.now().isoformat()
+    now_iso = datetime.now(PKT).isoformat()
 
     existing = cursor.execute("""
         SELECT * FROM attendance WHERE student_id = ? AND date = ?
@@ -249,7 +259,7 @@ def delete_attendance_entry(
     """Permanently removes an attendance record for a student on a specific date (e.g. mistaken scan)"""
     conn = get_db_connection()
     cursor = conn.cursor()
-    now_iso = datetime.now().isoformat()
+    now_iso = datetime.now(PKT).isoformat()
 
     existing = cursor.execute("""
         SELECT * FROM attendance WHERE student_id = ? AND date = ?
@@ -300,7 +310,7 @@ def auto_mark_absentees(target_date: Optional[str] = None) -> int:
     """, (target_date,)).fetchall()
 
     count = 0
-    now_iso = datetime.now().isoformat()
+    now_iso = datetime.now(PKT).isoformat()
     absent_students_list = []
 
     for stu in unmarked_students:

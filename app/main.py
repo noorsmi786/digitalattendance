@@ -1,7 +1,10 @@
 import os
 import json
 from datetime import datetime, date, timedelta
+from zoneinfo import ZoneInfo
 from typing import Optional, List, Dict, Any
+
+PKT = ZoneInfo("Asia/Karachi")
 
 from fastapi import FastAPI, Request, Response, Depends, HTTPException, UploadFile, File, Form, Query
 from fastapi.responses import HTMLResponse, RedirectResponse, StreamingResponse, JSONResponse
@@ -64,7 +67,7 @@ def seed_initial_data_if_empty():
             ("SKG01", "Usman Shinwari",   "Zahid Khan",    "KG",   "01", "+923001234506", "Male",   "Loi Shalman"),
             ("S101",  "Omar Farooq",      "Said Badshah",  "1st",  "01", "+923001234507", "Male",   "Loi Shalman"),
         ]
-        now = datetime.now().isoformat()
+        now = datetime.now(PKT).isoformat()
         for code, name, father, cls, roll, phone, gender, addr in samples:
             qr = generate_qr_payload(code)
             conn.execute("""
@@ -103,7 +106,7 @@ def scanner_page(request: Request):
             "school_name": school_name,
             "classes": settings.get("classes_list", []),
             "today_scanned": marked_count,
-            "cache_bust": int(datetime.now().timestamp()),
+            "cache_bust": int(datetime.now(PKT).timestamp()),
         }
     )
 
@@ -130,7 +133,7 @@ def admin_page(request: Request):
         context={
             "settings": settings,
             "today_date": today_str,
-            "cache_bust": int(datetime.now().timestamp()),
+            "cache_bust": int(datetime.now(PKT).timestamp()),
         }
     )
 
@@ -307,7 +310,7 @@ def print_report_page(request: Request, date: Optional[str] = None, class_name: 
             "school_name": get_setting("school_name", "Shaheen Public High School Loi Shalman"),
             "date": target_date,
             "class_filter": class_name,
-            "now_time": datetime.now().strftime("%I:%M %p"),
+            "now_time": datetime.now(PKT).strftime("%I:%M %p"),
             "summary": dashboard_data,
             "records": dashboard_data["records"]
         }
@@ -374,7 +377,7 @@ def api_scanner_info():
     return {
         "school_name": get_setting("school_name", "Shaheen Public High School Loi Shalman"),
         "today_scanned_count": marked_count,
-        "server_time": datetime.now().strftime("%H:%M:%S")
+        "server_time": datetime.now(PKT).strftime("%H:%M:%S")
     }
 
 @app.get("/api/attendance/summary")
@@ -478,7 +481,7 @@ def api_add_student(payload: StudentCreateRequest, request: Request):
     # Generate Option-B student code: S{class}{roll:02d}  e.g. S501, S1002, SKG01
     student_code, clean_roll = compute_student_code_and_roll(payload.class_name, payload.roll_no)
     qr_payload = generate_qr_payload(student_code)
-    now_iso = datetime.now().isoformat()
+    now_iso = datetime.now(PKT).isoformat()
 
     try:
         cursor.execute("""
@@ -584,7 +587,7 @@ class LeaveCreateRequest(BaseModel):
 def api_create_leave(payload: LeaveCreateRequest, request: Request):
     require_auth(request)
     conn = get_db_connection()
-    now_iso = datetime.now().isoformat()
+    now_iso = datetime.now(PKT).isoformat()
     conn.execute("""
         INSERT INTO leaves (student_id, start_date, end_date, leave_type, reason, created_at)
         VALUES (?, ?, ?, ?, ?, ?)

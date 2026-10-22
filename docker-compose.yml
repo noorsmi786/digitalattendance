@@ -3,6 +3,8 @@ services:
     build: .
     container_name: digital_attendance
     restart: always
+    environment:
+      - TZ=Asia/Karachi
     volumes:
       - ./app/data:/app/app/data
       - ./app/uploads:/app/app/uploads

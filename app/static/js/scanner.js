@@ -1,4 +1,12 @@
 // Shaheen Public High School Loi Shalman - Attendance Scanner Engine
+
+function getLocalDateString(d = new Date()) {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 class AttendanceApp {
   constructor() {
     this.html5QrCode = null;
@@ -443,7 +451,7 @@ class AttendanceApp {
 
   // --- Offline Attendance History on Phone ---
   getTodayKey() {
-    return 'sphs_offline_log_' + new Date().toISOString().split('T')[0];
+    return 'sphs_offline_log_' + getLocalDateString();
   }
 
   getOfflineHistory() {
@@ -509,7 +517,7 @@ class AttendanceApp {
       return;
     }
 
-    const today = new Date().toISOString().split('T')[0];
+    const today = getLocalDateString();
     let csv = "Date,Time,Student Code,Student Name,Class,Roll No,Status\n";
 
     list.forEach(item => {
@@ -807,7 +815,7 @@ class AttendanceApp {
     const student = data.student || {};
     const status = data.status || 'Present';
     const isAlready = data.already_marked;
-    const scanDate = data.date || new Date().toISOString().split('T')[0];
+    const scanDate = data.date || getLocalDateString();
 
     // Populate student details
     if (nameEl) nameEl.textContent = student.full_name || 'Student';
@@ -934,7 +942,7 @@ class AttendanceApp {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           student_id: studentId,
-          date: dateStr || new Date().toISOString().split('T')[0]
+          date: dateStr || getLocalDateString()
         })
       });
       const resData = await res.json();

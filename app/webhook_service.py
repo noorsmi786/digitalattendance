@@ -4,6 +4,9 @@ import threading
 from typing import Dict, Any
 from app.database import get_setting, get_db_connection
 from datetime import datetime
+from zoneinfo import ZoneInfo
+
+PKT = ZoneInfo("Asia/Karachi")
 
 def _dispatch_request(url: str, secret: str, data: Dict[str, Any]):
     headers = {
@@ -19,7 +22,7 @@ def _dispatch_request(url: str, secret: str, data: Dict[str, Any]):
         conn = get_db_connection()
         conn.execute(
             "INSERT INTO audit_log (action, details, timestamp) VALUES (?, ?, ?)",
-            ("webhook_dispatched", f"URL: {url} | Status: {response.status_code}", datetime.now().isoformat())
+            ("webhook_dispatched", f"URL: {url} | Status: {response.status_code}", datetime.now(PKT).isoformat())
         )
         conn.commit()
         conn.close()
@@ -27,7 +30,7 @@ def _dispatch_request(url: str, secret: str, data: Dict[str, Any]):
         conn = get_db_connection()
         conn.execute(
             "INSERT INTO audit_log (action, details, timestamp) VALUES (?, ?, ?)",
-            ("webhook_error", f"URL: {url} | Error: {str(e)}", datetime.now().isoformat())
+            ("webhook_error", f"URL: {url} | Error: {str(e)}", datetime.now(PKT).isoformat())
         )
         conn.commit()
         conn.close()
@@ -47,7 +50,7 @@ def trigger_n8n_event(event_type: str, data: Dict[str, Any]):
     payload = {
         "event": event_type,
         "school_name": get_setting("school_name", "Shaheen Public High School Loi Shalman"),
-        "timestamp": datetime.now().isoformat(),
+        "timestamp": datetime.now(PKT).isoformat(),
         "data": data
     }
 
@@ -67,7 +70,7 @@ def test_webhook_endpoint(webhook_url: str, secret: str = "") -> Dict[str, Any]:
     test_payload = {
         "event": "test_ping",
         "message": "Connection test from Shaheen Public High School Attendance System",
-        "timestamp": datetime.now().isoformat(),
+        "timestamp": datetime.now(PKT).isoformat(),
         "data": {
             "test": True,
             "sample_student": {

@@ -1,6 +1,9 @@
 import io
 import csv
 from datetime import datetime
+from zoneinfo import ZoneInfo
+
+PKT = ZoneInfo("Asia/Karachi")
 from typing import List, Dict, Any, Tuple
 import openpyxl
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
@@ -97,7 +100,7 @@ def import_students_from_excel(file_bytes: bytes, filename: str) -> Dict[str, An
 
     added = 0
     updated = 0
-    now_iso = datetime.now().isoformat()
+    now_iso = datetime.now(PKT).isoformat()
 
     for row_num, row in enumerate(data_rows, start=2):
         if not row or all(v is None or str(v).strip() == "" for v in row):
