@@ -1281,7 +1281,7 @@
       background: linear-gradient(135deg, #059669 0%, #047857 100%);
       clip-path: polygon(0 0, 100% 100%, 0 100%);
       z-index: 1;
-      border-bottom: 1.2px solid #f59e0b;
+      /* no underline */
     }
     .card-geopro-front .gpro-wing-left-bot {
       position: absolute;
@@ -1302,7 +1302,7 @@
       background: linear-gradient(225deg, #059669 0%, #047857 100%);
       clip-path: polygon(100% 0, 0 100%, 100% 100%);
       z-index: 1;
-      border-bottom: 1.2px solid #f59e0b;
+      /* no underline */
     }
     .card-geopro-front .gpro-wing-right-bot {
       position: absolute;
@@ -1350,7 +1350,7 @@
       text-transform: uppercase;
       letter-spacing: 0.8px;
       box-shadow: 0 1px 4px rgba(4,67,50,0.3);
-      border: 0.8px solid #f59e0b;
+      border: none;
     }
 
     .card-geopro-front .gpro-table {
@@ -1661,14 +1661,44 @@
     }
 
     /* AREA B: Royal Navy Blue Faceted Wings */
+    .card-apex-front .apex-top-zone {
+      background: #ffffff;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .card-apex-front .apex-head {
+      width: 100%;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2.6mm 2mm 1.5mm;
+      background: #044332;
+    }
     .card-apex-front .apex-mid-section {
       position: relative;
       height: 26mm;
       width: 100%;
-      background: #044332; /* Top half fully filled with green! */
+      background: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: hidden;
+    }
+    /* Green fill strictly above the wings */
+    .card-apex-front .apex-green-backdrop-above-wings {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 13mm;
+      background: #044332;
+      z-index: 0;
     }
     .card-apex-front .apex-wing-left-top {
       position: absolute;
@@ -1679,7 +1709,7 @@
       background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
       clip-path: polygon(0 0, 100% 100%, 0 100%);
       z-index: 1;
-      border-bottom: 1.2px solid #60a5fa;
+      /* no underline */
     }
     .card-apex-front .apex-wing-left-bot {
       position: absolute;
@@ -1700,7 +1730,7 @@
       background: linear-gradient(225deg, #2563eb 0%, #1d4ed8 100%);
       clip-path: polygon(100% 0, 0 100%, 100% 100%);
       z-index: 1;
-      border-bottom: 1.2px solid #60a5fa;
+      /* no underline */
     }
     .card-apex-front .apex-wing-right-bot {
       position: absolute;
@@ -1746,7 +1776,7 @@
       border-radius: 1.5mm;
       text-transform: uppercase;
       letter-spacing: 0.8px;
-      border: 0.8px solid #f59e0b;
+      border: none;
       box-shadow: 0 1px 4px rgba(4,67,50,0.25);
     }
 
@@ -1850,7 +1880,7 @@
     .card-apex-back .apexb-top-stripes {
       height: 2.8mm;
       background: #044332;
-      border-bottom: 1.2px solid #f59e0b;
+      /* no underline */
       width: 100%;
       flex-shrink: 0;
     }
@@ -2014,8 +2044,9 @@
                   <div class="apex-slogan">LOI SHALMAN - KHYBER</div>
                 </div>
 
-                <!-- AREA B: Royal Navy Blue Wings (Seamless with Green Header) -->
+                <!-- AREA B: Royal Navy Blue Wings -->
                 <div class="apex-mid-section">
+                <div class="apex-green-backdrop-above-wings"></div>
                 <div class="apex-wing-left-top"></div>
                 <div class="apex-wing-left-bot"></div>
                 <div class="apex-wing-right-top"></div>
