@@ -1599,25 +1599,39 @@
        DESIGN: GEOMETRIC APEX (GREEN & METALLIC GOLD EDITION)
        ======================================================== */
     .card-apex-front {
-      width: 54mm;
-      height: 85.6mm;
-      background: #ffffff;
-      border: 1.2px solid #044332;
-      border-radius: 4.5mm;
+      width: 2in;
+      height: 3in;
+      background: #044332; /* Top-level background is green so absolutely NO white gap can exist at top! */
+      border: 1.5px solid #044332;
+      border-radius: 4mm;
       display: flex;
       flex-direction: column;
       position: relative;
       overflow: hidden;
       box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      box-sizing: border-box;
     }
-    /* AREA A: Solid Green Header — Extends seamlessly to top curved border */
+    .card-apex-back {
+      width: 2in;
+      height: 3in;
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 4mm;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      box-sizing: border-box;
+      padding: 0;
+      text-align: center;
+    }
+    /* AREA A: Solid Green Header — Pure green right to the physical curved corners */
     .card-apex-front .apex-top-zone {
       background: #044332;
       position: relative;
-      padding-top: 2.8mm;
-      margin-top: -1px;
-      margin-left: -1px;
-      margin-right: -1px;
+      padding-top: 2mm;
+      width: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -1631,7 +1645,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 0 2mm 1.5mm;
+      padding: 0 1.5mm 1mm;
+      background: #044332;
     }
     .card-apex-front .apex-crest {
       width: 7.5mm;
@@ -1785,10 +1800,20 @@
 
     .card-apex-front .apex-table {
       flex: 1;
-      padding: 0 4.5mm;
+      padding: 1mm 3.5mm;
       display: flex;
       flex-direction: column;
-      gap: 1.1mm;
+      gap: 1mm;
+      position: relative;
+      z-index: 2;
+      background: #ffffff; /* Crisp white background for the student information area */
+    }
+    .card-apex-front .apex-banner-wrap {
+      display: flex;
+      justify-content: center;
+      padding-top: 1mm;
+      padding-bottom: 1mm;
+      background: #ffffff; /* White background around badge */
       position: relative;
       z-index: 2;
     }
@@ -2022,7 +2047,7 @@
       💎 Design: Geometric Apex (Solid Green Header, 3D Gold Wings &amp; Sculpted Footer)
     </div>
     <div class="design-caption">
-      Front: <strong>Area A</strong> filled with Solid Deep Green (#044332) + pure white text; <strong>Area B</strong> 3D Metallic Amber/Gold faceted wings; <strong>Area C</strong> sculpted multi-layer geometric footer bar with gold divider ribbon.<br>
+      Card Size: <strong>2 &times; 3 Inches (50.8mm &times; 76.2mm Press Standard)</strong>.<br>Front: <strong>Area A</strong> filled with Solid Deep Green (#044332) + pure white text; <strong>Area B</strong> 3D Metallic Amber/Gold faceted wings; <strong>Area C</strong> sculpted multi-layer geometric footer bar with gold divider ribbon.<br>
       Back: School Name in authentic Urdu Nastaliq (<strong>شاہین پبلک ہائی سکول لوئے شلمان</strong>), School Helpline Contacts, Ghundakhel Address (No Website), and <strong>Big 29mm Attendance QR Code</strong>.
     </div>
 
