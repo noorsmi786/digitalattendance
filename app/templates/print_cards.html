@@ -1309,7 +1309,9 @@
       document.body.classList.toggle('eco-mode', ecoCheckbox.checked);
     });
 
-    const saved = localStorage.getItem('sphs_card_design') || 'split';
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramDesign = urlParams.get('design');
+    const saved = paramDesign || localStorage.getItem('sphs_card_design') || 'split-2b';
     if (['emerald','emerald-side','split','split-2b','royal','exec'].includes(saved)) {
       designSelect.value = saved;
     }

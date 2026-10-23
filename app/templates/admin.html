@@ -254,56 +254,311 @@
 
     <!-- ================== TAB 3: PRINT CARDS & STICKERS ================== -->
     <div id="tab-cards" class="tab-content">
-      <div class="section-card">
+
+      <!-- ── DESIGN GALLERY ── -->
+      <div class="section-card" style="margin-bottom: 16px;">
         <div class="section-header">
-          <div class="section-title">Print Student ID Cards & QR Stickers</div>
-        </div>
-        <div style="padding: 16px;">
-          <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 16px; flex-wrap: wrap;">
-            <select id="print-class-select" class="select-field" style="width: 180px;">
+          <div class="section-title">🎨 Choose Your ID Card Design</div>
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            <select id="print-class-select" class="select-field" style="width:160px;">
               <option value="">All Classes</option>
               {% for c in settings.classes_list %}
               <option value="{{ c }}">{{ c }}</option>
               {% endfor %}
             </select>
-            <button id="launch-print-cards-btn" class="btn btn-primary">
-              🖨️ Full ID Cards Studio
+            <button id="launch-print-cards-btn" class="btn btn-primary" style="white-space:nowrap;">
+              🖨️ Print Selected Design
             </button>
-            <a href="/print/comparison" class="btn btn-secondary" style="background:#044332;color:#fff;text-decoration:none;display:inline-flex;align-items:center;">
-              📄 1-Page Design Test Sheet (All 5 on 1 A4)
-            </a>
-            <button id="launch-print-stickers-btn" class="btn btn-secondary">
-              🏷️ QR Sticker Sheets
-            </button>
-            <a href="/print/card-backs" target="_blank" class="btn btn-secondary" style="background:#065f46;color:#fff;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
-              📇 ID Card Backs (A4 Master)
-            </a>
-            <a href="/print/card-preview-noqr" target="_blank" class="btn btn-secondary" style="background:#1e3a8a;color:#fff;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
-              🔍 Preview Fronts (No QR)
-            </a>
           </div>
+        </div>
 
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px;">
-            <div style="border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; background: #fafafa;">
-              <strong style="color: var(--primary); font-size: 12.5px;">Full ID Cards</strong>
-              <p style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px;">
-                Standard CR80 size (85.6mm × 54mm) with 4 themes (Royal, Emerald Lanyard, Cyber Navy, Crimson) plus Ink-Saver Eco print.
-              </p>
-            </div>
-            <div style="border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; background: #fafafa;">
-              <strong style="color: var(--text-main); font-size: 12.5px;">QR Sticker Sheet</strong>
-              <p style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px;">
-                Compact peel-and-stick labels to paste on existing cards you already have.
-              </p>
-            </div>
-            <div style="border: 1px solid #86efac; border-radius: var(--radius-sm); padding: 12px; background: #f0fdf4;">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <strong style="color: #044332; font-size: 12.5px;">📇 ID Card Backs Sheet</strong>
-                <a href="/print/card-backs" target="_blank" style="background:#044332;color:#fff;text-decoration:none;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;">Open</a>
+        <!-- Design Cards Grid -->
+        <div style="padding: 20px;">
+          <p style="font-size:12.5px; color:#64748b; margin-bottom:16px;">Click any design card below to select it, then choose a class and click <strong>Print Selected Design</strong>.</p>
+          <div id="design-gallery" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap:16px;">
+
+            <!-- Design 1: Emerald Classic -->
+            <div class="design-gallery-card" data-design="emerald" onclick="selectCardDesign(this,'emerald')" title="Emerald Classic — Centered QR (25mm)">
+              <div class="dgc-preview">
+                <!-- Mini card preview -->
+                <div style="background:#044332; border-radius:3px 3px 0 0; padding:4px 6px; display:flex; align-items:center; gap:3px;">
+                  <div style="width:14px;height:14px;background:rgba(255,255,255,0.2);border-radius:2px;flex-shrink:0;"></div>
+                  <div>
+                    <div style="font-size:5px;font-weight:800;color:#fff;line-height:1.1;">SHAHEEN PUBLIC</div>
+                    <div style="font-size:5px;font-weight:800;color:#fff;line-height:1.1;">HIGH SCHOOL</div>
+                    <div style="font-size:3.5px;color:rgba(255,255,255,0.7);">Loi Shalman</div>
+                  </div>
+                </div>
+                <div style="height:2px;background:#d97706;"></div>
+                <div style="background:#fff;padding:4px 6px;display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;">
+                  <div style="width:24px;height:28px;border:1px solid #044332;border-radius:3px;background:#e2e8f0;display:flex;align-items:center;justify-content:center;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="#64748b"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                  </div>
+                  <div style="font-size:5.5px;font-weight:800;color:#044332;">Student Name</div>
+                  <div style="font-size:4px;color:#475569;">S/D of Father Name</div>
+                  <div style="display:flex;gap:3px;">
+                    <div style="border:1px solid #044332;border-radius:2px;display:flex;overflow:hidden;height:8px;width:28px;">
+                      <div style="width:7px;background:#044332;"></div>
+                      <div style="font-size:3px;padding:0 2px;display:flex;align-items:center;color:#044332;font-weight:700;">Class</div>
+                    </div>
+                    <div style="border:1px solid #044332;border-radius:2px;display:flex;overflow:hidden;height:8px;width:28px;">
+                      <div style="width:7px;background:#044332;"></div>
+                      <div style="font-size:3px;padding:0 2px;display:flex;align-items:center;color:#044332;font-weight:700;">Roll</div>
+                    </div>
+                  </div>
+                  <div style="width:26px;height:26px;border:1px solid #044332;border-radius:2px;padding:1px;background:#fff;">
+                    <svg viewBox="0 0 21 21" width="24" height="24"><rect x="0" y="0" width="9" height="9" fill="#044332"/><rect x="12" y="0" width="9" height="9" fill="#044332"/><rect x="0" y="12" width="9" height="9" fill="#044332"/><rect x="2" y="2" width="5" height="5" fill="#fff"/><rect x="14" y="2" width="5" height="5" fill="#fff"/><rect x="2" y="14" width="5" height="5" fill="#fff"/><rect x="3" y="3" width="3" height="3" fill="#044332"/><rect x="15" y="3" width="3" height="3" fill="#044332"/><rect x="3" y="15" width="3" height="3" fill="#044332"/><rect x="12" y="12" width="2" height="2" fill="#044332"/><rect x="15" y="12" width="2" height="2" fill="#044332"/><rect x="18" y="12" width="2" height="2" fill="#044332"/><rect x="12" y="15" width="2" height="2" fill="#044332"/><rect x="15" y="17" width="2" height="2" fill="#044332"/><rect x="18" y="15" width="2" height="2" fill="#044332"/></svg>
+                  </div>
+                </div>
+                <div style="height:8px;background:linear-gradient(to right,#044332,#022a1f);border-radius:0 0 3px 3px;position:relative;overflow:hidden;">
+                  <svg viewBox="0 0 100 20" preserveAspectRatio="none" style="position:absolute;top:0;left:0;width:100%;height:100%;"><path d="M0,6 C25,14 45,15 60,15 C78,15 90,8 100,5 L100,20 L0,20 Z" fill="#044332"/><path d="M0,8 C25,14 48,16 65,15 C82,14 92,11 100,9 L100,20 L0,20 Z" fill="#022a1f" opacity="0.6"/></svg>
+                </div>
               </div>
-              <p style="font-size: 11.5px; color: #166534; margin-top: 4px;">
-                Dedicated A4 sheet with 9 backs: school rules, emergency helpline (03359365884), Ghundakhel address, and Principal signature.
-              </p>
+              <div class="dgc-label">
+                <div class="dgc-name">1 — Emerald Classic</div>
+                <div class="dgc-desc">Green header · Centered QR · Wave footer</div>
+                <div class="dgc-badge" style="background:#dcfce7;color:#166534;">⭐ Recommended</div>
+              </div>
+            </div>
+
+            <!-- Design 1B: Emerald Split -->
+            <div class="design-gallery-card" data-design="emerald-side" onclick="selectCardDesign(this,'emerald-side')" title="Emerald Split — 27mm QR + Large Eagle watermark">
+              <div class="dgc-preview">
+                <div style="background:#044332; border-radius:3px 3px 0 0; padding:4px 6px; display:flex; align-items:center; gap:3px;">
+                  <div style="width:16px;height:14px;background:rgba(255,255,255,0.2);border-radius:2px;flex-shrink:0;"></div>
+                  <div>
+                    <div style="font-size:5px;font-weight:800;color:#fff;line-height:1.1;">SHAHEEN PUBLIC</div>
+                    <div style="font-size:5px;font-weight:800;color:#fff;line-height:1.1;">HIGH SCHOOL</div>
+                    <div style="font-size:3.5px;color:rgba(255,255,255,0.7);">Loi Shalman</div>
+                  </div>
+                </div>
+                <div style="height:2px;background:#d97706;"></div>
+                <div style="background:#fff;padding:4px 6px;display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;">
+                  <div style="width:24px;height:26px;border:1px solid #044332;border-radius:3px;background:#e2e8f0;display:flex;align-items:center;justify-content:center;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="#64748b"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                  </div>
+                  <div style="font-size:5.5px;font-weight:800;color:#044332;">Student Name</div>
+                  <div style="font-size:4px;color:#475569;">S/D of Father Name</div>
+                  <!-- Split row: tags + large QR -->
+                  <div style="display:flex;gap:4px;width:100%;align-items:center;margin-top:2px;">
+                    <div style="flex:1;display:flex;flex-direction:column;gap:2px;">
+                      <div style="border:1px solid #044332;border-radius:2px;display:flex;overflow:hidden;height:8px;">
+                        <div style="width:10px;background:#044332;font-size:3px;color:#fff;display:flex;align-items:center;justify-content:center;">CLS</div>
+                        <div style="font-size:3px;padding:0 2px;display:flex;align-items:center;color:#044332;font-weight:700;">9th</div>
+                      </div>
+                      <div style="border:1px solid #044332;border-radius:2px;display:flex;overflow:hidden;height:8px;">
+                        <div style="width:10px;background:#044332;font-size:3px;color:#fff;display:flex;align-items:center;justify-content:center;">ROLL</div>
+                        <div style="font-size:3px;padding:0 2px;display:flex;align-items:center;color:#044332;font-weight:700;">042</div>
+                      </div>
+                      <div style="border:1px solid #d97706;border-radius:2px;display:flex;overflow:hidden;height:8px;">
+                        <div style="width:10px;background:#d97706;font-size:3px;color:#fff;display:flex;align-items:center;justify-content:center;">ID</div>
+                        <div style="font-size:3px;padding:0 2px;display:flex;align-items:center;color:#92400e;font-weight:700;">SPHS</div>
+                      </div>
+                    </div>
+                    <div style="width:30px;height:30px;border:1px solid #044332;border-radius:2px;padding:1px;background:#fff;flex-shrink:0;">
+                      <svg viewBox="0 0 21 21" width="28" height="28"><rect x="0" y="0" width="9" height="9" fill="#044332"/><rect x="12" y="0" width="9" height="9" fill="#044332"/><rect x="0" y="12" width="9" height="9" fill="#044332"/><rect x="2" y="2" width="5" height="5" fill="#fff"/><rect x="14" y="2" width="5" height="5" fill="#fff"/><rect x="2" y="14" width="5" height="5" fill="#fff"/><rect x="3" y="3" width="3" height="3" fill="#044332"/><rect x="15" y="3" width="3" height="3" fill="#044332"/><rect x="3" y="15" width="3" height="3" fill="#044332"/><rect x="12" y="12" width="2" height="2" fill="#044332"/><rect x="15" y="12" width="2" height="2" fill="#044332"/><rect x="18" y="12" width="2" height="2" fill="#044332"/><rect x="12" y="15" width="2" height="2" fill="#044332"/><rect x="15" y="17" width="2" height="2" fill="#044332"/><rect x="18" y="15" width="2" height="2" fill="#044332"/></svg>
+                    </div>
+                  </div>
+                </div>
+                <div style="height:8px;background:linear-gradient(to right,#044332,#022a1f);border-radius:0 0 3px 3px;position:relative;overflow:hidden;">
+                  <svg viewBox="0 0 100 20" preserveAspectRatio="none" style="position:absolute;top:0;left:0;width:100%;height:100%;"><path d="M0,6 C25,14 45,15 60,15 C78,15 90,8 100,5 L100,20 L0,20 Z" fill="#044332"/></svg>
+                </div>
+              </div>
+              <div class="dgc-label">
+                <div class="dgc-name">1B — Emerald Split</div>
+                <div class="dgc-desc">Green header · 27mm QR side · Eagle watermark</div>
+                <div class="dgc-badge" style="background:#dcfce7;color:#166534;">Large QR</div>
+              </div>
+            </div>
+
+            <!-- Design 2: Vertical Split Panel -->
+            <div class="design-gallery-card" data-design="split" onclick="selectCardDesign(this,'split')" title="Vertical Split Panel — Navy sidebar + 24mm QR">
+              <div class="dgc-preview" style="display:flex;flex-direction:row;">
+                <!-- sidebar -->
+                <div style="width:16px;background:#1e3a8a;border-radius:3px 0 0 3px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:4px 0;">
+                  <div style="width:10px;height:10px;background:rgba(255,255,255,0.2);border-radius:2px;"></div>
+                  <div style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:3px;color:rgba(255,255,255,0.7);letter-spacing:0.5px;">SHAHEEN HIGH</div>
+                  <div style="width:12px;background:#d97706;color:#fff;font-size:3px;text-align:center;padding:1px 0;border-radius:1px;">26-27</div>
+                </div>
+                <!-- main -->
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:4px;background:#fff;border-radius:0 3px 3px 0;">
+                  <div style="font-size:5.5px;font-weight:900;color:#1e3a8a;line-height:1.1;">SHAHEEN PUBLIC</div>
+                  <div style="font-size:5.5px;font-weight:900;color:#1e3a8a;line-height:1.1;">HIGH SCHOOL</div>
+                  <div style="font-size:3.5px;color:#b45309;font-weight:700;letter-spacing:0.5px;margin-bottom:2px;">LOI SHALMAN</div>
+                  <div style="width:22px;height:26px;border:1px solid #1e3a8a;border-radius:3px;background:#e2e8f0;display:flex;align-items:center;justify-content:center;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="#64748b"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                  </div>
+                  <div style="font-size:5.5px;font-weight:800;color:#0f172a;margin-top:2px;">Student Name</div>
+                  <div style="font-size:3.5px;color:#94a3b8;margin-top:1px;">S/D of Father Name</div>
+                  <div style="border:1px solid #e2e8f0;border-radius:2px;padding:2px 4px;display:flex;gap:6px;margin-top:2px;background:#f8fafc;">
+                    <div style="text-align:center;"><div style="font-size:3px;color:#64748b;">CLASS</div><div style="font-size:4.5px;font-weight:800;color:#1e3a8a;">9th</div></div>
+                    <div style="width:1px;background:#e2e8f0;"></div>
+                    <div style="text-align:center;"><div style="font-size:3px;color:#64748b;">ROLL</div><div style="font-size:4.5px;font-weight:800;color:#1e3a8a;">042</div></div>
+                  </div>
+                  <div style="margin-top:3px;font-size:3px;color:#64748b;font-weight:700;letter-spacing:0.3px;">SCAN TO VERIFY</div>
+                  <div style="width:26px;height:26px;border:1px solid #1e3a8a;border-radius:2px;padding:1px;background:#fff;">
+                    <svg viewBox="0 0 21 21" width="24" height="24"><rect x="0" y="0" width="9" height="9" fill="#1e3a8a"/><rect x="12" y="0" width="9" height="9" fill="#1e3a8a"/><rect x="0" y="12" width="9" height="9" fill="#1e3a8a"/><rect x="2" y="2" width="5" height="5" fill="#fff"/><rect x="14" y="2" width="5" height="5" fill="#fff"/><rect x="2" y="14" width="5" height="5" fill="#fff"/><rect x="3" y="3" width="3" height="3" fill="#1e3a8a"/><rect x="15" y="3" width="3" height="3" fill="#1e3a8a"/><rect x="3" y="15" width="3" height="3" fill="#1e3a8a"/><rect x="12" y="12" width="2" height="2" fill="#1e3a8a"/><rect x="15" y="12" width="2" height="2" fill="#1e3a8a"/><rect x="18" y="12" width="2" height="2" fill="#1e3a8a"/><rect x="12" y="15" width="2" height="2" fill="#1e3a8a"/><rect x="15" y="17" width="2" height="2" fill="#1e3a8a"/><rect x="18" y="15" width="2" height="2" fill="#1e3a8a"/></svg>
+                  </div>
+                  <div style="position:absolute;bottom:0;left:0;right:0;height:4px;background:linear-gradient(#d97706,#1e3a8a);opacity:0.7;border-radius:0 0 3px 3px;"></div>
+                </div>
+              </div>
+              <div class="dgc-label">
+                <div class="dgc-name">2 — Vertical Split Panel</div>
+                <div class="dgc-desc">Navy sidebar · White body · 24mm QR</div>
+                <div class="dgc-badge" style="background:#dbeafe;color:#1e3a8a;">Navy Blue</div>
+              </div>
+            </div>
+
+            <!-- Design 2B: Vertical Split Max -->
+            <div class="design-gallery-card" data-design="split-2b" onclick="selectCardDesign(this,'split-2b')" title="Vertical Split Max — 27mm QR + Eagle Watermark">
+              <div class="dgc-preview" style="display:flex;flex-direction:row;">
+                <div style="width:18px;background:#1e3a8a;border-radius:3px 0 0 3px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:4px 0;">
+                  <div style="width:12px;height:12px;background:rgba(255,255,255,0.25);border-radius:2px;padding:1px;"></div>
+                  <div style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:3px;color:rgba(255,255,255,0.7);letter-spacing:0.5px;">SHAHEEN HIGH</div>
+                  <div style="width:14px;background:#d97706;color:#fff;font-size:3px;text-align:center;padding:1px 0;border-radius:1px;">26-27</div>
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:3px;background:#fff;border-radius:0 3px 3px 0;position:relative;overflow:hidden;">
+                  <div style="position:absolute;top:8px;left:50%;transform:translateX(-50%);width:32px;height:32px;opacity:0.12;pointer-events:none;">
+                    <svg viewBox="0 0 100 100" fill="#1e3a8a"><ellipse cx="50" cy="50" rx="50" ry="50"/></svg>
+                  </div>
+                  <div style="font-size:5.5px;font-weight:900;color:#1e3a8a;line-height:1.1;position:relative;z-index:2;">SHAHEEN PUBLIC</div>
+                  <div style="font-size:5.5px;font-weight:900;color:#1e3a8a;line-height:1.1;position:relative;z-index:2;">HIGH SCHOOL</div>
+                  <div style="font-size:3.5px;color:#b45309;font-weight:700;margin-bottom:2px;position:relative;z-index:2;">LOI SHALMAN</div>
+                  <div style="width:22px;height:26px;border:1px solid #1e3a8a;border-radius:3px;background:#e2e8f0;display:flex;align-items:center;justify-content:center;position:relative;z-index:2;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="#64748b"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                  </div>
+                  <div style="font-size:5.5px;font-weight:800;color:#0f172a;margin-top:2px;position:relative;z-index:2;">Student Name</div>
+                  <div style="font-size:3.5px;color:#94a3b8;position:relative;z-index:2;">S/D of Father</div>
+                  <div style="border:1px solid #e2e8f0;border-radius:2px;padding:2px 4px;display:flex;gap:6px;margin-top:2px;background:#f8fafc;position:relative;z-index:2;">
+                    <div style="text-align:center;"><div style="font-size:3px;color:#64748b;">CLASS</div><div style="font-size:4.5px;font-weight:800;color:#1e3a8a;">9th</div></div>
+                    <div style="width:1px;background:#e2e8f0;"></div>
+                    <div style="text-align:center;"><div style="font-size:3px;color:#64748b;">ROLL</div><div style="font-size:4.5px;font-weight:800;color:#1e3a8a;">042</div></div>
+                  </div>
+                  <div style="margin-top:2px;font-size:3px;color:#64748b;font-weight:700;position:relative;z-index:2;">DAILY ATTENDANCE SCAN</div>
+                  <div style="width:28px;height:28px;border:1px solid #1e3a8a;border-radius:2px;padding:1px;background:#fff;position:relative;z-index:2;">
+                    <svg viewBox="0 0 21 21" width="26" height="26"><rect x="0" y="0" width="9" height="9" fill="#1e3a8a"/><rect x="12" y="0" width="9" height="9" fill="#1e3a8a"/><rect x="0" y="12" width="9" height="9" fill="#1e3a8a"/><rect x="2" y="2" width="5" height="5" fill="#fff"/><rect x="14" y="2" width="5" height="5" fill="#fff"/><rect x="2" y="14" width="5" height="5" fill="#fff"/><rect x="3" y="3" width="3" height="3" fill="#1e3a8a"/><rect x="15" y="3" width="3" height="3" fill="#1e3a8a"/><rect x="3" y="15" width="3" height="3" fill="#1e3a8a"/><rect x="12" y="12" width="2" height="2" fill="#1e3a8a"/><rect x="15" y="12" width="2" height="2" fill="#1e3a8a"/><rect x="18" y="12" width="2" height="2" fill="#1e3a8a"/><rect x="12" y="15" width="2" height="2" fill="#1e3a8a"/><rect x="15" y="17" width="2" height="2" fill="#1e3a8a"/><rect x="18" y="15" width="2" height="2" fill="#1e3a8a"/></svg>
+                  </div>
+                </div>
+              </div>
+              <div class="dgc-label">
+                <div class="dgc-name">2B — Split Max</div>
+                <div class="dgc-desc">Navy sidebar · Eagle watermark · 27mm QR</div>
+                <div class="dgc-badge" style="background:#dbeafe;color:#1e3a8a;">Current Default</div>
+              </div>
+            </div>
+
+            <!-- Design 3: Royal Minimalist -->
+            <div class="design-gallery-card" data-design="royal" onclick="selectCardDesign(this,'royal')" title="Royal Minimalist — Ivory & Gold Crest">
+              <div class="dgc-preview" style="display:flex;flex-direction:column;">
+                <div style="background:#fffbeb;border-radius:3px 3px 0 0;padding:5px;display:flex;flex-direction:column;align-items:center;gap:2px;border-bottom:2px solid #d97706;">
+                  <div style="width:18px;height:18px;background:rgba(217,119,6,0.15);border-radius:50%;border:1.5px solid #d97706;display:flex;align-items:center;justify-content:center;">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="#d97706"><path d="M12 2L1 7l11 6 9-4.91V17h2V7L12 2zm0 13.18L3 10.64 12 6.36l9 4.28-9 4.54zM3 17v2l9 5 9-5v-2l-9 5-9-5z"/></svg>
+                  </div>
+                  <div style="font-size:5.5px;font-weight:800;color:#92400e;letter-spacing:0.5px;">SHAHEEN PUBLIC</div>
+                  <div style="font-size:5.5px;font-weight:800;color:#92400e;letter-spacing:0.5px;">HIGH SCHOOL</div>
+                  <div style="font-size:3.5px;color:#b45309;">Loi Shalman • Khyber</div>
+                  <div style="width:40px;height:1px;background:#d97706;margin-top:2px;"></div>
+                </div>
+                <div style="flex:1;background:#fffbeb;display:flex;flex-direction:column;align-items:center;padding:3px 4px;gap:2px;">
+                  <div style="width:24px;height:28px;border:1.5px solid #d97706;border-radius:3px;background:#fef3c7;display:flex;align-items:center;justify-content:center;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="#d97706"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                  </div>
+                  <div style="font-size:5.5px;font-weight:800;color:#78350f;">Student Name</div>
+                  <div style="font-size:3.5px;color:#92400e;">S/D of Father Name</div>
+                  <div style="display:flex;gap:3px;">
+                    <div style="background:#fff7ed;border:1px solid #fde68a;border-radius:2px;padding:1px 3px;text-align:center;">
+                      <div style="font-size:3px;color:#92400e;font-weight:600;">Class:</div>
+                      <div style="font-size:4.5px;font-weight:800;color:#78350f;">9th</div>
+                    </div>
+                    <div style="background:#fff7ed;border:1px solid #fde68a;border-radius:2px;padding:1px 3px;text-align:center;">
+                      <div style="font-size:3px;color:#92400e;font-weight:600;">Roll:</div>
+                      <div style="font-size:4.5px;font-weight:800;color:#78350f;">042</div>
+                    </div>
+                  </div>
+                  <div style="width:24px;height:24px;border:1px solid #d97706;border-radius:2px;padding:1px;background:#fff;">
+                    <svg viewBox="0 0 21 21" width="22" height="22"><rect x="0" y="0" width="9" height="9" fill="#92400e"/><rect x="12" y="0" width="9" height="9" fill="#92400e"/><rect x="0" y="12" width="9" height="9" fill="#92400e"/><rect x="2" y="2" width="5" height="5" fill="#fffbeb"/><rect x="14" y="2" width="5" height="5" fill="#fffbeb"/><rect x="2" y="14" width="5" height="5" fill="#fffbeb"/><rect x="3" y="3" width="3" height="3" fill="#92400e"/><rect x="15" y="3" width="3" height="3" fill="#92400e"/><rect x="3" y="15" width="3" height="3" fill="#92400e"/></svg>
+                  </div>
+                  <div style="font-size:3px;color:#92400e;font-weight:600;letter-spacing:0.3px;">STUDENT IDENTITY CARD</div>
+                </div>
+              </div>
+              <div class="dgc-label">
+                <div class="dgc-name">3 — Royal Minimalist</div>
+                <div class="dgc-desc">Ivory & gold crest · Premium look</div>
+                <div class="dgc-badge" style="background:#fef3c7;color:#92400e;">Gold Theme</div>
+              </div>
+            </div>
+
+            <!-- Design 5: Executive Daily Scanner -->
+            <div class="design-gallery-card" data-design="exec" onclick="selectCardDesign(this,'exec')" title="Executive Daily Scanner — Slate header + large 27mm QR">
+              <div class="dgc-preview" style="display:flex;flex-direction:column;">
+                <div style="background:#0f172a;border-radius:3px 3px 0 0;padding:4px 6px;display:flex;align-items:center;gap:3px;">
+                  <div style="width:14px;height:12px;background:rgba(255,255,255,0.15);border-radius:2px;flex-shrink:0;"></div>
+                  <div style="width:1px;height:10px;background:rgba(255,255,255,0.3);flex-shrink:0;"></div>
+                  <div>
+                    <div style="font-size:5px;font-weight:800;color:#fff;line-height:1.1;">SHAHEEN PUBLIC</div>
+                    <div style="font-size:5px;font-weight:800;color:#fff;line-height:1.1;">HIGH SCHOOL</div>
+                  </div>
+                </div>
+                <div style="height:2px;background:#d97706;flex-shrink:0;"></div>
+                <!-- Mid: photo left + details right -->
+                <div style="flex:1;background:#fff;padding:4px;display:flex;flex-direction:column;gap:2px;">
+                  <div style="display:flex;gap:4px;align-items:flex-start;">
+                    <div style="width:24px;height:28px;border:1px solid #0f172a;border-radius:2px;background:#e2e8f0;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="#64748b"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                    </div>
+                    <div style="flex:1;display:flex;flex-direction:column;gap:1.5px;">
+                      <div style="font-size:5.5px;font-weight:800;color:#0f172a;line-height:1;">Student Name</div>
+                      <div style="font-size:3.5px;color:#64748b;">S/D of Father Name</div>
+                      <div style="display:flex;flex-direction:column;gap:1px;margin-top:1px;">
+                        <div style="display:flex;gap:3px;border:1px solid #e2e8f0;border-radius:2px;overflow:hidden;height:7px;">
+                          <div style="background:#0f172a;width:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:3px;color:#fff;">CLS</div>
+                          <div style="font-size:4px;font-weight:700;color:#0f172a;display:flex;align-items:center;padding:0 2px;">9th</div>
+                        </div>
+                        <div style="display:flex;gap:3px;border:1px solid #e2e8f0;border-radius:2px;overflow:hidden;height:7px;">
+                          <div style="background:#0f172a;width:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:3px;color:#fff;">ROLL</div>
+                          <div style="font-size:4px;font-weight:700;color:#0f172a;display:flex;align-items:center;padding:0 2px;">042</div>
+                        </div>
+                        <div style="display:flex;gap:3px;border:1px solid #fde68a;border-radius:2px;overflow:hidden;height:7px;">
+                          <div style="background:#d97706;width:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:3px;color:#fff;">CODE</div>
+                          <div style="font-size:3.5px;font-weight:700;color:#92400e;display:flex;align-items:center;padding:0 2px;">SPHS-42</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Large QR section -->
+                  <div style="display:flex;flex-direction:column;align-items:center;margin-top:2px;">
+                    <div style="font-size:3px;color:#64748b;font-weight:700;letter-spacing:0.3px;margin-bottom:1px;">— SCAN FOR DAILY ATTENDANCE —</div>
+                    <div style="width:32px;height:32px;border:1px solid #e2e8f0;border-radius:2px;padding:1.5px;background:#fff;">
+                      <svg viewBox="0 0 21 21" width="29" height="29"><rect x="0" y="0" width="9" height="9" fill="#0f172a"/><rect x="12" y="0" width="9" height="9" fill="#0f172a"/><rect x="0" y="12" width="9" height="9" fill="#0f172a"/><rect x="2" y="2" width="5" height="5" fill="#fff"/><rect x="14" y="2" width="5" height="5" fill="#fff"/><rect x="2" y="14" width="5" height="5" fill="#fff"/><rect x="3" y="3" width="3" height="3" fill="#0f172a"/><rect x="15" y="3" width="3" height="3" fill="#0f172a"/><rect x="3" y="15" width="3" height="3" fill="#0f172a"/><rect x="12" y="12" width="2" height="2" fill="#0f172a"/><rect x="15" y="12" width="2" height="2" fill="#0f172a"/><rect x="18" y="12" width="2" height="2" fill="#0f172a"/><rect x="12" y="15" width="2" height="2" fill="#0f172a"/><rect x="15" y="17" width="2" height="2" fill="#0f172a"/><rect x="18" y="15" width="2" height="2" fill="#0f172a"/></svg>
+                    </div>
+                  </div>
+                </div>
+                <div style="background:#0f172a;border-radius:0 0 3px 3px;height:7px;display:flex;align-items:center;justify-content:center;">
+                  <div style="font-size:3.5px;color:rgba(255,255,255,0.8);font-weight:700;letter-spacing:0.5px;">SESSION 2026–27 • STUDENT ID</div>
+                </div>
+              </div>
+              <div class="dgc-label">
+                <div class="dgc-name">5 — Executive Scanner</div>
+                <div class="dgc-desc">Dark header · Side photo + 27mm QR</div>
+                <div class="dgc-badge" style="background:#f1f5f9;color:#334155;">Fast Scan</div>
+              </div>
+            </div>
+
+          </div><!-- end grid -->
+
+          <!-- Selected design banner -->
+          <div id="dgc-selected-banner" style="margin-top:16px;padding:12px 16px;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:18px;">✅</span>
+              <div>
+                <div style="font-size:13px;font-weight:700;color:#166534;">Selected: <span id="dgc-selected-name">2B — Vertical Split Max</span></div>
+                <div style="font-size:11.5px;color:#166534;">Choose a class filter above then click <strong>Print Selected Design</strong></div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <a href="/print/comparison" target="_blank" class="btn btn-secondary" style="font-size:12px;padding:6px 12px;text-decoration:none;">📄 All Designs on 1 Page</a>
+              <a href="/print/card-backs" target="_blank" class="btn btn-secondary" style="font-size:12px;padding:6px 12px;text-decoration:none;background:#065f46;color:#fff;">📇 Card Backs</a>
+              <button id="launch-print-stickers-btn" class="btn btn-secondary" style="font-size:12px;padding:6px 12px;">🏷️ QR Stickers</button>
             </div>
           </div>
         </div>
