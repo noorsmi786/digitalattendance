@@ -780,6 +780,7 @@ window.deleteStudent = async function(id, name) {
 let selectedDesignKey = localStorage.getItem('sphs_card_design') || 'split-2b';
 
 const designNamesMap = {
+  'apex': '💎 2-APEX — Geometric Apex (Solid Green & Metallic Gold)',
   'geopro': '👑 2-PRO — Geometric Bow-Tie Royal (3D Gold & لوئے شلمان)',
   'geo': '📐 2 — Geometric Bow-Tie (Red Wings & Green Bar)',
   'arc': '🎯 5 — Modern Curve Arc (Dark Slate & Crimson)',
