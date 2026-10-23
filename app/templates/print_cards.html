@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>🖨️ Print Student ID Cards (A4 5-Pair Sheet) — Shaheen Public High School</title>
+  <title>Print Student ID Cards (A4 5-Pair Sheet) – Shaheen Public High School</title>
   <link rel="icon" type="image/png" href="/static/icons/icon-192.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Cinzel:wght@600;700;800&family=Noto+Nastaliq+Urdu:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    
+
     :root {
       --c1: #044332;
       --c2: #d4a34b;
@@ -30,7 +30,7 @@
       print-color-adjust: exact !important;
     }
 
-    /* ── TOOLBAR ── */
+    /* ═══ TOOLBAR ═══ */
     .toolbar {
       position: sticky; top: 0; z-index: 200;
       background: #ffffff; border-bottom: 2px solid #044332;
@@ -42,13 +42,13 @@
     .school-crest-mini { width: 36px; height: 36px; object-fit: contain; }
     .toolbar-title { font-size: 15px; font-weight: 800; color: #044332; line-height: 1.2; }
     .toolbar-sub { font-size: 11px; color: #64748b; font-weight: 600; }
-    
+
     .control-group { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: #334155; font-weight: 700; }
     .control-group select {
       padding: 7px 12px; border-radius: 6px; border: 1.5px solid #cbd5e1;
       font-size: 12.5px; font-weight: 700; background: #fff; color: #0f172a; cursor: pointer;
     }
-    
+
     .toolbar-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .btn {
       display: inline-flex; align-items: center; gap: 6px;
@@ -63,7 +63,7 @@
     .btn-light { background: #f8fafc; color: #334155; border: 1px solid #cbd5e1; }
     .btn-light:hover { background: #e2e8f0; }
 
-    /* ── SCREEN WRAPPER & A4 SHEET ── */
+    /* ═══ SCREEN WRAPPER ═══ */
     .print-workspace {
       display: flex;
       flex-direction: column;
@@ -83,125 +83,34 @@
       margin-bottom: 6px;
     }
 
-    /* Standard A4 Paper Container (210mm x 297mm) */
+    /* ═══ A4 SHEET — CORRECT GRID APPROACH (matches reference) ═══ */
     .a4-sheet {
-      width: 210mm;
-      height: 297mm;
-      max-height: 297mm;
       box-sizing: border-box;
-      padding: 7mm 10mm;
       background: #ffffff;
-      box-shadow: 0 12px 36px rgba(0,0,0,0.45);
-      border-radius: 4px;
+      box-shadow: rgba(0,0,0,0.15) 0px 2px 12px;
+      display: grid;
+      grid-template-columns: repeat(2, 4in);
+      grid-auto-rows: 3in;
+      place-content: start center;
+      gap: 4mm 2mm;
+      width: 210mm;
+      /* height auto — let it grow; explicit 297mm causes overflow issues on-screen */
+      min-height: 297mm;
+      padding: 8mm 2mm;
+    }
+
+    /* Each pair slot (4in × 3in) */
+    .a4-pair {
+      outline: rgb(153, 153, 153) dashed 0.3mm;
+      width: 4in;
+      height: 3in;
       display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-      position: relative;
       overflow: hidden;
     }
 
-    .sheet-meta-bar {
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 8.5px;
-      color: #94a3b8;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      border-bottom: 0.5px dashed #e2e8f0;
-      padding-bottom: 2mm;
-    }
-
-    .card-pairs-list {
-      width: 100%;
-      height: 275mm;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .card-pair-row {
-      width: 100%;
-      height: 54.2mm;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 16mm;
-      position: relative;
-      page-break-inside: avoid;
-      break-inside: avoid;
-    }
-
-    /* Cut / Fold Guideline in Center */
-    .cut-guide-vertical {
-      position: absolute;
-      left: 50%;
-      top: 5%;
-      bottom: 5%;
-      width: 1px;
-      border-left: 1px dashed #cbd5e1;
-      transform: translateX(-50%);
-      pointer-events: none;
-    }
-    .cut-guide-label {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      background: #ffffff;
-      padding: 1px 4px;
-      font-size: 7px;
-      font-weight: 700;
-      color: #94a3b8;
-      border-radius: 3px;
-      text-transform: uppercase;
-    }
-
-    /* Scaled Card Box for 5-up Layout */
-    .card-scale-box {
-      width: 137.3px; /* 36.33mm at 96 DPI */
-      height: 206px;  /* 54.5mm at 96 DPI */
-      position: relative;
-      flex-shrink: 0;
-    }
-
-    .card-scale-box .id-card {
-      transform: scale(0.3576);
-      transform-origin: top left;
-      position: absolute;
-      top: 0;
-      left: 0;
-      box-shadow: none !important;
-    }
-
-    /* ═══════════════════════════════════════════════════
-       OFFICIAL EMERALD CREST CARD DESIGN (384px x 576px)
-       ═══════════════════════════════════════════════════ */
-    .iqbal-scope {
-      --c1: #044332;
-      --c2: #d4a34b;
-      --c3: #022c22;
-      --cpaper: #fdfcf9;
-      --cink: #0f172a;
-      --primary-foreground: #ffffff;
-      --muted: #f1f5f9;
-      --muted-foreground: #64748b;
-      font-family: 'Outfit', sans-serif;
-      line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    .iqbal-scope *, .iqbal-scope *::before, .iqbal-scope *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    .iqbal-scope .id-card {
+    /* ═══ THE CARD ITSELF — full 384×576px, zoomed to 50% ═══ */
+    /* This means on screen each card renders at 192×288 = exactly half of 4in×3in */
+    .id-card {
       width: 384px;
       height: 576px;
       position: relative;
@@ -209,203 +118,189 @@
       flex-direction: column;
       overflow: hidden;
       border-radius: 22px;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12);
       background-color: var(--cpaper);
       flex-shrink: 0;
+      zoom: 0.5;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+      box-shadow: none !important;
     }
 
-    .iqbal-scope .relative { position: relative; }
-    .iqbal-scope .absolute { position: absolute; }
-    .iqbal-scope .inset-x-0 { left: 0px; right: 0px; }
-    .iqbal-scope .top-\[218px\] { top: 218px; }
+    /* ═══ SCOPED UTILITY CLASSES (Tailwind-style, card-internal only) ═══ */
+    .id-card .relative { position: relative; }
+    .id-card .absolute { position: absolute; }
+    .id-card .inset-x-0 { left: 0px; right: 0px; }
+    .id-card .top-\[218px\] { top: 218px; }
 
-    .iqbal-scope .flex { display: flex; }
-    .iqbal-scope .flex-col { flex-direction: column; }
-    .iqbal-scope .items-center { align-items: center; }
-    .iqbal-scope .items-start { align-items: flex-start; }
-    .iqbal-scope .justify-center { justify-content: center; }
-    .iqbal-scope .justify-between { justify-content: space-between; }
-    .iqbal-scope .shrink-0 { flex-shrink: 0; }
+    .id-card .flex { display: flex; }
+    .id-card .flex-col { flex-direction: column; }
+    .id-card .items-center { align-items: center; }
+    .id-card .items-start { align-items: flex-start; }
+    .id-card .justify-center { justify-content: center; }
+    .id-card .justify-between { justify-content: space-between; }
+    .id-card .shrink-0 { flex-shrink: 0; }
 
-    .iqbal-scope .overflow-hidden { overflow: hidden; }
-    .iqbal-scope .rounded-\[22px\] { border-radius: 22px; }
-    .iqbal-scope .rounded-full { border-radius: 9999px; }
-    .iqbal-scope .rounded-md { border-radius: 6px; }
-    .iqbal-scope .rounded-xl { border-radius: 12px; }
-    .iqbal-scope .rounded { border-radius: 4px; }
+    .id-card .overflow-hidden { overflow: hidden; }
+    .id-card .rounded-full { border-radius: 9999px; }
+    .id-card .rounded-md { border-radius: 6px; }
+    .id-card .rounded-xl { border-radius: 12px; }
+    .id-card .rounded { border-radius: 4px; }
 
-    .iqbal-scope .shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
-    .iqbal-scope .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1); }
+    .id-card .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1); }
 
-    .iqbal-scope .bg-cpaper { background-color: var(--cpaper); }
-    .iqbal-scope .bg-c1 { background-color: var(--c1); }
-    .iqbal-scope .bg-c2 { background-color: var(--c2); }
-    .iqbal-scope .bg-c3 { background-color: var(--c3); }
-    .iqbal-scope .bg-muted { background-color: var(--muted); }
-    .iqbal-scope .bg-c1\/10 { background-color: rgba(4, 67, 50, 0.08); }
+    .id-card .bg-cpaper { background-color: var(--cpaper); }
+    .id-card .bg-c1 { background-color: var(--c1); }
+    .id-card .bg-c2 { background-color: var(--c2); }
+    .id-card .bg-c3 { background-color: var(--c3); }
+    .id-card .bg-muted { background-color: var(--muted); }
+    .id-card .bg-c1\/10 { background-color: rgba(4,67,50,0.08); }
+    .id-card .bg-white { background-color: #ffffff; }
 
-    .iqbal-scope .text-c2 { color: var(--c2); }
-    .iqbal-scope .text-c3 { color: var(--c3); }
-    .iqbal-scope .text-cink { color: var(--cink); }
-    .iqbal-scope .text-muted-foreground { color: var(--muted-foreground); }
-    .iqbal-scope .text-primary-foreground { color: var(--primary-foreground); }
-    .iqbal-scope .text-primary-foreground\/60 { color: rgba(255, 255, 255, 0.6); }
-    .iqbal-scope .text-primary-foreground\/90 { color: rgba(255, 255, 255, 0.9); }
+    .id-card .text-c2 { color: var(--c2); }
+    .id-card .text-c3 { color: var(--c3); }
+    .id-card .text-cink { color: var(--cink); }
+    .id-card .text-muted-foreground { color: var(--muted-foreground); }
+    .id-card .text-primary-foreground { color: var(--primary-foreground); }
+    .id-card .text-primary-foreground\/60 { color: rgba(255,255,255,0.6); }
+    .id-card .text-primary-foreground\/90 { color: rgba(255,255,255,0.9); }
 
-    .iqbal-scope .text-center { text-align: center; }
-    .iqbal-scope .text-left { text-align: left; }
-    .iqbal-scope .text-right { text-align: right; }
-    .iqbal-scope .uppercase { text-transform: uppercase; }
+    .id-card .text-center { text-align: center; }
+    .id-card .text-left { text-align: left; }
+    .id-card .text-right { text-align: right; }
+    .id-card .uppercase { text-transform: uppercase; }
 
-    .iqbal-scope .font-serif { font-family: 'Cinzel', serif; }
-    .iqbal-scope .font-urdu { font-family: 'Noto Nastaliq Urdu', serif; }
-    .iqbal-scope .font-bold { font-weight: 700; }
-    .iqbal-scope .font-extrabold { font-weight: 800; }
-    .iqbal-scope .font-semibold { font-weight: 600; }
+    .id-card .font-serif { font-family: 'Cinzel', serif; }
+    .id-card .font-urdu { font-family: 'Noto Nastaliq Urdu', serif; }
+    .id-card .font-bold { font-weight: 700; }
+    .id-card .font-extrabold { font-weight: 800; }
+    .id-card .font-semibold { font-weight: 600; }
 
-    .iqbal-scope .h-2 { height: 8px; }
-    .iqbal-scope .h-6 { height: 24px; }
-    .iqbal-scope .h-16 { height: 64px; }
-    .iqbal-scope .h-20 { height: 80px; }
-    .iqbal-scope .h-full { height: 100%; }
-    .iqbal-scope .h-\[52px\] { height: 52px; }
-    .iqbal-scope .h-\[140px\] { height: 140px; }
-    .iqbal-scope .h-\[190px\] { height: 190px; }
-    .iqbal-scope .h-\[230px\] { height: 230px; }
+    .id-card .h-2 { height: 8px; }
+    .id-card .h-6 { height: 24px; }
+    .id-card .h-16 { height: 64px; }
+    .id-card .h-20 { height: 80px; }
+    .id-card .h-full { height: 100%; }
+    .id-card .h-\[52px\] { height: 52px; }
+    .id-card .h-\[140px\] { height: 140px; }
+    .id-card .h-\[190px\] { height: 190px; }
 
-    .iqbal-scope .w-6 { width: 24px; }
-    .iqbal-scope .w-16 { width: 64px; }
-    .iqbal-scope .w-20 { width: 80px; }
-    .iqbal-scope .w-full { width: 100%; }
-    .iqbal-scope .w-\[42\%\] { width: 42%; }
-    .iqbal-scope .w-\[52px\] { width: 52px; }
-    .iqbal-scope .w-\[80\%\] { width: 80%; }
-    .iqbal-scope .w-\[140px\] { width: 140px; }
-    .iqbal-scope .w-\[190px\] { width: 190px; }
-    .iqbal-scope .w-\[230px\] { width: 230px; }
+    .id-card .w-6 { width: 24px; }
+    .id-card .w-16 { width: 64px; }
+    .id-card .w-20 { width: 80px; }
+    .id-card .w-full { width: 100%; }
+    .id-card .w-\[42\%\] { width: 42%; }
+    .id-card .w-\[52px\] { width: 52px; }
+    .id-card .w-\[80\%\] { width: 80%; }
+    .id-card .w-\[140px\] { width: 140px; }
+    .id-card .w-\[190px\] { width: 190px; }
 
-    .iqbal-scope .mx-auto { margin-left: auto; margin-right: auto; }
-    .iqbal-scope .mx-1 { margin-left: 4px; margin-right: 4px; }
-    .iqbal-scope .mx-5 { margin-left: 20px; margin-right: 20px; }
-    .iqbal-scope .mx-6 { margin-left: 24px; margin-right: 24px; }
+    .id-card .mx-auto { margin-left: auto; margin-right: auto; }
+    .id-card .mx-1 { margin-left: 4px; margin-right: 4px; }
+    .id-card .mx-5 { margin-left: 20px; margin-right: 20px; }
+    .id-card .mx-6 { margin-left: 24px; margin-right: 24px; }
 
-    .iqbal-scope .mt-1 { margin-top: 4px; }
-    .iqbal-scope .mt-2 { margin-top: 8px; }
-    .iqbal-scope .mt-3 { margin-top: 12px; }
-    .iqbal-scope .mt-4 { margin-top: 16px; }
-    .iqbal-scope .mt-auto { margin-top: auto; }
-    .iqbal-scope .\-mt-\[78px\] { margin-top: -78px; }
+    .id-card .mt-1 { margin-top: 4px; }
+    .id-card .mt-2 { margin-top: 8px; }
+    .id-card .mt-2\.5 { margin-top: 10px; }
+    .id-card .mt-3 { margin-top: 12px; }
+    .id-card .mt-4 { margin-top: 16px; }
+    .id-card .mt-auto { margin-top: auto; }
+    .id-card .-mt-\[78px\] { margin-top: -78px; }
 
-    .iqbal-scope .p-1\.5 { padding: 6px; }
-    .iqbal-scope .p-2 { padding: 8px; }
-    .iqbal-scope .p-\[2px\] { padding: 2px; }
-    .iqbal-scope .px-2 { padding-left: 8px; padding-right: 8px; }
-    .iqbal-scope .px-4 { padding-left: 16px; padding-right: 16px; }
-    .iqbal-scope .px-5 { padding-left: 20px; padding-right: 20px; }
-    .iqbal-scope .px-6 { padding-left: 24px; padding-right: 24px; }
-    .iqbal-scope .py-1 { padding-top: 4px; padding-bottom: 4px; }
-    .iqbal-scope .py-\[3px\] { padding-top: 3px; padding-bottom: 3px; }
-    .iqbal-scope .pt-0\.5 { padding-top: 2px; }
-    .iqbal-scope .pt-2 { padding-top: 8px; }
-    .iqbal-scope .pt-3 { padding-top: 12px; }
-    .iqbal-scope .pb-3 { padding-bottom: 12px; }
+    .id-card .p-1\.5 { padding: 6px; }
+    .id-card .p-2 { padding: 8px; }
+    .id-card .p-\[2px\] { padding: 2px; }
+    .id-card .px-2 { padding-left: 8px; padding-right: 8px; }
+    .id-card .px-4 { padding-left: 16px; padding-right: 16px; }
+    .id-card .px-5 { padding-left: 20px; padding-right: 20px; }
+    .id-card .px-6 { padding-left: 24px; padding-right: 24px; }
+    .id-card .py-1 { padding-top: 4px; padding-bottom: 4px; }
+    .id-card .py-\[3px\] { padding-top: 3px; padding-bottom: 3px; }
+    .id-card .pt-0\.5 { padding-top: 2px; }
+    .id-card .pt-2 { padding-top: 8px; }
+    .id-card .pt-3 { padding-top: 12px; }
+    .id-card .pb-3 { padding-bottom: 12px; }
 
-    .iqbal-scope .border { border-width: 1px; border-style: solid; }
-    .iqbal-scope .border-2 { border-width: 2px; border-style: solid; }
-    .iqbal-scope .border-\[5px\] { border-width: 5px; border-style: solid; }
-    .iqbal-scope .border-t { border-top-width: 1px; border-top-style: solid; }
-    .iqbal-scope .border-c2 { border-color: var(--c2); }
-    .iqbal-scope .border-c3 { border-color: var(--c3); }
-    .iqbal-scope .border-c2\/50 { border-color: rgba(212, 163, 75, 0.5); }
+    .id-card .border { border-width: 1px; border-style: solid; }
+    .id-card .border-2 { border-width: 2px; border-style: solid; }
+    .id-card .border-\[5px\] { border-width: 5px; border-style: solid; }
+    .id-card .border-t { border-top-width: 1px; border-top-style: solid; }
+    .id-card .border-c2 { border-color: var(--c2); }
+    .id-card .border-c3 { border-color: var(--c3); }
+    .id-card .border-c2\/50 { border-color: rgba(212,163,75,0.5); }
 
-    .iqbal-scope .gap-2 { gap: 8px; }
-    .iqbal-scope .gap-3 { gap: 12px; }
-    .iqbal-scope .space-y-2\.5 > * + * { margin-top: 10px; }
+    .id-card .gap-2 { gap: 8px; }
+    .id-card .gap-3 { gap: 12px; }
+    .id-card .space-y-2\.5 > * + * { margin-top: 10px; }
 
-    .iqbal-scope .text-sm { font-size: 14px; }
-    .iqbal-scope .text-\[8px\] { font-size: 8px; }
-    .iqbal-scope .text-\[9\.5px\] { font-size: 9.5px; }
-    .iqbal-scope .text-\[10px\] { font-size: 10px; }
-    .iqbal-scope .text-\[10\.5px\] { font-size: 10.5px; }
-    .iqbal-scope .text-\[12px\] { font-size: 12px; }
-    .iqbal-scope .text-\[13px\] { font-size: 13px; }
-    .iqbal-scope .text-\[13\.5px\] { font-size: 13.5px; }
-    .iqbal-scope .text-\[15px\] { font-size: 15px; }
-    .iqbal-scope .text-\[16px\] { font-size: 16px; }
-    .iqbal-scope .text-\[18px\] { font-size: 18px; }
-    .iqbal-scope .text-\[19px\] { font-size: 19px; }
+    .id-card .text-sm { font-size: 14px; }
+    .id-card .text-\[8px\] { font-size: 8px; }
+    .id-card .text-\[9\.5px\] { font-size: 9.5px; }
+    .id-card .text-\[10px\] { font-size: 10px; }
+    .id-card .text-\[10\.5px\] { font-size: 10.5px; }
+    .id-card .text-\[12px\] { font-size: 12px; }
+    .id-card .text-\[13px\] { font-size: 13px; }
+    .id-card .text-\[13\.5px\] { font-size: 13.5px; }
+    .id-card .text-\[15px\] { font-size: 15px; }
+    .id-card .text-\[16px\] { font-size: 16px; }
+    .id-card .text-\[18px\] { font-size: 18px; }
+    .id-card .text-\[19px\] { font-size: 19px; }
 
-    .iqbal-scope .leading-tight { line-height: 1.25; }
-    .iqbal-scope .leading-snug { line-height: 1.375; }
-    .iqbal-scope .leading-\[1\.8\] { line-height: 1.8; }
-    .iqbal-scope .leading-\[2\.1\] { line-height: 2.1; }
-    .iqbal-scope .tracking-wide { letter-spacing: 0.025em; }
-    .iqbal-scope .tracking-\[0\.25em\] { letter-spacing: 0.25em; }
+    .id-card .leading-tight { line-height: 1.25; }
+    .id-card .leading-snug { line-height: 1.375; }
+    .id-card .leading-\[1\.8\] { line-height: 1.8; }
+    .id-card .leading-\[2\.1\] { line-height: 2.1; }
+    .id-card .tracking-wide { letter-spacing: 0.025em; }
+    .id-card .tracking-\[0\.25em\] { letter-spacing: 0.25em; }
 
-    .iqbal-scope .object-contain { object-fit: contain; }
-    .iqbal-scope .object-cover { object-fit: cover; }
+    .id-card .object-contain { object-fit: contain; }
+    .id-card .object-cover { object-fit: cover; }
 
-    /* Guaranteed 10000% Sharp Scannable QR */
-    .qr-crisp-matrix {
-      image-rendering: -webkit-optimize-contrast !important;
-      image-rendering: crisp-edges !important;
-      image-rendering: pixelated !important;
-      shape-rendering: crispEdges !important;
-      background: #ffffff !important;
+    /* QR image — always crisp, fills 190×190 inside padding */
+    .id-card .qr-img {
+      display: block;
+      width: 190px;
+      height: 190px;
+      border-radius: 6px;
+      background: #ffffff;
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+      image-rendering: pixelated;
     }
 
-    /* ═══════════════════════════════════════════════════
-       PRINT MEDIA CONFIGURATION
-       ═══════════════════════════════════════════════════ */
-    @page {
-      size: A4 portrait;
-      margin: 0;
-    }
+    /* ═══ PRINT CONFIG ═══ */
+    @page { size: A4 portrait; margin: 0; }
 
     @media print {
       html, body {
         width: 210mm !important;
-        height: 297mm !important;
         margin: 0 !important;
         padding: 0 !important;
         background: #ffffff !important;
       }
-      .toolbar, .sheet-badge, .no-print {
-        display: none !important;
-      }
-      .print-workspace {
-        padding: 0 !important;
-        gap: 0 !important;
-      }
+      .toolbar, .sheet-badge, .no-print { display: none !important; }
+      .print-workspace { padding: 0 !important; gap: 0 !important; background: #ffffff !important; }
       .a4-sheet {
-        width: 210mm !important;
-        height: 297mm !important;
-        max-height: 297mm !important;
+        box-shadow: none !important;
         page-break-after: always !important;
         break-after: page !important;
-        box-shadow: none !important;
-        border-radius: 0 !important;
-        padding: 7mm 10mm !important;
-        margin: 0 !important;
-        background: #ffffff !important;
-      }
-      .cut-guide-vertical {
-        border-left: 0.75px dashed #94a3b8 !important;
+        min-height: 297mm !important;
+        max-height: 297mm !important;
       }
     }
   </style>
 </head>
 <body>
 
-<!-- TOOLBAR -->
+<!-- TOOLBAR (hidden on print) -->
 <div class="toolbar no-print">
   <div class="toolbar-left">
     <img src="/static/img/shaheen_logo_trans.png" alt="Crest" class="school-crest-mini">
     <div>
       <div class="toolbar-title">Shaheen Public High School — ID Cards Print Studio</div>
-      <div class="toolbar-sub">10-Up A4 Sheet Standard &bull; Left: Back &bull; Right: Front &bull; 5 Cards / Sheet</div>
+      <div class="toolbar-sub">A4 Grid Layout &bull; Left: Back (QR) &bull; Right: Front &bull; 5 Pairs / Sheet</div>
     </div>
-    
+
     <div class="control-group" style="margin-left: 12px;">
       <label for="class-select">Class:</label>
       <select id="class-select" onchange="filterClass(this.value)">
@@ -443,211 +338,212 @@
       &#128196; Sheet {{ page_num }} of {{ total_pages }} &bull; Students {{ chunk_start + 1 }}–{{ chunk_start + chunk|length }} of {{ total_students }} (Left: Back &bull; Right: Front)
     </div>
 
+    <!-- A4 sheet — 2-column grid, each row = 1 student pair -->
     <div class="a4-sheet">
-      <!-- Top Meta Sheet Guide (Subtle) -->
-      <div class="sheet-meta-bar">
-        <span>Shaheen Public High School &bull; Student ID Cards</span>
-        <span>A4 Duplex Lamination &bull; Sheet {{ page_num }} of {{ total_pages }}</span>
-        <span>Left: Back (QR) &bull; Right: Front</span>
-      </div>
+      {% for s in chunk %}
 
-      <!-- 5 Card Pairs on this A4 Sheet -->
-      <div class="card-pairs-list">
-        {% for s in chunk %}
-        <div class="card-pair-row" data-student-code="{{ s.student_code }}" data-class="{{ s.class_name }}">
-          
-          <!-- LEFT COLUMN: BACK SIDE (ATTENDANCE QR) -->
-          <div class="card-scale-box">
-            <div class="iqbal-scope">
-              <div class="id-card relative flex flex-col overflow-hidden rounded-[22px] bg-c1 text-center">
-                <img src="/static/img/shaheen_logo_trans.png" alt="School crest" width="353" height="260" class="object-contain mx-auto mt-3 h-16 w-16"/>
-                <div class="font-serif text-[18px] font-extrabold text-c2">Shaheen Public High School</div>
-                <div dir="rtl" class="font-urdu text-[14px] leading-[2.0] text-c2" style="word-spacing:0.2em;">شاہین پبلک ہائی سکول لوئے شلمان</div>
-                
-                <!-- Attendance QR (Original 190px Frame, Matrix Fills Box Edge-to-Edge) -->
-                <div class="mx-auto mt-2.5 rounded-xl bg-c2 p-2">
-                  <img src="{{ s.qr_image }}" alt="QR" class="h-[190px] w-[190px] rounded-md bg-white p-0 qr-crisp-matrix block" style="image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges; image-rendering: pixelated; shape-rendering: crispEdges; background: #ffffff;"/>
-                </div>
-                
-                <div class="mx-auto mt-2.5 rounded-full bg-c2 px-5 py-1 font-serif text-[12px] font-bold text-c3">
-                  SCAN FOR ATTENDANCE
-                </div>
+        <!-- ════════════════════════════════════════════
+             LEFT CARD: BACK SIDE (QR / Attendance)
+             ════════════════════════════════════════════ -->
+        <div class="a4-pair">
+          <div class="id-card relative flex flex-col overflow-hidden bg-c1 text-center">
 
-                <!-- Helplines & Address -->
-                <div class="mx-6 mt-3 space-y-2.5 text-left">
-                  <div class="flex items-center gap-2">
-                    <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-c2 text-c3">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path></svg>
-                    </span>
-                    <span class="text-[16px] font-extrabold text-primary-foreground">0335-9365884</span>
-                  </div>
-                  <div class="flex items-center gap-2">
-                    <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-c2 text-c3">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path></svg>
-                    </span>
-                    <span class="text-[16px] font-extrabold text-primary-foreground">0334-2727432</span>
-                  </div>
-                  <div class="flex items-start gap-2">
-                    <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-c2 text-c3">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                    </span>
-                    <span class="pt-0.5 text-[13.5px] leading-snug font-semibold text-primary-foreground/90">Loi Shalman Near Cricket Ground, Ghundakhel</span>
-                  </div>
-                </div>
+            <!-- School Logo -->
+            <img src="/static/img/shaheen_logo_trans.png" alt="School crest" width="353" height="260"
+                 class="object-contain mx-auto mt-3 h-16 w-16"/>
 
-                <div class="mx-6 mt-1 text-center text-[8px] text-primary-foreground/60">If found, please return this card to the school office.</div>
+            <!-- School Name -->
+            <div class="font-serif text-[18px] font-extrabold text-c2">Shaheen Public High School</div>
 
-                <!-- NoorX AI Promo Banner -->
-                <div class="mt-auto flex items-center justify-between gap-3 bg-c2 px-6 pb-3 pt-3" style="clip-path:ellipse(90% 100% at 50% 100%); -webkit-clip-path:ellipse(90% 100% at 50% 100%);">
-                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&amp;margin=0&amp;data=https%3A%2F%2Fnoorxai.com%2Fschools" alt="NoorX AI" class="h-[52px] w-[52px] shrink-0 rounded border border-c3 bg-cpaper p-[2px]"/>
-                  <div dir="rtl" class="text-right font-urdu leading-[1.8] text-c3">
-                    <div class="text-[10.5px] font-bold">کارڈز، کمپیوٹرائزڈ ڈی ایم سی، ڈیجیٹل حاضری</div>
-                    <div class="text-[9.5px]">اور طلبہ کارڈز کی سہولت کے لیے یہ QR اسکین کریں</div>
-                  </div>
-                </div>
+            <!-- Urdu School Name -->
+            <div dir="rtl" class="font-urdu text-[14px] leading-[2.0] text-c2" style="word-spacing:0.2em;">
+              شاہین پبلک ہائی سکول لوئی شلمان کوہاٹ
+            </div>
 
+            <!-- QR Code — 190×190, CRISP, no margin, external URL for best quality -->
+            <div class="mx-auto mt-2 rounded-xl bg-c2 p-2">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&margin=4&ecc=H&data={{ s.qr_payload | urlencode }}"
+                   alt="QR Code"
+                   class="qr-img h-[190px] w-[190px] rounded-md bg-cpaper p-1.5"/>
+            </div>
+
+            <!-- Scan CTA -->
+            <div class="mx-auto mt-2.5 rounded-full bg-c2 px-5 py-1 font-serif text-[12px] font-bold text-c3">
+              SCAN FOR ATTENDANCE
+            </div>
+
+            <!-- Helplines & Address -->
+            <div class="mx-6 mt-3 space-y-2.5 text-left">
+              <div class="flex items-center gap-2">
+                <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-c2 text-c3">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path></svg>
+                </span>
+                <span class="text-[16px] font-extrabold text-primary-foreground">0335-9365884</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-c2 text-c3">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path></svg>
+                </span>
+                <span class="text-[16px] font-extrabold text-primary-foreground">0334-2727432</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-c2 text-c3">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                </span>
+                <span class="pt-0.5 text-[13.5px] leading-snug font-semibold text-primary-foreground/90">Loi Shalman Near Cricket Ground, Ghundakhel</span>
               </div>
             </div>
-          </div>
 
-          <!-- CUT / FOLD ALIGNMENT GUIDE -->
-          <div class="cut-guide-vertical">
-            <span class="cut-guide-label">&#9986; CUT</span>
-          </div>
+            <div class="mx-6 mt-1 text-center text-[8px] text-primary-foreground/60">If found, please return this card to the school office.</div>
 
-          <!-- RIGHT COLUMN: FRONT SIDE -->
-          <div class="card-scale-box">
-            <div class="iqbal-scope">
-              <div class="id-card relative flex flex-col overflow-hidden rounded-[22px] bg-cpaper">
-                
-                <!-- Elliptical Top Emerald Header -->
-                <div class="relative h-[230px] bg-c1 text-center" style="clip-path:ellipse(85% 100% at 50% 0); -webkit-clip-path:ellipse(85% 100% at 50% 0);">
-                  <img src="/static/img/shaheen_logo_trans.png" alt="School crest" width="353" height="260" class="object-contain mx-auto mt-3 h-20 w-20"/>
-                  <div class="font-serif text-[19px] font-extrabold leading-tight text-c2">Shaheen Public High School</div>
-                  <div class="mt-1 text-[10px] tracking-[0.25em] text-c2 uppercase">— Loi Shalman • Khyber —</div>
-                </div>
-
-                <!-- Gold Curved Accent Line -->
-                <div class="absolute inset-x-0 top-[218px] mx-auto h-2 w-[80%] rounded-full bg-c2"></div>
-
-                <!-- Overlapping Circular Student Photo / Female / Male Avatar -->
-                <div class="overflow-hidden bg-muted mx-auto -mt-[78px] h-[140px] w-[140px] rounded-full border-[5px] border-c2 shadow-lg relative">
-                  {% if s.photo_url and s.photo_url.strip() %}
-                    <img src="{{ s.photo_url }}" alt="{{ s.full_name }}" class="h-full w-full object-cover">
-                  {% elif s.gender and (s.gender|lower == 'female' or s.gender|lower == 'f') %}
-                    <!-- FEMALE STUDENT PLACEHOLDER AVATAR -->
-                    <svg viewBox="0 0 140 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block; width:100%; height:100%;">
-                      <defs>
-                        <linearGradient id="fem-bg-{{ s.student_code }}" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stop-color="#f0fdf4"/>
-                          <stop offset="100%" stop-color="#dcfce7"/>
-                        </linearGradient>
-                        <linearGradient id="fem-hijab-{{ s.student_code }}" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stop-color="#0a5c45"/>
-                          <stop offset="100%" stop-color="#044332"/>
-                        </linearGradient>
-                        <linearGradient id="fem-gold-{{ s.student_code }}" x1="0" y1="0" x2="1" y2="1">
-                          <stop offset="0%" stop-color="#eab308"/>
-                          <stop offset="50%" stop-color="#fde047"/>
-                          <stop offset="100%" stop-color="#ca8a04"/>
-                        </linearGradient>
-                      </defs>
-                      <circle cx="70" cy="70" r="70" fill="url(#fem-bg-{{ s.student_code }})"/>
-                      <path d="M 14 140 Q 20 102 70 100 Q 120 102 126 140 Z" fill="url(#fem-hijab-{{ s.student_code }})"/>
-                      <ellipse cx="70" cy="65" rx="38" ry="46" fill="url(#fem-hijab-{{ s.student_code }})"/>
-                      <path d="M 42 70 C 44 42 96 42 98 70 C 96 94 44 94 42 70 Z" fill="none" stroke="url(#fem-gold-{{ s.student_code }})" stroke-width="2.5"/>
-                      <ellipse cx="70" cy="68" rx="25" ry="28" fill="#fed7aa"/>
-                      <path d="M 48 55 C 55 45 85 45 92 55 C 84 50 56 50 48 55 Z" fill="#044332"/>
-                      <path d="M 58 67 Q 63 70 68 67" stroke="#9a3412" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-                      <path d="M 72 67 Q 77 70 82 67" stroke="#9a3412" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-                      <path d="M 67 76 Q 70 79 73 76" stroke="#c2410c" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-                      <path d="M 58 108 L 70 125 L 82 108 Z" fill="#022c22" opacity="0.55"/>
-                      <circle cx="70" cy="108" r="4" fill="url(#fem-gold-{{ s.student_code }})"/>
-                    </svg>
-                  {% else %}
-                    <!-- MALE STUDENT PLACEHOLDER AVATAR -->
-                    <svg viewBox="0 0 140 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block; width:100%; height:100%;">
-                      <defs>
-                        <linearGradient id="male-bg-{{ s.student_code }}" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stop-color="#f8fafc"/>
-                          <stop offset="100%" stop-color="#e2e8f0"/>
-                        </linearGradient>
-                        <linearGradient id="male-suit-{{ s.student_code }}" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stop-color="#0a5c45"/>
-                          <stop offset="100%" stop-color="#044332"/>
-                        </linearGradient>
-                        <linearGradient id="male-gold-{{ s.student_code }}" x1="0" y1="0" x2="1" y2="1">
-                          <stop offset="0%" stop-color="#d4a34b"/>
-                          <stop offset="50%" stop-color="#facc15"/>
-                          <stop offset="100%" stop-color="#b45309"/>
-                        </linearGradient>
-                      </defs>
-                      <circle cx="70" cy="70" r="70" fill="url(#male-bg-{{ s.student_code }})"/>
-                      <path d="M 14 140 C 18 110 38 96 70 96 C 102 96 122 110 126 140 Z" fill="url(#male-suit-{{ s.student_code }})"/>
-                      <polygon points="54,96 86,96 70,126" fill="#ffffff"/>
-                      <polygon points="67,98 73,98 75,104 70,128 65,104" fill="url(#male-gold-{{ s.student_code }})"/>
-                      <polygon points="50,96 62,96 66,106 54,100" fill="#f8fafc" stroke="#cbd5e1" stroke-width="0.8"/>
-                      <polygon points="90,96 78,96 74,106 86,100" fill="#f8fafc" stroke="#cbd5e1" stroke-width="0.8"/>
-                      <rect x="62" y="80" width="16" height="18" rx="4" fill="#fed7aa"/>
-                      <ellipse cx="70" cy="64" rx="25" ry="28" fill="#fed7aa"/>
-                      <path d="M 45 56 C 45 36 60 28 70 28 C 80 28 95 36 95 56 C 95 60 93 64 91 64 C 89 48 83 40 70 40 C 57 40 51 48 49 64 C 47 64 45 60 45 56 Z" fill="#1e293b"/>
-                      <path d="M 57 58 Q 62 56 66 58" stroke="#1e293b" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-                      <path d="M 74 58 Q 78 56 83 58" stroke="#1e293b" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-                      <circle cx="61.5" cy="63" r="2" fill="#1e293b"/>
-                      <circle cx="78.5" cy="63" r="2" fill="#1e293b"/>
-                      <path d="M 66 73 Q 70 76 74 73" stroke="#c2410c" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-                    </svg>
-                  {% endif %}
-                </div>
-
-                <!-- Student Identity Card Pill -->
-                <div class="mx-auto mt-2 rounded-full border-2 border-c2 bg-c1 px-5 py-1 font-serif text-[12px] font-bold tracking-wide text-c2">
-                  STUDENT IDENTITY CARD
-                </div>
-
-                <!-- Student Details Table -->
-                <div class="mx-5 mt-3 overflow-hidden rounded-md border border-c2">
-                  <div class="flex text-[12px]">
-                    <span class="w-[42%] bg-c1/10 px-2 py-[3px] font-semibold text-c3">Name</span>
-                    <span class="px-2 py-[3px] font-semibold text-cink">{{ s.full_name }}</span>
-                  </div>
-                  <div class="flex text-[12px] border-t border-c2/50">
-                    <span class="w-[42%] bg-c1/10 px-2 py-[3px] font-semibold text-c3">Father's Name</span>
-                    <span class="px-2 py-[3px] font-semibold text-cink">{{ s.father_name or '—' }}</span>
-                  </div>
-                  <div class="flex text-[12px] border-t border-c2/50">
-                    <span class="w-[42%] bg-c1/10 px-2 py-[3px] font-semibold text-c3">Class</span>
-                    <span class="px-2 py-[3px] font-semibold text-cink">{{ s.class_name }}</span>
-                  </div>
-                  <div class="flex text-[12px] border-t border-c2/50">
-                    <span class="w-[42%] bg-c1/10 px-2 py-[3px] font-semibold text-c3">Roll No</span>
-                    <span class="px-2 py-[3px] font-semibold text-cink">{{ s.roll_no }}</span>
-                  </div>
-                  <div class="flex text-[12px] border-t border-c2/50">
-                    <span class="w-[42%] bg-c1/10 px-2 py-[3px] font-semibold text-c3">Session</span>
-                    <span class="px-2 py-[3px] font-semibold text-cink">2026 - 2027</span>
-                  </div>
-                  <div class="flex text-[12px] border-t border-c2/50">
-                    <span class="w-[42%] bg-c1/10 px-2 py-[3px] font-semibold text-c3">ID No</span>
-                    <span class="px-2 py-[3px] font-semibold text-cink">{{ s.student_code }}</span>
-                  </div>
-                </div>
-
-                <!-- Elliptical Bottom Emerald Footer with Allama Iqbal Poetry -->
-                <div class="mt-auto bg-c1 px-4 pt-2 pb-3 text-center" style="clip-path:ellipse(90% 100% at 50% 100%); -webkit-clip-path:ellipse(90% 100% at 50% 100%);">
-                  <div dir="rtl" class="mx-1 font-urdu text-[13px] leading-[2.1] text-c2">تو شاہیں ہے پرواز ہے کام تیرا</div>
-                  <div dir="rtl" class="mx-1 font-urdu text-[13px] leading-[2.1] text-c2">تیرے سامنے آسماں اور بھی ہیں</div>
-                </div>
-
+            <!-- NoorX AI Promo Banner -->
+            <div class="mt-auto flex items-center justify-between gap-3 bg-c2 px-6 pb-3 pt-3"
+                 style="clip-path:ellipse(90% 100% at 50% 100%); -webkit-clip-path:ellipse(90% 100% at 50% 100%);">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=0&data=https%3A%2F%2Fnoorxai.com%2Fschools"
+                   alt="NoorX AI" class="h-[52px] w-[52px] shrink-0 rounded border border-c3 bg-cpaper p-[2px]"/>
+              <div dir="rtl" class="text-right font-urdu leading-[1.8] text-c3">
+                <div class="text-[10.5px] font-bold">نوراکس اے آئی پاکستان کا پہلا اسکول مینجمنٹ حل</div>
+                <div class="text-[9.5px]">حاضری کے لیے اسکین کریں یا QR اسکین کریں</div>
               </div>
             </div>
-          </div>
 
+          </div>
         </div>
-        {% endfor %}
-      </div>
 
+        <!-- ════════════════════════════════════════════
+             RIGHT CARD: FRONT SIDE (Student Details)
+             ════════════════════════════════════════════ -->
+        <div class="a4-pair">
+          <div class="id-card relative flex flex-col overflow-hidden bg-cpaper">
+
+            <!-- Elliptical Top Emerald Header -->
+            <div class="relative h-[230px] bg-c1 text-center"
+                 style="clip-path:ellipse(85% 100% at 50% 0); -webkit-clip-path:ellipse(85% 100% at 50% 0);">
+              <img src="/static/img/shaheen_logo_trans.png" alt="School crest" width="353" height="260"
+                   class="object-contain mx-auto mt-3 h-20 w-20"/>
+              <div class="font-serif text-[19px] font-extrabold leading-tight text-c2">Shaheen Public High School</div>
+              <div class="mt-1 text-[10px] tracking-[0.25em] text-c2 uppercase">— Loi Shalman · Khyber —</div>
+            </div>
+
+            <!-- Gold Curved Accent Line -->
+            <div class="absolute inset-x-0 top-[218px] mx-auto h-2 w-[80%] rounded-full bg-c2"></div>
+
+            <!-- Student Photo / Avatar -->
+            <div class="overflow-hidden bg-muted mx-auto -mt-[78px] h-[140px] w-[140px] rounded-full border-[5px] border-c2 shadow-lg relative">
+              {% if s.photo_url and s.photo_url.strip() %}
+                <img src="{{ s.photo_url }}" alt="{{ s.full_name }}" class="h-full w-full object-cover">
+              {% elif s.gender and (s.gender|lower == 'female' or s.gender|lower == 'f') %}
+                <!-- FEMALE AVATAR -->
+                <svg viewBox="0 0 140 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;height:100%;">
+                  <defs>
+                    <linearGradient id="fem-bg-{{ s.student_code }}" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#f0fdf4"/>
+                      <stop offset="100%" stop-color="#dcfce7"/>
+                    </linearGradient>
+                    <linearGradient id="fem-hijab-{{ s.student_code }}" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#0a5c45"/>
+                      <stop offset="100%" stop-color="#044332"/>
+                    </linearGradient>
+                    <linearGradient id="fem-gold-{{ s.student_code }}" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stop-color="#eab308"/>
+                      <stop offset="50%" stop-color="#fde047"/>
+                      <stop offset="100%" stop-color="#ca8a04"/>
+                    </linearGradient>
+                  </defs>
+                  <circle cx="70" cy="70" r="70" fill="url(#fem-bg-{{ s.student_code }})"/>
+                  <path d="M 14 140 Q 20 102 70 100 Q 120 102 126 140 Z" fill="url(#fem-hijab-{{ s.student_code }})"/>
+                  <ellipse cx="70" cy="65" rx="38" ry="46" fill="url(#fem-hijab-{{ s.student_code }})"/>
+                  <path d="M 42 70 C 44 42 96 42 98 70 C 96 94 44 94 42 70 Z" fill="none" stroke="url(#fem-gold-{{ s.student_code }})" stroke-width="2.5"/>
+                  <ellipse cx="70" cy="68" rx="25" ry="28" fill="#fed7aa"/>
+                  <path d="M 48 55 C 55 45 85 45 92 55 C 84 50 56 50 48 55 Z" fill="#044332"/>
+                  <path d="M 58 67 Q 63 70 68 67" stroke="#9a3412" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+                  <path d="M 72 67 Q 77 70 82 67" stroke="#9a3412" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+                  <path d="M 67 76 Q 70 79 73 76" stroke="#c2410c" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                  <path d="M 58 108 L 70 125 L 82 108 Z" fill="#022c22" opacity="0.55"/>
+                  <circle cx="70" cy="108" r="4" fill="url(#fem-gold-{{ s.student_code }})"/>
+                </svg>
+              {% else %}
+                <!-- MALE AVATAR -->
+                <svg viewBox="0 0 140 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;height:100%;">
+                  <defs>
+                    <linearGradient id="male-bg-{{ s.student_code }}" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#f8fafc"/>
+                      <stop offset="100%" stop-color="#e2e8f0"/>
+                    </linearGradient>
+                    <linearGradient id="male-suit-{{ s.student_code }}" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#0a5c45"/>
+                      <stop offset="100%" stop-color="#044332"/>
+                    </linearGradient>
+                    <linearGradient id="male-gold-{{ s.student_code }}" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stop-color="#d4a34b"/>
+                      <stop offset="50%" stop-color="#facc15"/>
+                      <stop offset="100%" stop-color="#b45309"/>
+                    </linearGradient>
+                  </defs>
+                  <circle cx="70" cy="70" r="70" fill="url(#male-bg-{{ s.student_code }})"/>
+                  <path d="M 14 140 C 18 110 38 96 70 96 C 102 96 122 110 126 140 Z" fill="url(#male-suit-{{ s.student_code }})"/>
+                  <polygon points="54,96 86,96 70,126" fill="#ffffff"/>
+                  <polygon points="67,98 73,98 75,104 70,128 65,104" fill="url(#male-gold-{{ s.student_code }})"/>
+                  <polygon points="50,96 62,96 66,106 54,100" fill="#f8fafc" stroke="#cbd5e1" stroke-width="0.8"/>
+                  <polygon points="90,96 78,96 74,106 86,100" fill="#f8fafc" stroke="#cbd5e1" stroke-width="0.8"/>
+                  <rect x="62" y="80" width="16" height="18" rx="4" fill="#fed7aa"/>
+                  <ellipse cx="70" cy="64" rx="25" ry="28" fill="#fed7aa"/>
+                  <path d="M 45 56 C 45 36 60 28 70 28 C 80 28 95 36 95 56 C 95 60 93 64 91 64 C 89 48 83 40 70 40 C 57 40 51 48 49 64 C 47 64 45 60 45 56 Z" fill="#1e293b"/>
+                  <path d="M 57 58 Q 62 56 66 58" stroke="#1e293b" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+                  <path d="M 74 58 Q 78 56 83 58" stroke="#1e293b" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+                  <circle cx="61.5" cy="63" r="2" fill="#1e293b"/>
+                  <circle cx="78.5" cy="63" r="2" fill="#1e293b"/>
+                  <path d="M 66 73 Q 70 76 74 73" stroke="#c2410c" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+                </svg>
+              {% endif %}
+            </div>
+
+            <!-- Student Identity Card Pill -->
+            <div class="mx-auto mt-2 rounded-full border-2 border-c2 bg-c1 px-5 py-1 font-serif text-[12px] font-bold tracking-wide text-c2">
+              STUDENT IDENTITY CARD
+            </div>
+
+            <!-- Student Details Table -->
+            <div class="mx-5 mt-3 overflow-hidden rounded-md border border-c2">
+              <div class="flex text-[12px]">
+                <span class="w-[42%] bg-c1/10 px-2 py-[3px] font-semibold text-c3">Name</span>
+                <span class="px-2 py-[3px] font-semibold text-cink">{{ s.full_name }}</span>
+              </div>
+              <div class="flex text-[12px] border-t border-c2/50">
+                <span class="w-[42%] bg-c1/10 px-2 py-[3px] font-semibold text-c3">Father's Name</span>
+                <span class="px-2 py-[3px] font-semibold text-cink">{{ s.father_name or '—' }}</span>
+              </div>
+              <div class="flex text-[12px] border-t border-c2/50">
+                <span class="w-[42%] bg-c1/10 px-2 py-[3px] font-semibold text-c3">Class</span>
+                <span class="px-2 py-[3px] font-semibold text-cink">{{ s.class_name }}</span>
+              </div>
+              <div class="flex text-[12px] border-t border-c2/50">
+                <span class="w-[42%] bg-c1/10 px-2 py-[3px] font-semibold text-c3">Roll No</span>
+                <span class="px-2 py-[3px] font-semibold text-cink">{{ s.roll_no }}</span>
+              </div>
+              <div class="flex text-[12px] border-t border-c2/50">
+                <span class="w-[42%] bg-c1/10 px-2 py-[3px] font-semibold text-c3">Session</span>
+                <span class="px-2 py-[3px] font-semibold text-cink">2026 - 2027</span>
+              </div>
+              <div class="flex text-[12px] border-t border-c2/50">
+                <span class="w-[42%] bg-c1/10 px-2 py-[3px] font-semibold text-c3">ID No</span>
+                <span class="px-2 py-[3px] font-semibold text-cink">{{ s.student_code }}</span>
+              </div>
+            </div>
+
+            <!-- Elliptical Bottom Emerald Footer with Allama Iqbal Poetry -->
+            <div class="mt-auto bg-c1 px-4 pt-2 pb-3 text-center"
+                 style="clip-path:ellipse(90% 100% at 50% 100%); -webkit-clip-path:ellipse(90% 100% at 50% 100%);">
+              <div dir="rtl" class="mx-1 font-urdu text-[13px] leading-[2.1] text-c2">خودی کو کر بلند اتنا کہ ہر تقدیر سے پہلے</div>
+              <div dir="rtl" class="mx-1 font-urdu text-[13px] leading-[2.1] text-c2">خدا بندے سے خود پوچھے بتا تیری رضا کیا ہے</div>
+            </div>
+
+          </div>
+        </div>
+
+      {% endfor %}
     </div>
+
   {% endfor %}
 </div>
 
