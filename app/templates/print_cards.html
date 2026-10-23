@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>Print Student ID Cards — Shaheen Public High School</title>
+<title>A4 Print Studio (2-Column × 5-Row Grid) — Shaheen Public High School</title>
 <link rel="icon" type="image/png" href="/static/icons/icon-192.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Cinzel:wght@600;800&family=Noto+Nastaliq+Urdu:wght@600&display=swap" />
 <style>
+/* ═══ COMPILED TAILWIND DESIGN STYLES ═══ */
 
 
 @layer properties {
@@ -3030,77 +3031,212 @@ body { font-family: Outfit, sans-serif; }
 .gpt-cursor-tooltip { position: fixed; left: 0px; top: 0px; display: none; pointer-events: none; z-index: 1000000001; padding: 4px 10px; border-radius: 9999px; background: rgba(37, 99, 235, 0.93); color: rgb(255, 255, 255); font: 600 12px / 1.25 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; white-space: nowrap; max-width: min(70vw, 520px); overflow: hidden; text-overflow: ellipsis; }
 
 
-/* Screen-only UI */
+
+/* ═══ A4 2-COLUMN × 5-ROW PRINT LAYOUT ═══ */
+:root {
+  --page-margin: 10mm;
+  --row-gap: 3mm;
+}
+
+@page {
+  size: A4 portrait;
+  margin: 10mm;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #0b1329;
+  font-family: 'Outfit', sans-serif;
+  color: #0f172a;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+/* Screen Navigation Toolbar */
 .toolbar {
-  position: sticky; top: 0; z-index: 999;
-  background: #ffffff; border-bottom: 2px solid #044332;
-  padding: 10px 20px; display: flex; justify-content: space-between;
-  align-items: center; box-shadow: 0 4px 14px rgba(0,0,0,0.12);
-  gap: 12px; flex-wrap: wrap; font-family: 'Outfit', sans-serif;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  background: #ffffff;
+  border-bottom: 2px solid #044332;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+  gap: 12px;
+  flex-wrap: wrap;
 }
 .toolbar-left { display: flex; align-items: center; gap: 12px; }
 .school-crest-mini { width: 34px; height: 34px; object-fit: contain; }
-.toolbar-title { font-size: 15px; font-weight: 800; color: #044332; }
+.toolbar-title { font-size: 15px; font-weight: 800; color: #044332; line-height: 1.2; }
 .toolbar-sub { font-size: 11px; color: #64748b; font-weight: 600; }
 .control-group { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: #334155; font-weight: 700; }
 .control-group select {
   padding: 6px 10px; border-radius: 6px; border: 1.5px solid #cbd5e1;
   font-size: 12px; font-weight: 700; background: #fff; color: #0f172a; cursor: pointer;
 }
-.toolbar-actions { display: flex; align-items: center; gap: 8px; }
+.toolbar-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .btn {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 8px 14px; border-radius: 6px; text-decoration: none;
   font-weight: 700; font-size: 12px; cursor: pointer; border: none;
+  transition: all 0.15s ease;
 }
 .btn-green { background: #044332; color: #fff; }
+.btn-green:hover { background: #065f46; }
 .btn-navy { background: #1e3a8a; color: #fff; }
+.btn-navy:hover { background: #1e40af; }
 .btn-light { background: #f8fafc; color: #334155; border: 1px solid #cbd5e1; }
+.btn-light:hover { background: #e2e8f0; }
 
-.screen-body {
-  background: #0f172a;
-  min-height: 100vh;
-  padding-bottom: 60px;
-}
-.sheets-container {
+.screen-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 30px;
-  padding: 24px 12px;
+  padding: 24px 12px 60px;
+  gap: 28px;
 }
+
 .sheet-badge {
-  background: #1e293b; color: #facc15;
-  font-size: 11.5px; font-weight: 800;
-  padding: 4px 14px; border-radius: 20px;
+  background: #1e293b;
+  color: #facc15;
+  font-size: 11.5px;
+  font-weight: 800;
+  padding: 5px 16px;
+  border-radius: 20px;
   border: 1px solid rgba(250, 204, 21, 0.3);
-  margin-bottom: 8px; font-family: 'Outfit', sans-serif;
+  margin-bottom: 4px;
 }
+
+/* Physical A4 Sheet Container (210mm x 297mm) */
+.a4-page {
+  width: 210mm;
+  height: 297mm;
+  box-sizing: border-box;
+  padding: 10mm;
+  background: #ffffff;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  page-break-after: always;
+  break-after: page;
+}
+
+/* Top Sheet Guide Header (Screen only) */
+.sheet-guide-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 9px;
+  color: #94a3b8;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 2mm;
+  border-bottom: 0.5px dashed #e2e8f0;
+  padding-bottom: 1mm;
+}
+
+/* 5 Rows Vertical Flex Column */
+.cards-grid-5rows {
+  display: flex;
+  flex-direction: column;
+  gap: 3mm; /* Exact 3mm cut gap between rows */
+  width: 100%;
+  align-items: center;
+}
+
+/* Each Row = 1 Student (Left: Back, Right: Front) */
+.card-row {
+  display: flex;
+  gap: 6mm; /* Clean horizontal gap between Back and Front columns */
+  align-items: center;
+  justify-content: center;
+}
+
+/* Card Cell: Exactly 3 inches wide × 2 inches tall (76.2mm × 50.8mm) */
+.card-cell {
+  width: 3in;
+  height: 2in;
+  box-sizing: border-box;
+  position: relative;
+  outline: 0.3mm dashed #cbd5e1;
+  border-radius: 2.5mm;
+  overflow: hidden;
+  background: #ffffff;
+  flex-shrink: 0;
+}
+
+/* Rotated Card Wrapper: 384px x 576px scaled to 50% and rotated sideways */
+.card-rot-wrapper {
+  position: absolute;
+  width: 384px;
+  height: 576px;
+  left: 50%;
+  top: 50%;
+  margin-left: -192px;
+  margin-top: -288px;
+  transform: rotate(-90deg) scale(0.5);
+  transform-origin: center center;
+}
+
+/* Optional Toggle: rotate clockwise (+90deg) */
+.rotate-cw .card-rot-wrapper {
+  transform: rotate(90deg) scale(0.5);
+}
+
+.card-rot-wrapper .id-card {
+  box-shadow: none !important;
+}
+
+/* Print Overrides */
 @media print {
-  body { background: #ffffff !important; }
-  .no-print, .toolbar, .sheet-badge { display: none !important; }
-  .screen-body { background: #ffffff !important; padding: 0 !important; }
-  .sheets-container { padding: 0 !important; gap: 0 !important; }
-  .a4-sheet {
+  html, body {
+    background: #ffffff !important;
+    width: 210mm !important;
+    height: 297mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .no-print, .toolbar, .sheet-badge, .sheet-guide-header {
+    display: none !important;
+  }
+  .screen-container {
+    padding: 0 !important;
+    gap: 0 !important;
+  }
+  .a4-page {
     box-shadow: none !important;
+    margin: 0 !important;
+    padding: 10mm !important;
+    width: 210mm !important;
+    height: 297mm !important;
     page-break-after: always !important;
     break-after: page !important;
-    margin: 0 auto !important;
+  }
+  .card-cell {
+    outline: 0.25mm dashed #94a3b8 !important;
   }
 }
-
 </style>
 </head>
-<body class="screen-body">
+<body>
 
-<!-- SCREEN TOOLBAR -->
+<!-- TOOLBAR (Hidden on print) -->
 <div class="toolbar no-print">
   <div class="toolbar-left">
     <img src="/static/img/shaheen_logo_trans.png" alt="Crest" class="school-crest-mini">
     <div>
       <div class="toolbar-title">Shaheen Public High School — ID Cards Print Studio</div>
-      <div class="toolbar-sub">Standard A4 Sheet (5 Pairs / Page &bull; Left: Back &bull; Right: Front)</div>
+      <div class="toolbar-sub">A4 Standard &bull; 2 Columns × 5 Rows (5 Students / Page) &bull; 3" × 2" Sideways Cards &bull; 3mm Cut Gap</div>
     </div>
+    
     <div class="control-group" style="margin-left: 12px;">
       <label for="class-select">Class:</label>
       <select id="class-select" onchange="filterClass(this.value)">
@@ -3115,14 +3251,16 @@ body { font-family: Outfit, sans-serif; }
       </select>
     </div>
   </div>
+
   <div class="toolbar-actions">
+    <button type="button" onclick="toggleRotation()" class="btn btn-light" id="rot-btn">&#128257; Rotate: ↶ Left (-90°)</button>
     <a href="/admin" class="btn btn-light">&larr; Dashboard</a>
     <a href="/print/card-preview-noqr" target="_blank" class="btn btn-navy">&#128065; Pair Preview</a>
     <button onclick="window.print()" class="btn btn-green">&#128438;&#65039; Print All Cards</button>
   </div>
 </div>
 
-<div class="sheets-container">
+<div class="screen-container" id="sheets-root">
   {% set chunk_size = 5 %}
   {% set total_students = students|length %}
   {% set total_pages = ((total_students + chunk_size - 1) // chunk_size) if total_students > 0 else 0 %}
@@ -3132,188 +3270,211 @@ body { font-family: Outfit, sans-serif; }
     {% set page_num = (chunk_start // chunk_size) + 1 %}
 
     <div class="sheet-badge no-print">
-      &#128196; Sheet {{ page_num }} of {{ total_pages }} &bull; Students {{ chunk_start + 1 }}–{{ chunk_start + chunk|length }} of {{ total_students }}
+      &#128196; Sheet {{ page_num }} of {{ total_pages }} &bull; Students {{ chunk_start + 1 }}–{{ chunk_start + chunk|length }} of {{ total_students }} (Left: Back &bull; Right: Front)
     </div>
 
-    <div class="a4-sheet">
-      {% for s in chunk %}
-      <div class="a4-pair">
-
-        <!-- ================= LEFT: BACK SIDE (ATTENDANCE QR) ================= -->
-        <div class="id-card theme-emerald relative flex flex-col overflow-hidden rounded-[22px] shadow-2xl bg-c1 text-center">
-          <img src="/static/img/shaheen_logo_trans.png" alt="School crest" width="353" height="260" class="object-contain mx-auto mt-3 h-16 w-16"/>
-          <div class="font-serif text-[18px] font-extrabold text-c2">Shaheen Public High School</div>
-          <div dir="rtl" class="font-urdu text-[15px] leading-[2.1] text-c2 [word-spacing:0.2em]">شاہین پبلک ہائی سکول لوئے شلمان</div>
-          
-          <!-- Attendance QR Code (190px Box) -->
-          <div class="mx-auto mt-2 rounded-xl bg-c2 p-2">
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&amp;margin=4&amp;ecc=H&amp;data={{ s.qr_payload | urlencode }}" alt="QR" class="h-[190px] w-[190px] rounded-md bg-cpaper p-1.5" style="display:block; image-rendering:-webkit-optimize-contrast; image-rendering:pixelated;"/>
-          </div>
-
-          <div class="mx-auto mt-3 rounded-full bg-c2 px-5 py-1 font-serif text-[12px] font-bold text-c3">
-            SCAN FOR ATTENDANCE
-          </div>
-
-          <!-- Helplines & Address -->
-          <div class="mx-6 mt-4 space-y-2.5 text-left">
-            <div class="flex items-center gap-2">
-              <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-c2 text-c3">
-                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path></svg>
-              </span>
-              <span class="text-[16px] font-extrabold text-primary-foreground">0335-9365884</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-c2 text-c3">
-                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path></svg>
-              </span>
-              <span class="text-[16px] font-extrabold text-primary-foreground">0334-2727432</span>
-            </div>
-            <div class="flex items-start gap-2">
-              <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-c2 text-c3">
-                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
-              </span>
-              <span class="pt-0.5 text-[13.5px] leading-snug font-semibold text-primary-foreground/90">Loi Shalman Near Cricket Ground, Ghundakhel</span>
-            </div>
-          </div>
-
-          <div class="mx-6 mt-1 text-center text-[8px] text-primary-foreground/60">If found, please return this card to the school office.</div>
-
-          <!-- NoorX AI Elliptical Bottom Banner -->
-          <div class="mt-auto flex items-center justify-between gap-3 bg-c2 px-6 pb-3 pt-3 [clip-path:ellipse(90%_100%_at_50%_100%)]" style="clip-path:ellipse(90% 100% at 50% 100%); -webkit-clip-path:ellipse(90% 100% at 50% 100%);">
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&amp;margin=0&amp;data=https%3A%2F%2Fnoorxai.com%2Fschools" alt="NoorX AI" class="h-[52px] w-[52px] shrink-0 rounded border border-c3 bg-cpaper p-[2px]"/>
-            <div dir="rtl" class="text-right font-urdu leading-[1.8] text-c3">
-              <div class="text-[10.5px] font-bold">نوراکس اے آئی پاکستان کا پہلا اسکول مینجمنٹ حل</div>
-              <div class="text-[9.5px]">حاضری کے لیے اسکین کریں یا QR اسکین کریں</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ================= RIGHT: FRONT SIDE (STUDENT DETAILS) ================= -->
-        <div class="id-card theme-emerald relative flex flex-col overflow-hidden rounded-[22px] shadow-2xl bg-cpaper">
-          <!-- Elliptical Top Header -->
-          <div class="relative h-[230px] bg-c1 text-center [clip-path:ellipse(85%_100%_at_50%_0)]" style="clip-path:ellipse(85% 100% at 50% 0); -webkit-clip-path:ellipse(85% 100% at 50% 0);">
-            <img src="/static/img/shaheen_logo_trans.png" alt="School crest" width="353" height="260" class="object-contain mx-auto mt-3 h-20 w-20"/>
-            <div class="font-serif text-[19px] font-extrabold leading-tight text-c2">Shaheen Public High School</div>
-            <div class="mt-1 text-[10px] tracking-[0.25em] text-c2 uppercase">— Loi Shalman · Khyber —</div>
-          </div>
-
-          <!-- Gold Curved Accent Line -->
-          <div class="absolute inset-x-0 top-[218px] mx-auto h-2 w-[80%] rounded-full bg-c2"></div>
-
-          <!-- Overlapping Circular Student Photo / Female / Male Avatar -->
-          <div class="overflow-hidden bg-muted mx-auto -mt-[78px] h-[140px] w-[140px] rounded-full border-[5px] border-c2 shadow-lg relative">
-            {% if s.photo_url and s.photo_url.strip() %}
-              <img src="{{ s.photo_url }}" alt="{{ s.full_name }}" class="h-full w-full object-cover">
-            {% elif s.gender and (s.gender|lower == 'female' or s.gender|lower == 'f') %}
-              <!-- FEMALE STUDENT PLACEHOLDER AVATAR -->
-              <svg viewBox="0 0 140 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block; width:100%; height:100%;">
-                <defs>
-                  <linearGradient id="fem-bg-{{ s.student_code }}" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="#f0fdf4"/>
-                    <stop offset="100%" stop-color="#dcfce7"/>
-                  </linearGradient>
-                  <linearGradient id="fem-hijab-{{ s.student_code }}" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="#0a5c45"/>
-                    <stop offset="100%" stop-color="#044332"/>
-                  </linearGradient>
-                  <linearGradient id="fem-gold-{{ s.student_code }}" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stop-color="#eab308"/>
-                    <stop offset="50%" stop-color="#fde047"/>
-                    <stop offset="100%" stop-color="#ca8a04"/>
-                  </linearGradient>
-                </defs>
-                <circle cx="70" cy="70" r="70" fill="url(#fem-bg-{{ s.student_code }})"/>
-                <path d="M 14 140 Q 20 102 70 100 Q 120 102 126 140 Z" fill="url(#fem-hijab-{{ s.student_code }})"/>
-                <ellipse cx="70" cy="65" rx="38" ry="46" fill="url(#fem-hijab-{{ s.student_code }})"/>
-                <path d="M 42 70 C 44 42 96 42 98 70 C 96 94 44 94 42 70 Z" fill="none" stroke="url(#fem-gold-{{ s.student_code }})" stroke-width="2.5"/>
-                <ellipse cx="70" cy="68" rx="25" ry="28" fill="#fed7aa"/>
-                <path d="M 48 55 C 55 45 85 45 92 55 C 84 50 56 50 48 55 Z" fill="#044332"/>
-                <path d="M 58 67 Q 63 70 68 67" stroke="#9a3412" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-                <path d="M 72 67 Q 77 70 82 67" stroke="#9a3412" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-                <path d="M 67 76 Q 70 79 73 76" stroke="#c2410c" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-                <path d="M 58 108 L 70 125 L 82 108 Z" fill="#022c22" opacity="0.55"/>
-                <circle cx="70" cy="108" r="4" fill="url(#fem-gold-{{ s.student_code }})"/>
-              </svg>
-            {% else %}
-              <!-- MALE STUDENT PLACEHOLDER AVATAR -->
-              <svg viewBox="0 0 140 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block; width:100%; height:100%;">
-                <defs>
-                  <linearGradient id="male-bg-{{ s.student_code }}" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="#f8fafc"/>
-                    <stop offset="100%" stop-color="#e2e8f0"/>
-                  </linearGradient>
-                  <linearGradient id="male-suit-{{ s.student_code }}" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="#0a5c45"/>
-                    <stop offset="100%" stop-color="#044332"/>
-                  </linearGradient>
-                  <linearGradient id="male-gold-{{ s.student_code }}" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stop-color="#d4a34b"/>
-                    <stop offset="50%" stop-color="#facc15"/>
-                    <stop offset="100%" stop-color="#b45309"/>
-                  </linearGradient>
-                </defs>
-                <circle cx="70" cy="70" r="70" fill="url(#male-bg-{{ s.student_code }})"/>
-                <path d="M 14 140 C 18 110 38 96 70 96 C 102 96 122 110 126 140 Z" fill="url(#male-suit-{{ s.student_code }})"/>
-                <polygon points="54,96 86,96 70,126" fill="#ffffff"/>
-                <polygon points="67,98 73,98 75,104 70,128 65,104" fill="url(#male-gold-{{ s.student_code }})"/>
-                <polygon points="50,96 62,96 66,106 54,100" fill="#f8fafc" stroke="#cbd5e1" stroke-width="0.8"/>
-                <polygon points="90,96 78,96 74,106 86,100" fill="#f8fafc" stroke="#cbd5e1" stroke-width="0.8"/>
-                <rect x="62" y="80" width="16" height="18" rx="4" fill="#fed7aa"/>
-                <ellipse cx="70" cy="64" rx="25" ry="28" fill="#fed7aa"/>
-                <path d="M 45 56 C 45 36 60 28 70 28 C 80 28 95 36 95 56 C 95 60 93 64 91 64 C 89 48 83 40 70 40 C 57 40 51 48 49 64 C 47 64 45 60 45 56 Z" fill="#1e293b"/>
-                <path d="M 57 58 Q 62 56 66 58" stroke="#1e293b" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-                <path d="M 74 58 Q 78 56 83 58" stroke="#1e293b" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-                <circle cx="61.5" cy="63" r="2" fill="#1e293b"/>
-                <circle cx="78.5" cy="63" r="2" fill="#1e293b"/>
-                <path d="M 66 73 Q 70 76 74 73" stroke="#c2410c" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-              </svg>
-            {% endif %}
-          </div>
-
-          <!-- Student Identity Card Pill -->
-          <div class="mx-auto mt-2 rounded-full border-2 border-c2 bg-c1 px-5 py-1 font-serif text-[12px] font-bold tracking-wide text-c2">
-            STUDENT IDENTITY CARD
-          </div>
-
-          <!-- Student Details Table -->
-          <div class="mx-5 mt-3 overflow-hidden rounded-md border border-c2">
-            <div class="flex text-[12px]">
-              <span class="w-[42%] bg-c1/10 px-2 py-[3px] font-semibold text-c3">Name</span>
-              <span class="px-2 py-[3px] font-semibold text-cink">{{ s.full_name }}</span>
-            </div>
-            <div class="flex text-[12px] border-t border-c2/50">
-              <span class="w-[42%] bg-c1/10 px-2 py-[3px] font-semibold text-c3">Father's Name</span>
-              <span class="px-2 py-[3px] font-semibold text-cink">{{ s.father_name or '—' }}</span>
-            </div>
-            <div class="flex text-[12px] border-t border-c2/50">
-              <span class="w-[42%] bg-c1/10 px-2 py-[3px] font-semibold text-c3">Class</span>
-              <span class="px-2 py-[3px] font-semibold text-cink">{{ s.class_name }}</span>
-            </div>
-            <div class="flex text-[12px] border-t border-c2/50">
-              <span class="w-[42%] bg-c1/10 px-2 py-[3px] font-semibold text-c3">Roll No</span>
-              <span class="px-2 py-[3px] font-semibold text-cink">{{ s.roll_no }}</span>
-            </div>
-            <div class="flex text-[12px] border-t border-c2/50">
-              <span class="w-[42%] bg-c1/10 px-2 py-[3px] font-semibold text-c3">Session</span>
-              <span class="px-2 py-[3px] font-semibold text-cink">2026 - 2027</span>
-            </div>
-            <div class="flex text-[12px] border-t border-c2/50">
-              <span class="w-[42%] bg-c1/10 px-2 py-[3px] font-semibold text-c3">ID No</span>
-              <span class="px-2 py-[3px] font-semibold text-cink">{{ s.student_code }}</span>
-            </div>
-          </div>
-
-          <!-- Elliptical Bottom Footer with Iqbal Poetry -->
-          <div class="mt-auto bg-c1 px-4 pt-2 pb-3 text-center [clip-path:ellipse(90%_100%_at_50%_100%)]" style="clip-path:ellipse(90% 100% at 50% 100%); -webkit-clip-path:ellipse(90% 100% at 50% 100%);">
-            <div dir="rtl" class="mx-1 font-urdu text-[13px] leading-[2.1] text-c2">خودی کو کر بلند اتنا کہ ہر تقدیر سے پہلے</div>
-            <div dir="rtl" class="mx-1 font-urdu text-[13px] leading-[2.1] text-c2">خدا بندے سے خود پوچھے بتا تیری رضا کیا ہے</div>
-          </div>
-        </div>
-
+    <!-- PHYSICAL A4 PAGE CONTAINER -->
+    <div class="a4-page">
+      
+      <div class="sheet-guide-header no-print">
+        <span>Shaheen Public High School &bull; 2-Column × 5-Row A4 Layout</span>
+        <span>Left: Back (QR) &bull; Right: Front</span>
+        <span>Sheet {{ page_num }} of {{ total_pages }}</span>
       </div>
-      {% endfor %}
-    </div>
 
+      <!-- 5-ROW GRID: EACH ROW = 1 STUDENT (BACK on Left, FRONT on Right) -->
+      <div class="cards-grid-5rows">
+        {% for s in chunk %}
+        <div class="card-row" data-student-code="{{ s.student_code }}" data-class="{{ s.class_name }}">
+
+          <!-- ══════════════════════════════════════════════
+               LEFT COLUMN: BACK SIDE (ATTENDANCE QR)
+               ══════════════════════════════════════════════ -->
+          <div class="card-cell">
+            <div class="card-rot-wrapper">
+              <div class="id-card theme-emerald relative flex flex-col overflow-hidden rounded-[22px] shadow-2xl bg-c1 text-center">
+                <img src="/static/img/shaheen_logo_trans.png" alt="School crest" width="353" height="260" class="object-contain mx-auto mt-3 h-16 w-16"/>
+                <div class="font-serif text-[18px] font-extrabold text-c2">Shaheen Public High School</div>
+                <div dir="rtl" class="font-urdu text-[15px] leading-[2.1] text-c2 [word-spacing:0.2em]">شاہین پبلک ہائی سکول لوئے شلمان</div>
+                
+                <!-- Attendance QR (Original 190px Box, High Quality 600x600 Image) -->
+                <div class="mx-auto mt-2 rounded-xl bg-c2 p-2">
+                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&amp;margin=4&amp;ecc=H&amp;data={{ s.qr_payload | urlencode }}" alt="QR" class="h-[190px] w-[190px] rounded-md bg-cpaper p-1.5" style="display:block; image-rendering:-webkit-optimize-contrast; image-rendering:pixelated;"/>
+                </div>
+
+                <div class="mx-auto mt-3 rounded-full bg-c2 px-5 py-1 font-serif text-[12px] font-bold text-c3">
+                  SCAN FOR ATTENDANCE
+                </div>
+
+                <!-- Helplines & Address -->
+                <div class="mx-6 mt-4 space-y-2.5 text-left">
+                  <div class="flex items-center gap-2">
+                    <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-c2 text-c3">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path></svg>
+                    </span>
+                    <span class="text-[16px] font-extrabold text-primary-foreground">0335-9365884</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-c2 text-c3">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path></svg>
+                    </span>
+                    <span class="text-[16px] font-extrabold text-primary-foreground">0334-2727432</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-c2 text-c3">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    </span>
+                    <span class="pt-0.5 text-[13.5px] leading-snug font-semibold text-primary-foreground/90">Loi Shalman Near Cricket Ground, Ghundakhel</span>
+                  </div>
+                </div>
+
+                <div class="mx-6 mt-1 text-center text-[8px] text-primary-foreground/60">If found, please return this card to the school office.</div>
+
+                <!-- NoorX AI Elliptical Bottom Banner -->
+                <div class="mt-auto flex items-center justify-between gap-3 bg-c2 px-6 pb-3 pt-3 [clip-path:ellipse(90%_100%_at_50%_100%)]" style="clip-path:ellipse(90% 100% at 50% 100%); -webkit-clip-path:ellipse(90% 100% at 50% 100%);">
+                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&amp;margin=0&amp;data=https%3A%2F%2Fnoorxai.com%2Fschools" alt="NoorX AI" class="h-[52px] w-[52px] shrink-0 rounded border border-c3 bg-cpaper p-[2px]"/>
+                  <div dir="rtl" class="text-right font-urdu leading-[1.8] text-c3">
+                    <div class="text-[10.5px] font-bold">نوراکس اے آئی پاکستان کا پہلا اسکول مینجمنٹ حل</div>
+                    <div class="text-[9.5px]">حاضری کے لیے اسکین کریں یا QR اسکین کریں</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ══════════════════════════════════════════════
+               RIGHT COLUMN: FRONT SIDE (STUDENT DETAILS)
+               ══════════════════════════════════════════════ -->
+          <div class="card-cell">
+            <div class="card-rot-wrapper">
+              <div class="id-card theme-emerald relative flex flex-col overflow-hidden rounded-[22px] shadow-2xl bg-cpaper">
+                <!-- Elliptical Top Header -->
+                <div class="relative h-[230px] bg-c1 text-center [clip-path:ellipse(85%_100%_at_50%_0)]" style="clip-path:ellipse(85% 100% at 50% 0); -webkit-clip-path:ellipse(85% 100% at 50% 0);">
+                  <img src="/static/img/shaheen_logo_trans.png" alt="School crest" width="353" height="260" class="object-contain mx-auto mt-3 h-20 w-20"/>
+                  <div class="font-serif text-[19px] font-extrabold leading-tight text-c2">Shaheen Public High School</div>
+                  <div class="mt-1 text-[10px] tracking-[0.25em] text-c2 uppercase">— Loi Shalman · Khyber —</div>
+                </div>
+
+                <!-- Gold Curved Accent Line -->
+                <div class="absolute inset-x-0 top-[218px] mx-auto h-2 w-[80%] rounded-full bg-c2"></div>
+
+                <!-- Overlapping Circular Student Photo / Female / Male Avatar -->
+                <div class="overflow-hidden bg-muted mx-auto -mt-[78px] h-[140px] w-[140px] rounded-full border-[5px] border-c2 shadow-lg relative">
+                  {% if s.photo_url and s.photo_url.strip() %}
+                    <img src="{{ s.photo_url }}" alt="{{ s.full_name }}" class="h-full w-full object-cover">
+                  {% elif s.gender and (s.gender|lower == 'female' or s.gender|lower == 'f') %}
+                    <!-- FEMALE STUDENT PLACEHOLDER AVATAR -->
+                    <svg viewBox="0 0 140 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block; width:100%; height:100%;">
+                      <defs>
+                        <linearGradient id="fem-bg-{{ s.student_code }}" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stop-color="#f0fdf4"/>
+                          <stop offset="100%" stop-color="#dcfce7"/>
+                        </linearGradient>
+                        <linearGradient id="fem-hijab-{{ s.student_code }}" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stop-color="#0a5c45"/>
+                          <stop offset="100%" stop-color="#044332"/>
+                        </linearGradient>
+                        <linearGradient id="fem-gold-{{ s.student_code }}" x1="0" y1="0" x2="1" y2="1">
+                          <stop offset="0%" stop-color="#eab308"/>
+                          <stop offset="50%" stop-color="#fde047"/>
+                          <stop offset="100%" stop-color="#ca8a04"/>
+                        </linearGradient>
+                      </defs>
+                      <circle cx="70" cy="70" r="70" fill="url(#fem-bg-{{ s.student_code }})"/>
+                      <path d="M 14 140 Q 20 102 70 100 Q 120 102 126 140 Z" fill="url(#fem-hijab-{{ s.student_code }})"/>
+                      <ellipse cx="70" cy="65" rx="38" ry="46" fill="url(#fem-hijab-{{ s.student_code }})"/>
+                      <path d="M 42 70 C 44 42 96 42 98 70 C 96 94 44 94 42 70 Z" fill="none" stroke="url(#fem-gold-{{ s.student_code }})" stroke-width="2.5"/>
+                      <ellipse cx="70" cy="68" rx="25" ry="28" fill="#fed7aa"/>
+                      <path d="M 48 55 C 55 45 85 45 92 55 C 84 50 56 50 48 55 Z" fill="#044332"/>
+                      <path d="M 58 67 Q 63 70 68 67" stroke="#9a3412" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+                      <path d="M 72 67 Q 77 70 82 67" stroke="#9a3412" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+                      <path d="M 67 76 Q 70 79 73 76" stroke="#c2410c" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                      <path d="M 58 108 L 70 125 L 82 108 Z" fill="#022c22" opacity="0.55"/>
+                      <circle cx="70" cy="108" r="4" fill="url(#fem-gold-{{ s.student_code }})"/>
+                    </svg>
+                  {% else %}
+                    <!-- MALE STUDENT PLACEHOLDER AVATAR -->
+                    <svg viewBox="0 0 140 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block; width:100%; height:100%;">
+                      <defs>
+                        <linearGradient id="male-bg-{{ s.student_code }}" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stop-color="#f8fafc"/>
+                          <stop offset="100%" stop-color="#e2e8f0"/>
+                        </linearGradient>
+                        <linearGradient id="male-suit-{{ s.student_code }}" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stop-color="#0a5c45"/>
+                          <stop offset="100%" stop-color="#044332"/>
+                        </linearGradient>
+                        <linearGradient id="male-gold-{{ s.student_code }}" x1="0" y1="0" x2="1" y2="1">
+                          <stop offset="0%" stop-color="#d4a34b"/>
+                          <stop offset="50%" stop-color="#facc15"/>
+                          <stop offset="100%" stop-color="#b45309"/>
+                        </linearGradient>
+                      </defs>
+                      <circle cx="70" cy="70" r="70" fill="url(#male-bg-{{ s.student_code }})"/>
+                      <path d="M 14 140 C 18 110 38 96 70 96 C 102 96 122 110 126 140 Z" fill="url(#male-suit-{{ s.student_code }})"/>
+                      <polygon points="54,96 86,96 70,126" fill="#ffffff"/>
+                      <polygon points="67,98 73,98 75,104 70,128 65,104" fill="url(#male-gold-{{ s.student_code }})"/>
+                      <polygon points="50,96 62,96 66,106 54,100" fill="#f8fafc" stroke="#cbd5e1" stroke-width="0.8"/>
+                      <polygon points="90,96 78,96 74,106 86,100" fill="#f8fafc" stroke="#cbd5e1" stroke-width="0.8"/>
+                      <rect x="62" y="80" width="16" height="18" rx="4" fill="#fed7aa"/>
+                      <ellipse cx="70" cy="64" rx="25" ry="28" fill="#fed7aa"/>
+                      <path d="M 45 56 C 45 36 60 28 70 28 C 80 28 95 36 95 56 C 95 60 93 64 91 64 C 89 48 83 40 70 40 C 57 40 51 48 49 64 C 47 64 45 60 45 56 Z" fill="#1e293b"/>
+                      <path d="M 57 58 Q 62 56 66 58" stroke="#1e293b" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+                      <path d="M 74 58 Q 78 56 83 58" stroke="#1e293b" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+                      <circle cx="61.5" cy="63" r="2" fill="#1e293b"/>
+                      <circle cx="78.5" cy="63" r="2" fill="#1e293b"/>
+                      <path d="M 66 73 Q 70 76 74 73" stroke="#c2410c" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+                    </svg>
+                  {% endif %}
+                </div>
+
+                <!-- Student Identity Card Pill -->
+                <div class="mx-auto mt-2 rounded-full border-2 border-c2 bg-c1 px-5 py-1 font-serif text-[12px] font-bold tracking-wide text-c2">
+                  STUDENT IDENTITY CARD
+                </div>
+
+                <!-- Student Details Table -->
+                <div class="mx-5 mt-3 overflow-hidden rounded-md border border-c2">
+                  <div class="flex text-[12px]">
+                    <span class="w-[42%] bg-c1/10 px-2 py-[3px] font-semibold text-c3">Name</span>
+                    <span class="px-2 py-[3px] font-semibold text-cink">{{ s.full_name }}</span>
+                  </div>
+                  <div class="flex text-[12px] border-t border-c2/50">
+                    <span class="w-[42%] bg-c1/10 px-2 py-[3px] font-semibold text-c3">Father's Name</span>
+                    <span class="px-2 py-[3px] font-semibold text-cink">{{ s.father_name or '—' }}</span>
+                  </div>
+                  <div class="flex text-[12px] border-t border-c2/50">
+                    <span class="w-[42%] bg-c1/10 px-2 py-[3px] font-semibold text-c3">Class</span>
+                    <span class="px-2 py-[3px] font-semibold text-cink">{{ s.class_name }}</span>
+                  </div>
+                  <div class="flex text-[12px] border-t border-c2/50">
+                    <span class="w-[42%] bg-c1/10 px-2 py-[3px] font-semibold text-c3">Roll No</span>
+                    <span class="px-2 py-[3px] font-semibold text-cink">{{ s.roll_no }}</span>
+                  </div>
+                  <div class="flex text-[12px] border-t border-c2/50">
+                    <span class="w-[42%] bg-c1/10 px-2 py-[3px] font-semibold text-c3">Session</span>
+                    <span class="px-2 py-[3px] font-semibold text-cink">2026 - 2027</span>
+                  </div>
+                  <div class="flex text-[12px] border-t border-c2/50">
+                    <span class="w-[42%] bg-c1/10 px-2 py-[3px] font-semibold text-c3">ID No</span>
+                    <span class="px-2 py-[3px] font-semibold text-cink">{{ s.student_code }}</span>
+                  </div>
+                </div>
+
+                <!-- Elliptical Bottom Footer with Iqbal Poetry -->
+                <div class="mt-auto bg-c1 px-4 pt-2 pb-3 text-center [clip-path:ellipse(90%_100%_at_50%_100%)]" style="clip-path:ellipse(90% 100% at 50% 100%); -webkit-clip-path:ellipse(90% 100% at 50% 100%);">
+                  <div dir="rtl" class="mx-1 font-urdu text-[13px] leading-[2.1] text-c2">خودی کو کر بلند اتنا کہ ہر تقدیر سے پہلے</div>
+                  <div dir="rtl" class="mx-1 font-urdu text-[13px] leading-[2.1] text-c2">خدا بندے سے خود پوچھے بتا تیری رضا کیا ہے</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        {% endfor %}
+      </div>
+
+    </div>
   {% endfor %}
 </div>
 
@@ -3326,6 +3487,20 @@ body { font-family: Outfit, sans-serif; }
       url.searchParams.delete('class_name');
     }
     window.location.href = url.toString();
+  }
+
+  let isCw = false;
+  function toggleRotation() {
+    isCw = !isCw;
+    const root = document.getElementById('sheets-root');
+    const btn = document.getElementById('rot-btn');
+    if (isCw) {
+      root.classList.add('rotate-cw');
+      btn.innerHTML = '&#128257; Rotate: ↷ Right (+90°)';
+    } else {
+      root.classList.remove('rotate-cw');
+      btn.innerHTML = '&#128257; Rotate: ↶ Left (-90°)';
+    }
   }
 </script>
 
