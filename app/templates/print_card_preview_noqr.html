@@ -1599,11 +1599,11 @@
        DESIGN: GEOMETRIC APEX (GREEN & METALLIC GOLD EDITION)
        ======================================================== */
     .card-apex-front {
-      width: 2in;
-      height: 3in;
-      background: #044332; /* Top-level background is green so absolutely NO white gap can exist at top! */
-      border: 1.5px solid #044332;
-      border-radius: 4mm;
+      width: 54mm;
+      height: 85.6mm;
+      background: #044332; /* Top-level background is green */
+      border: 1.2px solid #044332;
+      border-radius: 4.5mm;
       display: flex;
       flex-direction: column;
       position: relative;
@@ -1611,26 +1611,10 @@
       box-shadow: 0 4px 14px rgba(0,0,0,0.08);
       box-sizing: border-box;
     }
-    .card-apex-back {
-      width: 2in;
-      height: 3in;
-      background: #ffffff;
-      border: 1.5px solid #cbd5e1;
-      border-radius: 4mm;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
-      box-sizing: border-box;
-      padding: 0;
-      text-align: center;
-    }
-    /* AREA A: Solid Green Header — Pure green right to the physical curved corners */
     .card-apex-front .apex-top-zone {
-      background: #044332;
+      background: #044332 !important;
       position: relative;
-      padding-top: 2mm;
+      padding-top: 2.6mm;
       width: 100%;
       display: flex;
       flex-direction: column;
@@ -1645,12 +1629,12 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 0 1.5mm 1mm;
+      padding: 0 2mm 1.2mm;
       background: #044332;
     }
     .card-apex-front .apex-crest {
-      width: 7.5mm;
-      height: 7.5mm;
+      width: 7.8mm;
+      height: 7.8mm;
       background: #ffffff;
       border-radius: 50%;
       padding: 0.6mm;
@@ -1662,7 +1646,7 @@
     }
     .card-apex-front .apex-crest img { width: 100%; height: 100%; object-fit: contain; }
     .card-apex-front .apex-company {
-      font-size: 7.8pt;
+      font-size: 7.6pt;
       font-weight: 900;
       color: #ffffff;
       text-transform: uppercase;
@@ -1678,29 +1662,10 @@
       margin-top: 0.3mm;
     }
 
-    /* AREA B: Royal Navy Blue Faceted Wings */
-    .card-apex-front .apex-top-zone {
-      background: #ffffff;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      flex-shrink: 0;
-    }
-    .card-apex-front .apex-head {
-      width: 100%;
-      text-align: center;
-      position: relative;
-      z-index: 2;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 2.6mm 2mm 1.5mm;
-      background: #044332;
-    }
+    /* AREA B: Royal Navy Blue Wings (Seamless with green top) */
     .card-apex-front .apex-mid-section {
       position: relative;
-      height: 26mm;
+      height: 27mm;
       width: 100%;
       background: #ffffff;
       display: flex;
@@ -1708,13 +1673,12 @@
       justify-content: center;
       overflow: hidden;
     }
-    /* Green fill strictly above the wings */
     .card-apex-front .apex-green-backdrop-above-wings {
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
-      height: 13mm;
+      height: 13.5mm;
       background: #044332;
       z-index: 0;
     }
@@ -1723,18 +1687,17 @@
       left: 0;
       top: 0;
       width: 25mm;
-      height: 13mm;
+      height: 13.5mm;
       background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
       clip-path: polygon(0 0, 100% 100%, 0 100%);
       z-index: 1;
-      /* no underline */
     }
     .card-apex-front .apex-wing-left-bot {
       position: absolute;
       left: 0;
       bottom: 0;
       width: 25mm;
-      height: 13mm;
+      height: 13.5mm;
       background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
       clip-path: polygon(0 0, 100% 0, 0 100%);
       z-index: 1;
@@ -1744,18 +1707,17 @@
       right: 0;
       top: 0;
       width: 25mm;
-      height: 13mm;
+      height: 13.5mm;
       background: linear-gradient(225deg, #2563eb 0%, #1d4ed8 100%);
       clip-path: polygon(100% 0, 0 100%, 100% 100%);
       z-index: 1;
-      /* no underline */
     }
     .card-apex-front .apex-wing-right-bot {
       position: absolute;
       right: 0;
       bottom: 0;
       width: 25mm;
-      height: 13mm;
+      height: 13.5mm;
       background: linear-gradient(225deg, #1e3a8a 0%, #0f172a 100%);
       clip-path: polygon(100% 0, 0 0, 100% 100%);
       z-index: 1;
@@ -1781,7 +1743,9 @@
     .card-apex-front .apex-banner-wrap {
       display: flex;
       justify-content: center;
-      margin-bottom: 1.5mm;
+      padding-top: 1.5mm;
+      padding-bottom: 1.5mm;
+      background: #ffffff;
       position: relative;
       z-index: 2;
     }
@@ -1800,22 +1764,13 @@
 
     .card-apex-front .apex-table {
       flex: 1;
-      padding: 1mm 3.5mm;
+      padding: 1mm 4.5mm 1mm;
       display: flex;
       flex-direction: column;
-      gap: 1mm;
+      gap: 1.1mm;
       position: relative;
       z-index: 2;
-      background: #ffffff; /* Crisp white background for the student information area */
-    }
-    .card-apex-front .apex-banner-wrap {
-      display: flex;
-      justify-content: center;
-      padding-top: 1mm;
-      padding-bottom: 1mm;
-      background: #ffffff; /* White background around badge */
-      position: relative;
-      z-index: 2;
+      background: #ffffff;
     }
     .card-apex-front .apex-watermark {
       position: absolute;
@@ -1833,7 +1788,7 @@
     .card-apex-front .apex-row {
       display: flex;
       font-size: 4.8pt;
-      line-height: 1.2;
+      line-height: 1.25;
       align-items: center;
     }
     .card-apex-front .apex-label {
@@ -1852,37 +1807,14 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .card-apex-front .apex-highlight-pill {
-      background: #f0fdf4;
-      border: 1px solid #86efac;
-      border-radius: 1.6mm;
-      padding: 0.5mm 2mm;
-      display: flex;
-      justify-content: space-between;
-      font-size: 4.8pt;
-      margin: 0.3mm 0;
-    }
-    .card-apex-front .apex-highlight-pill span:first-child { color: #044332; font-weight: 700; }
-    .card-apex-front .apex-highlight-pill span:last-child { color: #044332; font-weight: 900; }
 
-    .card-apex-front .apex-code-box {
-      background: #fef3c7;
-      border: 0.8px solid #fde68a;
-      border-radius: 1.2mm;
-      padding: 0.2mm 2mm;
-      color: #92400e;
-      font-family: monospace;
-      font-weight: 800;
-      font-size: 5pt;
-      display: inline-block;
-    }
-
-    /* AREA C: Sculpted Multi-layer Geometric Bottom Bar */
+    /* AREA C: Sculpted Geometric Multi-layer Footer */
     .card-apex-front .apex-footer-designed {
       height: 8mm;
       position: relative;
       overflow: hidden;
       flex-shrink: 0;
+      background: #ffffff;
     }
     .card-apex-front .apex-footer-designed svg {
       width: 100%;
@@ -1890,6 +1822,21 @@
       display: block;
     }
 
+    .card-apex-back {
+      width: 54mm;
+      height: 85.6mm;
+      background: #ffffff;
+      border: 1.2px solid #cbd5e1;
+      border-radius: 4.5mm;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      box-sizing: border-box;
+      padding: 0;
+      text-align: center;
+    }
     /* MATCHING APEX BACK */
     .card-apex-back {
       width: 54mm;
