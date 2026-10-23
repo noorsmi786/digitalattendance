@@ -158,6 +158,7 @@
     .iqbal-scope .w-16 { width: 64px; }
     .iqbal-scope .w-\[52px\] { width: 52px; }
     .iqbal-scope .w-\[190px\] { width: 190px; }
+    .iqbal-scope .w-\[230px\] { width: 230px; }
     .iqbal-scope .shrink-0 { flex-shrink: 0; }
 
     .iqbal-scope .mx-auto { margin-left: auto; margin-right: auto; }
@@ -270,17 +271,17 @@
         <div class="font-serif text-[18px] font-extrabold text-c2">Shaheen Public High School</div>
         <div dir="rtl" class="font-urdu text-[15px] leading-[2.1] text-c2 [word-spacing:0.2em]">شاہین پبلک ہائی سکول لوئے شلمان</div>
         
-        <!-- Large Attendance QR (190px) -->
-        <div class="mx-auto mt-2 rounded-xl bg-c2 p-2">
-          <img src="{{ s.qr_image }}" alt="QR" class="h-[190px] w-[190px] rounded-md bg-cpaper p-1.5" style="image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges; image-rendering: pixelated; shape-rendering: crispEdges; background: #ffffff;"/>
+        <!-- Large Attendance QR (Expanded to fill area) -->
+        <div class="mx-auto mt-1.5 rounded-2xl bg-c2 p-2">
+          <img src="{{ s.qr_image }}" alt="QR" class="h-[230px] w-[230px] rounded-xl bg-white p-1 qr-crisp-matrix block" style="image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges; image-rendering: pixelated; shape-rendering: crispEdges; background: #ffffff;"/>
         </div>
         
-        <div class="mx-auto mt-3 rounded-full bg-c2 px-5 py-1 font-serif text-[12px] font-bold text-c3">
+        <div class="mx-auto mt-2 rounded-full bg-c2 px-5 py-0.5 font-serif text-[11.5px] font-bold text-c3">
           SCAN FOR ATTENDANCE
         </div>
 
         <!-- Helpline & Location Details -->
-        <div class="mx-6 mt-4 space-y-2.5 text-left">
+        <div class="mx-6 mt-2.5 space-y-2 text-left">
           <div class="flex items-center gap-2">
             <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-c2 text-c3">
               <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path></svg>

@@ -49,8 +49,8 @@ def generate_qr_base64(payload: str) -> str:
     qr = qrcode.QRCode(
         version=1,
         error_correction=qrcode.constants.ERROR_CORRECT_H, # 30% error correction
-        box_size=12, # Ultra-crisp high DPI
-        border=4,   # Full standard 4-module quiet zone
+        box_size=16, # Ultra-crisp high DPI
+        border=1,   # Tight 1-module quiet zone so matrix fills the box
     )
     qr.add_data(payload)
     qr.make(fit=True)
