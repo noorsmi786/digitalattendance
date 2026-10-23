@@ -2853,9 +2853,9 @@ body { font-family: Outfit, sans-serif; }
 
 }
 
-@page a4 { size: a4; margin: 0px; }
 
-.a4-sheet { page: a4; }
+
+
 
 @property --tw-translate-x { syntax: "*"; inherits: false; initial-value: 0; }
 
@@ -3007,13 +3007,13 @@ body { font-family: Outfit, sans-serif; }
 
 /* ═══ A4 2-COLUMN × 5-ROW PRINT LAYOUT ═══ */
 :root {
-  --page-margin: 10mm;
+  --page-margin: 0;
   --row-gap: 3mm;
 }
 
 @page {
   size: A4 portrait;
-  margin: 10mm;
+  margin: 0;
 }
 
 body {
@@ -3087,8 +3087,9 @@ body {
 .a4-page {
   width: 210mm;
   height: 297mm;
+  max-height: 297mm;
   box-sizing: border-box;
-  padding: 10mm;
+  padding: 0;
   background: #ffffff;
   box-shadow: 0 10px 30px rgba(0,0,0,0.4);
   display: flex;
@@ -3098,20 +3099,23 @@ body {
   position: relative;
   page-break-after: always;
   break-after: page;
+  overflow: hidden;
 }
 
 /* Top Sheet Guide Header (Screen only) */
 .sheet-guide-header {
-  width: 100%;
+  position: absolute;
+  top: 4mm;
+  left: 15mm;
+  right: 15mm;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 9px;
+  font-size: 8.5px;
   color: #94a3b8;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin-bottom: 2mm;
   border-bottom: 0.5px dashed #e2e8f0;
   padding-bottom: 1mm;
 }
@@ -3125,12 +3129,14 @@ body {
   align-items: center;
 }
 
-/* Each Row = 1 Student (Left: Back, Right: Front) */
+/* Each Row = 1 Student (Left: Front, Right: Back) */
 .card-row {
   display: flex;
-  gap: 6mm; /* Clean horizontal gap between Back and Front columns */
+  gap: 10mm; /* Clean horizontal gap between Front and Back */
   align-items: center;
   justify-content: center;
+  page-break-inside: avoid;
+  break-inside: avoid;
 }
 
 /* Card Cell: Exactly 3 inches wide × 2 inches tall (76.2mm × 50.8mm) */
@@ -3144,6 +3150,8 @@ body {
   overflow: hidden;
   background: #ffffff;
   flex-shrink: 0;
+  page-break-inside: avoid;
+  break-inside: avoid;
 }
 
 /* Rotated Card Wrapper: 384px x 576px scaled to 50% and rotated sideways */
@@ -3165,50 +3173,71 @@ body {
 }
 
 .card-rot-wrapper .id-card {
-  box-shadow: none !important;
-}
-
-
-.card-rot-wrapper .id-card {
   zoom: 1 !important;
   box-shadow: none !important;
-}
-@media print {
-  .id-card, .card-rot-wrapper .id-card {
-    zoom: 1 !important;
-    box-shadow: none !important;
-  }
 }
 
 /* Print Overrides */
 @media print {
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
   html, body {
     background: #ffffff !important;
     width: 210mm !important;
     height: 297mm !important;
     margin: 0 !important;
     padding: 0 !important;
+    overflow: hidden !important;
   }
   .no-print, .toolbar, .sheet-badge, .sheet-guide-header {
     display: none !important;
   }
   .screen-container {
     padding: 0 !important;
+    margin: 0 !important;
     gap: 0 !important;
   }
   .a4-page {
     box-shadow: none !important;
     margin: 0 !important;
-    padding: 10mm !important;
+    padding: 0 !important;
     width: 210mm !important;
     height: 297mm !important;
+    max-height: 297mm !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
     page-break-after: always !important;
     break-after: page !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    overflow: hidden !important;
+    border: none !important;
+  }
+  .cards-grid-5rows {
+    gap: 3mm !important;
+  }
+  .card-row {
+    gap: 10mm !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
   .card-cell {
+    width: 3in !important;
+    height: 2in !important;
     outline: 0.25mm dashed #94a3b8 !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  .id-card, .card-rot-wrapper .id-card {
+    zoom: 1 !important;
+    box-shadow: none !important;
   }
 }
+
 </style>
 </head>
 <body>
