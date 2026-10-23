@@ -152,7 +152,9 @@ def admin_page(request: Request):
 def print_cards_page(
     request: Request,
     class_name: Optional[str] = None,
-    student_id: Optional[int] = None
+    student_id: Optional[int] = None,
+    sample_preview: Optional[int] = None,
+    search: Optional[str] = None
 ):
     if not is_authenticated(request):
         return RedirectResponse(url="/login")
@@ -164,17 +166,31 @@ def print_cards_page(
     if student_id:
         query += " AND id = ?"
         params.append(student_id)
-    elif class_name:
+    elif class_name and class_name.strip() and class_name != "All Classes":
         query += " AND class_name = ?"
-        params.append(class_name)
+        params.append(class_name.strip())
+
+    if search and search.strip():
+        term = f"%{search.strip()}%"
+        query += " AND (student_code LIKE ? OR full_name LIKE ? OR roll_no LIKE ?)"
+        params.extend([term, term, term])
 
     query += " ORDER BY class_name ASC, CAST(roll_no AS INTEGER) ASC, roll_no ASC"
+
+    # If sample preview requested, limit to exactly 5 students (1 page)
+    if sample_preview:
+        query += " LIMIT 5"
+
     students = [dict(s) for s in conn.execute(query, params).fetchall()]
+
+    # Fetch all distinct classes for the class filter
+    classes = [r[0] for r in conn.execute("SELECT DISTINCT class_name FROM students WHERE is_active = 1 ORDER BY class_name ASC").fetchall()]
     conn.close()
 
-    # Pre-generate QR base64 images for printing
+    # Pre-generate local QR base64 images containing ONLY student_code (e.g. S101)
     for s in students:
-        s["qr_image"] = generate_qr_base64(s["qr_payload"])
+        # Use student_code directly as the QR payload
+        s["qr_image"] = generate_qr_base64(s.get("student_code", s.get("qr_payload", "")))
 
     return templates.TemplateResponse(
         request=request,
@@ -182,7 +198,10 @@ def print_cards_page(
         context={
             "school_name": get_setting("school_name", "Shaheen Public High School Loi Shalman"),
             "students": students,
-            "class_name": class_name or "All Classes"
+            "classes": classes,
+            "class_name": class_name or "",
+            "search_term": search or "",
+            "is_sample_preview": bool(sample_preview),
         }
     )
 

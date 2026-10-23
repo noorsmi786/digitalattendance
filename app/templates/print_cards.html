@@ -3219,32 +3219,56 @@ body {
     <img src="/static/img/shaheen_logo_trans.png" alt="Crest" class="school-crest-mini">
     <div>
       <div class="toolbar-title">Shaheen Public High School — ID Cards Print Studio</div>
-      <div class="toolbar-sub">A4 Standard &bull; 2 Columns × 5 Rows (5 Students / Page) &bull; 3" × 2" Sideways Cards &bull; 3mm Cut Gap</div>
+      <div class="toolbar-sub">2 Columns × 5 Rows (5 Students/Sheet) &bull; Left: Front &bull; Right: Back &bull; 3"×2" Rotated &bull; 3mm Gap</div>
     </div>
     
-    <div class="control-group" style="margin-left: 12px;">
+    <!-- Filter by Class -->
+    <div class="control-group" style="margin-left: 8px;">
       <label for="class-select">Class:</label>
       <select id="class-select" onchange="filterClass(this.value)">
         <option value="">All Classes</option>
-        {% set seen = [] %}
-        {% for s in students %}
-          {% if s.class_name not in seen %}
-            {% set _ = seen.append(s.class_name) %}
-            <option value="{{ s.class_name }}" {% if class_name==s.class_name %}selected{% endif %}>{{ s.class_name }}</option>
-          {% endif %}
+        {% for c in classes %}
+          <option value="{{ c }}" {% if class_name == c %}selected{% endif %}>{{ c }}</option>
         {% endfor %}
       </select>
+    </div>
+
+    <!-- Search by Student ID or Name -->
+    <div class="control-group">
+      <input type="text" id="search-input" placeholder="Search ID or Name..." value="{{ search_term }}"
+             style="padding: 6px 10px; border-radius: 6px; border: 1.5px solid #cbd5e1; font-size: 12px; width: 140px;"
+             onkeydown="if(event.key==='Enter') searchStudents()">
+      <button type="button" onclick="searchStudents()" class="btn btn-light" style="padding: 6px 10px;">🔍</button>
+      {% if search_term %}
+        <button type="button" onclick="clearSearch()" class="btn btn-light" style="padding: 6px 8px; color: #ef4444;" title="Clear Search">✕</button>
+      {% endif %}
     </div>
   </div>
 
   <div class="toolbar-actions">
-    <button type="button" onclick="toggleRotation()" class="btn btn-light" id="rot-btn">&#128257; Rotate: ↶ Left (-90°)</button>
+    <!-- Preview Sample (1 Page / 5 Students) -->
+    {% if not is_sample_preview %}
+      <a href="/print/cards?sample_preview=1{% if class_name %}&class_name={{ class_name }}{% endif %}" class="btn btn-navy" title="Preview first 5 students to verify alignment">
+        👁️ Preview 1 Page (5 Students)
+      </a>
+    {% else %}
+      <a href="/print/cards{% if class_name %}?class_name={{ class_name }}{% endif %}" class="btn btn-navy" title="View all students">
+        📄 Show All Students
+      </a>
+    {% endif %}
+
+    <!-- Generate All Students -->
+    <a href="/print/cards" class="btn btn-light" title="Reset all filters and generate all students">
+      👥 All Students
+    </a>
+
+    <!-- Print / Download PDF -->
+    <button onclick="window.print()" class="btn btn-green" title="Print cards or Save as PDF">
+      🖨️ Print / Save PDF
+    </button>
     <a href="/admin" class="btn btn-light">&larr; Dashboard</a>
-    <a href="/print/card-preview-noqr" target="_blank" class="btn btn-navy">&#128065; Pair Preview</a>
-    <button onclick="window.print()" class="btn btn-green">&#128438;&#65039; Print All Cards</button>
   </div>
 </div>
-
 <div class="screen-container" id="sheets-root">
   {% set chunk_size = 5 %}
   {% set total_students = students|length %}
@@ -3255,7 +3279,7 @@ body {
     {% set page_num = (chunk_start // chunk_size) + 1 %}
 
     <div class="sheet-badge no-print">
-      &#128196; Sheet {{ page_num }} of {{ total_pages }} &bull; Students {{ chunk_start + 1 }}–{{ chunk_start + chunk|length }} of {{ total_students }} (Left: Back &bull; Right: Front)
+      &#128196; Sheet {{ page_num }} of {{ total_pages }} &bull; Students {{ chunk_start + 1 }}–{{ chunk_start + chunk|length }} of {{ total_students }} (Left: Front &bull; Right: Back)
     </div>
 
     <!-- PHYSICAL A4 PAGE CONTAINER -->
@@ -3263,7 +3287,7 @@ body {
       
       <div class="sheet-guide-header no-print">
         <span>Shaheen Public High School &bull; 2-Column × 5-Row A4 Layout</span>
-        <span>Left: Back (QR) &bull; Right: Front</span>
+        <span>Left: Front &bull; Right: Back (QR)</span>
         <span>Sheet {{ page_num }} of {{ total_pages }}</span>
       </div>
 
@@ -3272,63 +3296,8 @@ body {
         {% for s in chunk %}
         <div class="card-row" data-student-code="{{ s.student_code }}" data-class="{{ s.class_name }}">
 
-          <!-- ══════════════════════════════════════════════
-               LEFT COLUMN: BACK SIDE (ATTENDANCE QR)
-               ══════════════════════════════════════════════ -->
-          <div class="card-cell">
-            <div class="card-rot-wrapper">
-              <div class="id-card theme-emerald relative flex flex-col overflow-hidden rounded-[22px] shadow-2xl bg-c1 text-center">
-                <img src="/static/img/shaheen_logo_trans.png" alt="School crest" width="353" height="260" class="object-contain mx-auto mt-3 h-16 w-16"/>
-                <div class="font-serif text-[18px] font-extrabold text-c2">Shaheen Public High School</div>
-                <div dir="rtl" class="font-urdu text-[15px] leading-[2.1] text-c2 [word-spacing:0.2em]">شاہین پبلک ہائی سکول لوئے شلمان</div>
-                
-                <!-- Attendance QR (Original 190px Box, High Quality 600x600 Image) -->
-                <div class="mx-auto mt-2 rounded-xl bg-c2 p-2">
-                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&amp;margin=4&amp;ecc=H&amp;data={{ s.qr_payload | urlencode }}" alt="QR" class="h-[190px] w-[190px] rounded-md bg-cpaper p-1.5" style="display:block; image-rendering:-webkit-optimize-contrast; image-rendering:pixelated;"/>
-                </div>
-
-                <div class="mx-auto mt-3 rounded-full bg-c2 px-5 py-1 font-serif text-[12px] font-bold text-c3">
-                  SCAN FOR ATTENDANCE
-                </div>
-
-                <!-- Helplines & Address -->
-                <div class="mx-6 mt-4 space-y-2.5 text-left">
-                  <div class="flex items-center gap-2">
-                    <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-c2 text-c3">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path></svg>
-                    </span>
-                    <span class="text-[16px] font-extrabold text-primary-foreground">0335-9365884</span>
-                  </div>
-                  <div class="flex items-center gap-2">
-                    <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-c2 text-c3">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path></svg>
-                    </span>
-                    <span class="text-[16px] font-extrabold text-primary-foreground">0334-2727432</span>
-                  </div>
-                  <div class="flex items-start gap-2">
-                    <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-c2 text-c3">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                    </span>
-                    <span class="pt-0.5 text-[13.5px] leading-snug font-semibold text-primary-foreground/90">Loi Shalman Near Cricket Ground, Ghundakhel</span>
-                  </div>
-                </div>
-
-                <div class="mx-6 mt-1 text-center text-[8px] text-primary-foreground/60">If found, please return this card to the school office.</div>
-
-                <!-- NoorX AI Elliptical Bottom Banner -->
-                <div class="mt-auto flex items-center justify-between gap-3 bg-c2 px-6 pb-3 pt-3 [clip-path:ellipse(90%_100%_at_50%_100%)]" style="clip-path:ellipse(90% 100% at 50% 100%); -webkit-clip-path:ellipse(90% 100% at 50% 100%);">
-                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&amp;margin=0&amp;data=https%3A%2F%2Fnoorxai.com%2Fschools" alt="NoorX AI" class="h-[52px] w-[52px] shrink-0 rounded border border-c3 bg-cpaper p-[2px]"/>
-                  <div dir="rtl" class="text-right font-urdu leading-[1.8] text-c3">
-                    <div class="text-[10.5px] font-bold">نوراکس اے آئی پاکستان کا پہلا اسکول مینجمنٹ حل</div>
-                    <div class="text-[9.5px]">حاضری کے لیے اسکین کریں یا QR اسکین کریں</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- ══════════════════════════════════════════════
-               RIGHT COLUMN: FRONT SIDE (STUDENT DETAILS)
+                    <!-- ══════════════════════════════════════════════
+               LEFT COLUMN: FRONT SIDE (STUDENT DETAILS)
                ══════════════════════════════════════════════ -->
           <div class="card-cell">
             <div class="card-rot-wrapper">
@@ -3455,6 +3424,60 @@ body {
             </div>
           </div>
 
+          <!-- ══════════════════════════════════════════════
+               RIGHT COLUMN: BACK SIDE (ATTENDANCE QR)
+               ══════════════════════════════════════════════ -->
+          <div class="card-cell">
+            <div class="card-rot-wrapper">
+              <div class="id-card theme-emerald relative flex flex-col overflow-hidden rounded-[22px] shadow-2xl bg-c1 text-center">
+                <img src="/static/img/shaheen_logo_trans.png" alt="School crest" width="353" height="260" class="object-contain mx-auto mt-3 h-16 w-16"/>
+                <div class="font-serif text-[18px] font-extrabold text-c2">Shaheen Public High School</div>
+                <div dir="rtl" class="font-urdu text-[15px] leading-[2.1] text-c2 [word-spacing:0.2em]">شاہین پبلک ہائی سکول لوئے شلمان</div>
+                
+                <!-- Attendance QR (Original 190px Box, High Quality 600x600 Image) -->
+                <div class="mx-auto mt-2 rounded-xl bg-c2 p-2">
+                  <img src="{{ s.qr_image }}" alt="QR" class="h-[190px] w-[190px] rounded-md bg-cpaper p-1.5" style="display:block; image-rendering:-webkit-optimize-contrast; image-rendering:pixelated;"/>
+                </div>
+
+                <div class="mx-auto mt-3 rounded-full bg-c2 px-5 py-1 font-serif text-[12px] font-bold text-c3">
+                  SCAN FOR ATTENDANCE
+                </div>
+
+                <!-- Helplines & Address -->
+                <div class="mx-6 mt-4 space-y-2.5 text-left">
+                  <div class="flex items-center gap-2">
+                    <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-c2 text-c3">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path></svg>
+                    </span>
+                    <span class="text-[16px] font-extrabold text-primary-foreground">0335-9365884</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-c2 text-c3">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path></svg>
+                    </span>
+                    <span class="text-[16px] font-extrabold text-primary-foreground">0334-2727432</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-c2 text-c3">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    </span>
+                    <span class="pt-0.5 text-[13.5px] leading-snug font-semibold text-primary-foreground/90">Loi Shalman Near Cricket Ground, Ghundakhel</span>
+                  </div>
+                </div>
+
+                <div class="mx-6 mt-1 text-center text-[8px] text-primary-foreground/60">If found, please return this card to the school office.</div>
+
+                <!-- NoorX AI Elliptical Bottom Banner -->
+                <div class="mt-auto flex items-center justify-between gap-3 bg-c2 px-6 pb-3 pt-3 [clip-path:ellipse(90%_100%_at_50%_100%)]" style="clip-path:ellipse(90% 100% at 50% 100%); -webkit-clip-path:ellipse(90% 100% at 50% 100%);">
+                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&amp;margin=0&amp;data=https%3A%2F%2Fnoorxai.com%2Fschools" alt="NoorX AI" class="h-[52px] w-[52px] shrink-0 rounded border border-c3 bg-cpaper p-[2px]"/>
+                  <div dir="rtl" class="text-right font-urdu leading-[1.8] text-c3">
+                    <div class="text-[10.5px] font-bold">نوراکس اے آئی پاکستان کا پہلا اسکول مینجمنٹ حل</div>
+                    <div class="text-[9.5px]">حاضری کے لیے اسکین کریں یا QR اسکین کریں</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         {% endfor %}
       </div>
@@ -3464,6 +3487,24 @@ body {
 </div>
 
 <script>
+  function searchStudents() {
+    const val = document.getElementById('search-input').value.trim();
+    const url = new URL(window.location.href);
+    if (val) {
+      url.searchParams.set('search', val);
+    } else {
+      url.searchParams.delete('search');
+    }
+    url.searchParams.delete('sample_preview');
+    window.location.href = url.toString();
+  }
+
+  function clearSearch() {
+    const url = new URL(window.location.href);
+    url.searchParams.delete('search');
+    window.location.href = url.toString();
+  }
+
   function filterClass(cls) {
     const url = new URL(window.location.href);
     if (cls) {
