@@ -902,6 +902,317 @@
       color: #334155;
     }
 
+  
+    /* ========================================================
+       DESIGN: GEOMETRIC BOW-TIE (SHUTTERSTOCK STYLE)
+       ======================================================== */
+    .card-geo-front {
+      width: 54mm;
+      height: 85.6mm;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 4.5mm;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    }
+    .card-geo-front .geo-head {
+      padding: 3mm 2mm 1.5mm;
+      text-align: center;
+      background: #ffffff;
+      position: relative;
+      z-index: 2;
+    }
+    .card-geo-front .geo-company {
+      font-size: 8.5pt;
+      font-weight: 900;
+      color: #044332;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      line-height: 1.1;
+    }
+    .card-geo-front .geo-slogan {
+      font-size: 4.5pt;
+      font-weight: 700;
+      color: #64748b;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-top: 0.4mm;
+    }
+    .card-geo-front .geo-mid-section {
+      position: relative;
+      height: 27mm;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 1mm 0 2mm;
+    }
+    /* Left & Right Red/Ruby Geometric Triangles */
+    .card-geo-front .geo-wing-left {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 25mm;
+      background: linear-gradient(135deg, #b91c1c 0%, #dc2626 50%, #991b1b 100%);
+      clip-path: polygon(0 0, 100% 50%, 0 100%);
+      z-index: 1;
+    }
+    .card-geo-front .geo-wing-right {
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 25mm;
+      background: linear-gradient(225deg, #b91c1c 0%, #dc2626 50%, #991b1b 100%);
+      clip-path: polygon(100% 0, 0 50%, 100% 100%);
+      z-index: 1;
+    }
+    .card-geo-front .geo-photo-circle {
+      width: 24mm;
+      height: 24mm;
+      border-radius: 50%;
+      border: 2mm solid #ffffff;
+      background: #e2e8f0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 3;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    }
+    .card-geo-front .geo-photo-circle img { width: 100%; height: 100%; object-fit: cover; }
+    .card-geo-front .geo-photo-circle svg { width: 14mm; height: 14mm; fill: #64748b; }
+    
+    .card-geo-front .geo-banner-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 2mm;
+      position: relative;
+      z-index: 2;
+    }
+    .card-geo-front .geo-badge {
+      background: #b91c1c;
+      color: #ffffff;
+      font-size: 5.2pt;
+      font-weight: 800;
+      padding: 0.8mm 5mm;
+      border-radius: 1.5mm;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      box-shadow: 0 1px 3px rgba(185,28,28,0.3);
+      position: relative;
+    }
+    .card-geo-front .geo-badge::before,
+    .card-geo-front .geo-badge::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 3mm;
+      height: 1px;
+      background: rgba(255,255,255,0.6);
+    }
+    .card-geo-front .geo-badge::before { left: 1.2mm; }
+    .card-geo-front .geo-badge::after { right: 1.2mm; }
+
+    .card-geo-front .geo-table {
+      flex: 1;
+      padding: 0 5mm;
+      display: flex;
+      flex-direction: column;
+      gap: 1.1mm;
+      position: relative;
+      z-index: 2;
+    }
+    .card-geo-front .geo-watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 38mm;
+      height: 38mm;
+      opacity: 0.08;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .card-geo-front .geo-watermark img { width: 100%; height: 100%; object-fit: contain; }
+
+    .card-geo-front .geo-row {
+      display: flex;
+      font-size: 4.8pt;
+      line-height: 1.2;
+    }
+    .card-geo-front .geo-label {
+      width: 20mm;
+      color: #334155;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      padding-right: 1.5mm;
+    }
+    .card-geo-front .geo-val {
+      flex: 1;
+      color: #0f172a;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-geo-front .geo-footer-bar {
+      height: 6mm;
+      background: #044332;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 4mm;
+      position: relative;
+      z-index: 2;
+      flex-shrink: 0;
+    }
+    .card-geo-front .geo-foot-lbl {
+      color: #ffffff;
+      font-size: 4.5pt;
+      font-weight: 700;
+    }
+    .card-geo-front .geo-foot-line {
+      width: 18mm;
+      height: 1px;
+      background: rgba(255,255,255,0.7);
+    }
+
+    /* MATCHING BACK */
+    .card-geo-back {
+      width: 54mm;
+      height: 85.6mm;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 4.5mm;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      padding: 0;
+      text-align: center;
+    }
+    .card-geo-back .geob-red-top {
+      height: 2.2mm;
+      background: #b91c1c;
+      width: 100%;
+      flex-shrink: 0;
+    }
+    .card-geo-back .geob-notice {
+      padding: 2.5mm 3.5mm 1.5mm;
+      font-size: 4pt;
+      color: #475569;
+      line-height: 1.25;
+    }
+    .card-geo-back .geob-mid {
+      position: relative;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0 3mm;
+    }
+    /* Left and right 3-stripe wings */
+    .card-geo-back .geob-stripes-left {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 1mm;
+    }
+    .card-geo-back .geob-stripes-right {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 1mm;
+    }
+    .card-geo-back .geob-stripe {
+      width: 4.5mm;
+      height: 1.4mm;
+      background: #044332;
+    }
+    .card-geo-back .geob-stripe.red { background: #b91c1c; }
+
+    .card-geo-back .geob-logo-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 1.5mm;
+    }
+    .card-geo-back .geob-logo {
+      width: 10mm;
+      height: 10mm;
+      margin-bottom: 0.8mm;
+    }
+    .card-geo-back .geob-logo img { width: 100%; height: 100%; object-fit: contain; }
+    .card-geo-back .geob-brand-title {
+      font-size: 7.5pt;
+      font-weight: 900;
+      color: #044332;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .card-geo-back .geob-brand-sub {
+      font-size: 4.2pt;
+      font-weight: 600;
+      color: #64748b;
+    }
+    
+    .card-geo-back .geob-qr-box {
+      width: 28mm;
+      height: 28mm;
+      border: 1.2px solid #044332;
+      border-radius: 2mm;
+      padding: 1.2mm;
+      background: #ffffff;
+      box-shadow: 0 1px 4px rgba(4,67,50,0.12);
+      margin: 1.5mm auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card-geo-back .geob-qr-box img { width: 100%; height: 100%; object-fit: contain; }
+    
+    .card-geo-back .geob-contact {
+      font-size: 4.4pt;
+      color: #334155;
+      margin-top: 1mm;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5mm;
+    }
+    .card-geo-back .geob-contact strong { color: #044332; }
+
+    .card-geo-back .geob-web {
+      font-size: 4.6pt;
+      font-weight: 800;
+      color: #044332;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      margin-top: 1.5mm;
+      margin-bottom: 2mm;
+    }
+    .card-geo-back .geob-footer-bar {
+      height: 5mm;
+      background: #044332;
+      width: 100%;
+      flex-shrink: 0;
+    }
+
   </style>
 </head>
 <body>
@@ -921,6 +1232,125 @@
 </div>
 
 <div class="page-wrapper">
+
+  <!-- ═══════════════ DESIGN: GEOMETRIC BOW-TIE (SHUTTERSTOCK STYLE) ═══════════════ -->
+  <div class="design-section">
+    <div class="design-label" style="background:#b91c1c;">
+      📐 Design: Geometric Bow-Tie (Red Geometric Wings &amp; Green Footer)
+    </div>
+    <div class="design-caption">
+      Front: Left &amp; Right red polygonal geometric wings, centered circular photo, red brush badge, detailed student data list, and dark green Head Teacher bar.<br>
+      Back: Top red bar, school disclaimer, center logo with left/right triple stripes, <strong>Big 28mm QR Code</strong>, contact helpline, website, and dark green base.
+    </div>
+
+    <div class="pairs-grid">
+      {% for s in students[:2] %}
+      <div class="pair-card-container">
+        <div class="pair-header">
+          <span>Student: {{ s.full_name }}</span>
+          <span style="color:#b91c1c;">({{ s.student_code }})</span>
+        </div>
+        <div class="pair-sides">
+          
+          <!-- FRONT -->
+          <div class="side-wrapper">
+            <span class="side-tag tag-front">Front Side</span>
+            <div class="card-geo-front">
+              <div class="geo-head">
+                <div class="geo-company">Shaheen Public School</div>
+                <div class="geo-slogan">Loi Shalman &bull; Khyber Agency</div>
+              </div>
+
+              <!-- Center Bow-Tie Geometric Shape -->
+              <div class="geo-mid-section">
+                <div class="geo-wing-left"></div>
+                <div class="geo-wing-right"></div>
+                <div class="geo-photo-circle">
+                  {% if s.photo_url %}<img src="{{ s.photo_url }}" alt="{{ s.full_name }}">
+                  {% else %}<svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>{% endif %}
+                </div>
+              </div>
+
+              <!-- Student ID Card Badge -->
+              <div class="geo-banner-wrap">
+                <div class="geo-badge">Student ID Card</div>
+              </div>
+
+              <!-- Student Details Table -->
+              <div class="geo-table">
+                <div class="geo-watermark"><img src="/static/img/shaheen_logo_trans.png" alt=""></div>
+                <div class="geo-row"><span class="geo-label">Name<span>:</span></span><span class="geo-val">{{ s.full_name }}</span></div>
+                <div class="geo-row"><span class="geo-label">Father's name<span>:</span></span><span class="geo-val">{{ s.father_name or 'Guardian' }}</span></div>
+                <div class="geo-row"><span class="geo-label">Class<span>:</span></span><span class="geo-val">{{ s.class_name }}</span></div>
+                <div class="geo-row"><span class="geo-label">Roll No<span>:</span></span><span class="geo-val">{{ s.roll_no }}</span></div>
+                <div class="geo-row"><span class="geo-label">Session<span>:</span></span><span class="geo-val">2026 - 2027</span></div>
+                <div class="geo-row"><span class="geo-label">Blood<span>:</span></span><span class="geo-val">A+</span></div>
+                <div class="geo-row"><span class="geo-label">ID NO<span>:</span></span><span class="geo-val" style="color:#b91c1c;">{{ s.student_code }}</span></div>
+              </div>
+
+              <!-- Bottom Green Bar -->
+              <div class="geo-footer-bar">
+                <span class="geo-foot-lbl">Head Teacher</span>
+                <span class="geo-foot-line"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- BACK -->
+          <div class="side-wrapper">
+            <span class="side-tag tag-back">Back Side (QR &amp; School Info)</span>
+            <div class="card-geo-back">
+              <div class="geob-red-top"></div>
+              <div class="geob-notice">
+                This card is to be used only for the official purpose of School. Misuse of the card is a serious offense. If found, please return to school office.
+              </div>
+
+              <div class="geob-mid">
+                <!-- Left 3 Stripes -->
+                <div class="geob-stripes-left">
+                  <div class="geob-stripe"></div>
+                  <div class="geob-stripe red"></div>
+                  <div class="geob-stripe"></div>
+                </div>
+
+                <!-- Right 3 Stripes -->
+                <div class="geob-stripes-right">
+                  <div class="geob-stripe"></div>
+                  <div class="geob-stripe red"></div>
+                  <div class="geob-stripe"></div>
+                </div>
+
+                <!-- Logo & School Brand -->
+                <div class="geob-logo-wrap">
+                  <div class="geob-logo"><img src="/static/img/shaheen_logo_trans.png" alt="Logo"></div>
+                  <div class="geob-brand-title">Shaheen Public School</div>
+                  <div class="geob-brand-sub">Loi Shalman, Khyber</div>
+                </div>
+
+                <!-- Attendance QR Code -->
+                <div class="geob-qr-box">
+                  <img src="{{ s.qr_image }}" alt="QR {{ s.student_code }}">
+                </div>
+
+                <!-- Contact & Helpline -->
+                <div class="geob-contact">
+                  <div>📞 <strong>0335-9365884</strong> &bull; 0334-2727432</div>
+                  <div>📍 Ghundakhel, Loi Shalman</div>
+                </div>
+
+                <div class="geob-web">noorify.site</div>
+              </div>
+
+              <div class="geob-footer-bar"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
 
   <!-- ═══════════════ NEW: DESIGN 1 PAIR (WAVY ACADEMY) ═══════════════ -->
   <div class="design-section">
