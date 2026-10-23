@@ -432,6 +432,476 @@
       .toolbar { display: none !important; }
       .page-wrapper { padding: 5mm 0 !important; gap: 20px !important; }
     }
+  
+    /* ========================================================
+       PAIR PREVIEW: DESIGN 1 — WAVY ACADEMY (BRIGHT FUTURE STYLE)
+       ======================================================== */
+    .card-wavy-front {
+      border-radius: 4.5mm;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      width: 54mm;
+      height: 85.6mm;
+    }
+    .card-wavy-front .wv-head {
+      background: #044332;
+      height: 24mm;
+      padding: 2mm 3mm 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .card-wavy-front .wv-head::after {
+      content: '';
+      position: absolute;
+      bottom: -5.5mm;
+      left: 0;
+      right: 0;
+      height: 6mm;
+      background: #044332;
+      clip-path: ellipse(55% 70% at 50% 30%);
+      z-index: 1;
+    }
+    .card-wavy-front .wv-logo {
+      width: 8.5mm;
+      height: 8.5mm;
+      background: #ffffff;
+      border-radius: 50%;
+      padding: 0.8mm;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.8mm;
+      position: relative;
+      z-index: 2;
+    }
+    .card-wavy-front .wv-logo img { width: 100%; height: 100%; object-fit: contain; }
+    .card-wavy-front .wv-title {
+      font-size: 7.8pt;
+      font-weight: 900;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      line-height: 1.1;
+      position: relative;
+      z-index: 2;
+    }
+    .card-wavy-front .wv-loc {
+      font-size: 4.6pt;
+      color: #fde68a;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-top: 0.3mm;
+      position: relative;
+      z-index: 2;
+    }
+    .card-wavy-front .wv-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 3.5mm 3mm 1mm;
+      position: relative;
+      z-index: 2;
+    }
+    .card-wavy-front .wv-photo {
+      width: 23mm;
+      height: 23mm;
+      border-radius: 50%;
+      border: 1.6mm solid #ffffff;
+      box-shadow: 0 2px 8px rgba(4,67,50,0.25);
+      background: #e2e8f0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: -5.5mm;
+      margin-bottom: 1.2mm;
+      position: relative;
+      z-index: 3;
+    }
+    .card-wavy-front .wv-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .card-wavy-front .wv-photo svg { width: 14mm; height: 14mm; fill: #64748b; }
+    .card-wavy-front .wv-name {
+      font-size: 9.6pt;
+      font-weight: 900;
+      color: #0f172a;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 46mm;
+      line-height: 1.15;
+    }
+    .card-wavy-front .wv-father {
+      font-size: 5.2pt;
+      color: #64748b;
+      margin-top: 0.3mm;
+      text-align: center;
+    }
+    .card-wavy-front .wv-pill {
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      border-radius: 2.5mm;
+      padding: 0.6mm 3mm;
+      font-size: 5.6pt;
+      font-weight: 800;
+      color: #044332;
+      margin-top: 1.2mm;
+      margin-bottom: 1.2mm;
+      letter-spacing: 0.3px;
+    }
+    .card-wavy-front .wv-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2mm 2mm;
+      padding: 0 1mm;
+      margin-top: 0.8mm;
+    }
+    .card-wavy-front .wv-row {
+      display: flex;
+      align-items: center;
+      gap: 1.2mm;
+      font-size: 4.8pt;
+      color: #334155;
+    }
+    .card-wavy-front .wv-icon {
+      width: 3.6mm;
+      height: 3.6mm;
+      border-radius: 50%;
+      background: #044332;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.2pt;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .card-wavy-front .wv-foot {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 11mm;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* MATCHING WAVY BACK */
+    .card-wavy-back {
+      border-radius: 4.5mm;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      width: 54mm;
+      height: 85.6mm;
+      align-items: center;
+      text-align: center;
+      padding: 2.5mm 3mm;
+    }
+    .card-wavy-back .wvb-title {
+      font-size: 8pt;
+      font-weight: 900;
+      color: #044332;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .card-wavy-back .wvb-sub {
+      font-size: 4.6pt;
+      color: #64748b;
+      margin-bottom: 1.5mm;
+    }
+    .card-wavy-back .wvb-divider {
+      width: 100%;
+      height: 1px;
+      background: #86efac;
+      margin-bottom: 2mm;
+    }
+    .card-wavy-back .wvb-parent-box {
+      width: 100%;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 2mm;
+      padding: 1.2mm 2mm;
+      font-size: 4.8pt;
+      color: #334155;
+      text-align: left;
+      margin-bottom: 2mm;
+    }
+    .card-wavy-back .wvb-parent-box strong { color: #044332; }
+    .card-wavy-back .wvb-qr-box {
+      width: 33mm;
+      height: 33mm;
+      border: 1.5px solid #044332;
+      border-radius: 2.5mm;
+      padding: 1.5mm;
+      background: #ffffff;
+      box-shadow: 0 2px 6px rgba(4,67,50,0.12);
+      margin: 1mm auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card-wavy-back .wvb-qr-box img { width: 100%; height: 100%; object-fit: contain; }
+    .card-wavy-back .wvb-scan-lbl {
+      font-size: 4.6pt;
+      font-weight: 800;
+      color: #044332;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      margin-top: 1mm;
+      margin-bottom: 1.5mm;
+    }
+    .card-wavy-back .wvb-footer-note {
+      font-size: 4.2pt;
+      color: #64748b;
+      line-height: 1.2;
+    }
+    .card-wavy-back .wvb-sig {
+      margin-top: auto;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-top: 1mm;
+      border-top: 1px dashed #cbd5e1;
+      font-size: 4.5pt;
+      color: #334155;
+    }
+
+    /* ========================================================
+       PAIR PREVIEW: DESIGN 5 — MODERN CURVE ARC (SLATE & CRIMSON)
+       ======================================================== */
+    .card-arc-front {
+      border-radius: 4.5mm;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      width: 54mm;
+      height: 85.6mm;
+    }
+    .card-arc-front .arc-head {
+      background: #0f172a;
+      height: 27mm;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 2.2mm;
+      flex-shrink: 0;
+    }
+    .card-arc-front .arc-head::after {
+      content: '';
+      position: absolute;
+      bottom: -4mm;
+      left: 0;
+      right: 0;
+      height: 8mm;
+      background: #0f172a;
+      border-radius: 0 0 50% 50% / 0 0 100% 100%;
+      z-index: 1;
+    }
+    .card-arc-front .arc-red-acc {
+      position: absolute;
+      bottom: -5.5mm;
+      left: 0;
+      right: 0;
+      height: 9mm;
+      background: #dc2626;
+      border-radius: 0 0 50% 50% / 0 0 100% 100%;
+      z-index: 0;
+    }
+    .card-arc-front .arc-title {
+      font-size: 8pt;
+      font-weight: 900;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      line-height: 1.1;
+      position: relative;
+      z-index: 2;
+    }
+    .card-arc-front .arc-sub {
+      font-size: 4.6pt;
+      color: #94a3b8;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-top: 0.4mm;
+      position: relative;
+      z-index: 2;
+    }
+    .card-arc-front .arc-photo {
+      width: 25mm;
+      height: 25mm;
+      border-radius: 50%;
+      border: 1.8mm solid #dc2626;
+      background: #e2e8f0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.18);
+      position: absolute;
+      top: 14mm;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 4;
+    }
+    .card-arc-front .arc-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .card-arc-front .arc-photo svg { width: 15mm; height: 15mm; fill: #64748b; }
+    .card-arc-front .arc-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16mm 3mm 2mm;
+      position: relative;
+      z-index: 2;
+    }
+    .card-arc-front .arc-name {
+      font-size: 10pt;
+      font-weight: 900;
+      color: #0f172a;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 46mm;
+      line-height: 1.1;
+    }
+    .card-arc-front .arc-father {
+      font-size: 5.2pt;
+      color: #64748b;
+      margin-top: 0.4mm;
+      text-align: center;
+    }
+    .card-arc-front .arc-tag {
+      background: #fef2f2;
+      border: 1px solid #fca5a5;
+      color: #dc2626;
+      font-size: 5.2pt;
+      font-weight: 800;
+      padding: 0.6mm 3.5mm;
+      border-radius: 2mm;
+      margin-top: 1.5mm;
+      margin-bottom: 2mm;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .card-arc-front .arc-rows {
+      width: 100%;
+      padding: 0 2mm;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2mm;
+    }
+    .card-arc-front .arc-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px dashed #e2e8f0;
+      padding-bottom: 0.6mm;
+      font-size: 5pt;
+    }
+    .card-arc-front .arc-line span:first-child { color: #64748b; font-weight: 700; text-transform: uppercase; }
+    .card-arc-front .arc-line span:last-child { color: #0f172a; font-weight: 800; }
+    .card-arc-front .arc-foot {
+      height: 9mm;
+      position: relative;
+      background: #ffffff;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    /* MATCHING ARC BACK */
+    .card-arc-back {
+      border-radius: 4.5mm;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      width: 54mm;
+      height: 85.6mm;
+      align-items: center;
+      text-align: center;
+      padding: 2.5mm 3mm;
+    }
+    .card-arc-back .arc-b-head {
+      width: 100%;
+      background: #0f172a;
+      color: #ffffff;
+      padding: 1.8mm 2mm;
+      border-radius: 2mm;
+      font-size: 7.2pt;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 2mm;
+    }
+    .card-arc-back .arc-b-rules {
+      width: 100%;
+      text-align: left;
+      font-size: 4.4pt;
+      color: #334155;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 2mm;
+      padding: 1.5mm 2mm;
+      margin-bottom: 2mm;
+    }
+    .card-arc-back .arc-b-rules li { margin-left: 3mm; margin-bottom: 0.6mm; }
+    .card-arc-back .arc-b-qr-box {
+      width: 33mm;
+      height: 33mm;
+      border: 1.5px solid #dc2626;
+      border-radius: 2.5mm;
+      padding: 1.5mm;
+      background: #ffffff;
+      box-shadow: 0 2px 6px rgba(220,38,38,0.12);
+      margin: 0.8mm auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card-arc-back .arc-b-qr-box img { width: 100%; height: 100%; object-fit: contain; }
+    .card-arc-back .arc-b-scan-lbl {
+      font-size: 4.6pt;
+      font-weight: 800;
+      color: #dc2626;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      margin-top: 1mm;
+      margin-bottom: 1.5mm;
+    }
+    .card-arc-back .arc-b-sig {
+      margin-top: auto;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-top: 1mm;
+      border-top: 1px dashed #cbd5e1;
+      font-size: 4.5pt;
+      color: #334155;
+    }
+
   </style>
 </head>
 <body>
@@ -451,6 +921,180 @@
 </div>
 
 <div class="page-wrapper">
+
+  <!-- ═══════════════ NEW: DESIGN 1 PAIR (WAVY ACADEMY) ═══════════════ -->
+  <div class="design-section">
+    <div class="design-label" style="background:#044332;">
+      🌟 Design 1 Pair — Wavy Academy (Front &amp; Big QR Back)
+    </div>
+    <div class="design-caption">
+      Front: Fluid Green Wave, Circular Student Photo (23mm), Class/Roll pill badge.<br>
+      Back: Matching Emerald header, Parent contacts, <strong>Big 33mm QR code</strong> for attendance scanning, and Principal signature.
+    </div>
+
+    <div class="pairs-grid">
+      {% for s in students[:2] %}
+      <div class="pair-card-container">
+        <div class="pair-header">
+          <span>Student: {{ s.full_name }}</span>
+          <span style="color:#044332;">({{ s.student_code }})</span>
+        </div>
+        <div class="pair-sides">
+          
+          <!-- FRONT -->
+          <div class="side-wrapper">
+            <span class="side-tag tag-front">Front Side</span>
+            <div class="card-wavy-front">
+              <div class="wv-head">
+                <div class="wv-logo"><img src="/static/img/shaheen_logo_trans.png" alt="Logo"></div>
+                <div class="wv-title">Shaheen Public</div>
+                <div class="wv-title">High School</div>
+                <div class="wv-loc">Loi Shalman &bull; Khyber</div>
+              </div>
+              <div class="wv-body">
+                <div class="wv-photo">
+                  {% if s.photo_url %}<img src="{{ s.photo_url }}" alt="{{ s.full_name }}">
+                  {% else %}<svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>{% endif %}
+                </div>
+                <div class="wv-name">{{ s.full_name }}</div>
+                <div class="wv-father">S/D of {{ s.father_name or 'Guardian' }}</div>
+                <div class="wv-pill">Class: {{ s.class_name }} &bull; Roll: {{ s.roll_no }}</div>
+                <div class="wv-grid">
+                  <div class="wv-row"><span class="wv-icon">ID</span><span>{{ s.student_code }}</span></div>
+                  <div class="wv-row"><span class="wv-icon">YR</span><span>2026-27</span></div>
+                  <div class="wv-row"><span class="wv-icon">BL</span><span>Blood: A+</span></div>
+                  <div class="wv-row"><span class="wv-icon">PH</span><span>{{ s.parent_phone or '03359365884' }}</span></div>
+                </div>
+              </div>
+              <div class="wv-foot">
+                <svg viewBox="0 0 100 28" preserveAspectRatio="none" style="width:100%;height:100%;display:block;">
+                  <path d="M0,12 C25,24 45,26 60,26 C78,26 90,18 100,14 L100,28 L0,28 Z" fill="#044332"/>
+                  <path d="M0,18 C25,26 48,28 65,27 C82,26 92,22 100,19 L100,28 L0,28 Z" fill="#065f46" opacity="0.7"/>
+                  <path d="M0,10 C25,22 45,24.5 60,24.5 C78,24.5 90,16.5 100,12.5 L100,14 C90,18 78,26 60,26 C45,26 25,24 0,12 Z" fill="#d97706"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- BACK -->
+          <div class="side-wrapper">
+            <span class="side-tag tag-back">Back Side (QR &amp; Rules)</span>
+            <div class="card-wavy-back">
+              <div class="wvb-title">Shaheen Public High School</div>
+              <div class="wvb-sub">Loi Shalman &bull; Khyber Agency</div>
+              <div class="wvb-divider"></div>
+              
+              <div class="wvb-parent-box">
+                <div><strong>Father / Guardian:</strong> {{ s.father_name or 'Guardian' }}</div>
+                <div><strong>Emergency Phone:</strong> {{ s.parent_phone or '03359365884' }}</div>
+                <div><strong>Address:</strong> Loi Shalman, Ghundakhel</div>
+              </div>
+
+              <div class="wvb-qr-box">
+                <img src="{{ s.qr_image }}" alt="QR {{ s.student_code }}">
+              </div>
+              <div class="wvb-scan-lbl">Scan For Daily Attendance</div>
+
+              <div class="wvb-footer-note">
+                Misuse is an offense. If found, return to school office.<br>
+                Website: <strong>noorify.site</strong>
+              </div>
+
+              <div class="wvb-sig">
+                <span>Session: 2026-27</span>
+                <span style="font-weight:700;">Principal / Head</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+
+  <!-- ═══════════════ NEW: DESIGN 5 PAIR (MODERN CURVE ARC) ═══════════════ -->
+  <div class="design-section">
+    <div class="design-label" style="background:#0f172a;">
+      🎯 Design 5 Pair — Modern Curve Arc (Front &amp; Matching Back)
+    </div>
+    <div class="design-caption">
+      Front: Dark Slate Header Arc, 25mm Red-Ring Circular Photo, Student ID tag, and dual-layer Crimson wave.<br>
+      Back: Matching dark slate header, School code of conduct bullets, <strong>Big 33mm QR code</strong> with crimson frame, and Principal signature.
+    </div>
+
+    <div class="pairs-grid">
+      {% for s in students[:2] %}
+      <div class="pair-card-container">
+        <div class="pair-header">
+          <span>Student: {{ s.full_name }}</span>
+          <span style="color:#dc2626;">({{ s.student_code }})</span>
+        </div>
+        <div class="pair-sides">
+          
+          <!-- FRONT -->
+          <div class="side-wrapper">
+            <span class="side-tag tag-front">Front Side</span>
+            <div class="card-arc-front">
+              <div class="arc-head">
+                <div class="arc-title">Shaheen Public High School</div>
+                <div class="arc-sub">Loi Shalman &bull; Khyber Agency</div>
+                <div class="arc-red-acc"></div>
+              </div>
+              <div class="arc-photo">
+                {% if s.photo_url %}<img src="{{ s.photo_url }}" alt="{{ s.full_name }}">
+                {% else %}<svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>{% endif %}
+              </div>
+              <div class="arc-body">
+                <div class="arc-name">{{ s.full_name }}</div>
+                <div class="arc-father">S/D of {{ s.father_name or 'Guardian' }}</div>
+                <div class="arc-tag">Student ID Card</div>
+                <div class="arc-rows">
+                  <div class="arc-line"><span>Roll Number:</span><span>{{ s.roll_no }}</span></div>
+                  <div class="arc-line"><span>Class:</span><span>{{ s.class_name }}</span></div>
+                  <div class="arc-line"><span>Student Code:</span><span style="color:#dc2626;font-family:monospace;">{{ s.student_code }}</span></div>
+                  <div class="arc-line"><span>Emergency:</span><span>{{ s.parent_phone or '03359365884' }}</span></div>
+                </div>
+              </div>
+              <div class="arc-foot">
+                <svg viewBox="0 0 100 25" preserveAspectRatio="none" style="width:100%;height:100%;display:block;">
+                  <path d="M0,15 Q30,5 50,15 T100,10 L100,25 L0,25 Z" fill="#dc2626"/>
+                  <path d="M0,18 Q40,8 60,18 T100,15 L100,25 L0,25 Z" fill="#0f172a"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- BACK -->
+          <div class="side-wrapper">
+            <span class="side-tag tag-back">Back Side (QR &amp; Conduct)</span>
+            <div class="card-arc-back">
+              <div class="arc-b-head">Terms &amp; Student Rules</div>
+              <ul class="arc-b-rules">
+                <li>Card must be worn in school premises at all times.</li>
+                <li>Present this card at the gate for automated attendance scan.</li>
+                <li>Report loss immediately to the administration office.</li>
+              </ul>
+
+              <div class="arc-b-qr-box">
+                <img src="{{ s.qr_image }}" alt="QR {{ s.student_code }}">
+              </div>
+              <div class="arc-b-scan-lbl">Daily Attendance Scan</div>
+
+              <div class="arc-b-sig">
+                <span>Phone: 03359365884</span>
+                <span style="font-weight:700;">Principal Signature</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
 
   <!-- ─────────────── OPTION 1B SECTION ─────────────── -->
   <div class="design-section">
