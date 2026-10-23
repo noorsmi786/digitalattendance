@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@500;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Cinzel:wght@600;800&family=Noto+Nastaliq+Urdu:wght@500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Inter', Arial, sans-serif; background: #e2e8f0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -1968,7 +1968,190 @@
       display: block;
     }
 
-  </style>
+  
+/* ══════════════════════════════════════════════════════════════════
+   DESIGN: EMERALD CREST (IQBAL POETRY & ELLIPTICAL CURVES)
+   ══════════════════════════════════════════════════════════════════ */
+.iqbal-scope {
+  --c1: oklch(33% .08 160);
+  --c2: oklch(78% .14 82);
+  --c3: oklch(24% .06 160);
+  --cpaper: oklch(99% .005 90);
+  --cink: oklch(20% .02 250);
+  --primary-foreground: oklch(98.4% .003 247.858);
+  --muted: oklch(96.8% .007 247.896);
+  --muted-foreground: oklch(55.4% .046 257.417);
+  --spacing: 0.25rem;
+  font-family: 'Outfit', sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.iqbal-scope *, .iqbal-scope *::before, .iqbal-scope *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.iqbal-scope .id-card {
+  width: 384px;
+  height: 576px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 22px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  background-color: var(--cpaper);
+  flex-shrink: 0;
+}
+
+.iqbal-scope .theme-emerald {
+  --c1: oklch(33% .08 160);
+  --c2: oklch(78% .14 82);
+  --c3: oklch(24% .06 160);
+}
+
+.iqbal-scope .relative { position: relative; }
+.iqbal-scope .absolute { position: absolute; }
+.iqbal-scope .inset-x-0 { left: 0px; right: 0px; }
+.iqbal-scope .top-\[218px\] { top: 218px; }
+
+.iqbal-scope .flex { display: flex; }
+.iqbal-scope .flex-col { flex-direction: column; }
+.iqbal-scope .items-center { align-items: center; }
+.iqbal-scope .items-start { align-items: flex-start; }
+.iqbal-scope .justify-center { justify-content: center; }
+.iqbal-scope .justify-between { justify-content: space-between; }
+
+.iqbal-scope .overflow-hidden { overflow: hidden; }
+.iqbal-scope .rounded-\[22px\] { border-radius: 22px; }
+.iqbal-scope .rounded-full { border-radius: 9999px; }
+.iqbal-scope .rounded-md { border-radius: 6px; }
+.iqbal-scope .rounded-xl { border-radius: 12px; }
+.iqbal-scope .rounded { border-radius: 4px; }
+
+.iqbal-scope .shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+.iqbal-scope .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1); }
+
+.iqbal-scope .bg-cpaper { background-color: var(--cpaper); }
+.iqbal-scope .bg-c1 { background-color: var(--c1); }
+.iqbal-scope .bg-c2 { background-color: var(--c2); }
+.iqbal-scope .bg-muted { background-color: var(--muted); }
+.iqbal-scope .bg-c1\/10 { background-color: color-mix(in oklab, var(--c1) 10%, transparent); }
+
+.iqbal-scope .text-c2 { color: var(--c2); }
+.iqbal-scope .text-c3 { color: var(--c3); }
+.iqbal-scope .text-cink { color: var(--cink); }
+.iqbal-scope .text-muted-foreground { color: var(--muted-foreground); }
+.iqbal-scope .text-primary-foreground { color: var(--primary-foreground); }
+.iqbal-scope .text-primary-foreground\/90 { color: color-mix(in oklab, var(--primary-foreground) 90%, transparent); }
+.iqbal-scope .text-primary-foreground\/60 { color: color-mix(in oklab, var(--primary-foreground) 60%, transparent); }
+
+.iqbal-scope .text-center { text-align: center; }
+.iqbal-scope .text-left { text-align: left; }
+.iqbal-scope .text-right { text-align: right; }
+.iqbal-scope .uppercase { text-transform: uppercase; }
+
+.iqbal-scope .font-serif { font-family: 'Cinzel', serif; }
+.iqbal-scope .font-urdu { font-family: 'Noto Nastaliq Urdu', serif; }
+.iqbal-scope .font-bold { font-weight: 700; }
+.iqbal-scope .font-extrabold { font-weight: 800; }
+.iqbal-scope .font-semibold { font-weight: 600; }
+
+.iqbal-scope .\[clip-path\:ellipse\(85\%_100\%_at_50\%_0\)\] {
+  clip-path: ellipse(85% 100% at 50% 0);
+}
+.iqbal-scope .\[clip-path\:ellipse\(90\%_100\%_at_50\%_100\)\] {
+  clip-path: ellipse(90% 100% at 50% 100%);
+}
+.iqbal-scope .\[word-spacing\:0\.2em\] {
+  word-spacing: 0.2em;
+}
+
+.iqbal-scope .h-2 { height: 8px; }
+.iqbal-scope .h-6 { height: 24px; }
+.iqbal-scope .h-20 { height: 80px; }
+.iqbal-scope .h-full { height: 100%; }
+.iqbal-scope .h-\[52px\] { height: 52px; }
+.iqbal-scope .h-\[140px\] { height: 140px; }
+.iqbal-scope .h-\[172px\] { height: 172px; }
+.iqbal-scope .h-\[230px\] { height: 230px; }
+
+.iqbal-scope .w-6 { width: 24px; }
+.iqbal-scope .w-20 { width: 80px; }
+.iqbal-scope .w-full { width: 100%; }
+.iqbal-scope .w-\[42\%\] { width: 42%; }
+.iqbal-scope .w-\[52px\] { width: 52px; }
+.iqbal-scope .w-\[80\%\] { width: 80%; }
+.iqbal-scope .w-\[140px\] { width: 140px; }
+.iqbal-scope .w-\[172px\] { width: 172px; }
+.iqbal-scope .shrink-0 { flex-shrink: 0; }
+
+.iqbal-scope .mx-auto { margin-left: auto; margin-right: auto; }
+.iqbal-scope .mx-1 { margin-left: 4px; margin-right: 4px; }
+.iqbal-scope .mx-5 { margin-left: 20px; margin-right: 20px; }
+.iqbal-scope .mx-6 { margin-left: 24px; margin-right: 24px; }
+
+.iqbal-scope .mt-1 { margin-top: 4px; }
+.iqbal-scope .mt-2 { margin-top: 8px; }
+.iqbal-scope .mt-3 { margin-top: 12px; }
+.iqbal-scope .mt-4 { margin-top: 16px; }
+.iqbal-scope .mt-auto { margin-top: auto; }
+.iqbal-scope .\-mt-\[78px\] { margin-top: -78px; }
+
+.iqbal-scope .p-1 { padding: 4px; }
+.iqbal-scope .p-2 { padding: 8px; }
+.iqbal-scope .p-\[2px\] { padding: 2px; }
+.iqbal-scope .px-2 { padding-left: 8px; padding-right: 8px; }
+.iqbal-scope .px-4 { padding-left: 16px; padding-right: 16px; }
+.iqbal-scope .px-5 { padding-left: 20px; padding-right: 20px; }
+.iqbal-scope .px-6 { padding-left: 24px; padding-right: 24px; }
+.iqbal-scope .py-1 { padding-top: 4px; padding-bottom: 4px; }
+.iqbal-scope .py-\[3px\] { padding-top: 3px; padding-bottom: 3px; }
+.iqbal-scope .pt-0\.5 { padding-top: 2px; }
+.iqbal-scope .pt-2 { padding-top: 8px; }
+.iqbal-scope .pt-3 { padding-top: 12px; }
+.iqbal-scope .pb-3 { padding-bottom: 12px; }
+
+.iqbal-scope .gap-2 { gap: 8px; }
+.iqbal-scope .gap-3 { gap: 12px; }
+.iqbal-scope .space-y-2\.5 > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 10px;
+}
+
+.iqbal-scope .border { border-width: 1px; border-style: solid; }
+.iqbal-scope .border-2 { border-width: 2px; border-style: solid; }
+.iqbal-scope .border-\[5px\] { border-width: 5px; border-style: solid; }
+.iqbal-scope .border-t { border-top-width: 1px; border-top-style: solid; }
+.iqbal-scope .border-c2 { border-color: var(--c2); }
+.iqbal-scope .border-c3 { border-color: var(--c3); }
+.iqbal-scope .border-c2\/50 { border-color: color-mix(in oklab, var(--c2) 50%, transparent); }
+
+.iqbal-scope .text-sm { font-size: 14px; }
+.iqbal-scope .text-\[8px\] { font-size: 8px; }
+.iqbal-scope .text-\[9\.5px\] { font-size: 9.5px; }
+.iqbal-scope .text-\[10px\] { font-size: 10px; }
+.iqbal-scope .text-\[10\.5px\] { font-size: 10.5px; }
+.iqbal-scope .text-\[11px\] { font-size: 11px; }
+.iqbal-scope .text-\[12px\] { font-size: 12px; }
+.iqbal-scope .text-\[13px\] { font-size: 13px; }
+.iqbal-scope .text-\[15px\] { font-size: 15px; }
+.iqbal-scope .text-\[16px\] { font-size: 16px; }
+.iqbal-scope .text-\[18px\] { font-size: 18px; }
+.iqbal-scope .text-\[19px\] { font-size: 19px; }
+
+.iqbal-scope .leading-tight { line-height: 1.25; }
+.iqbal-scope .leading-snug { line-height: 1.375; }
+.iqbal-scope .leading-\[1\.8\] { line-height: 1.8; }
+.iqbal-scope .leading-\[2\.1\] { line-height: 2.1; }
+.iqbal-scope .tracking-wide { letter-spacing: 0.025em; }
+.iqbal-scope .tracking-\[0\.25em\] { letter-spacing: 0.25em; }
+
+.iqbal-scope .object-contain { object-fit: contain; }
+.iqbal-scope .object-cover { object-fit: cover; }
+
+</style>
 </head>
 <body>
 
@@ -1987,6 +2170,154 @@
 </div>
 
 <div class="page-wrapper">
+
+  <!-- ═══════════════ NEW: DESIGN EMERALD CREST (IQBAL POETRY & BIG QR BACK) ═══════════════ -->
+  <div class="design-section">
+    <div class="design-label" style="background:#0f4d34; border-bottom: 2px solid #d4a34b;">
+      ✨ Design: Emerald Crest (Allama Iqbal Poetry &amp; Elliptical Curves)
+    </div>
+    <div class="design-caption">
+      Card Size: <strong>2 &times; 3 Inches (Press 3x2 High-Resolution Standard)</strong>.<br>
+      Front: Elliptical Emerald Green Header, Thick Gold Photo Ring, Student Details Table, and Iqbal's Famous Verse in Urdu Nastaliq (<strong>تو شاہیں ہے پرواز ہے کام تیرا &bull; تیرے سامنے آسماں اور بھی ہیں</strong>).<br>
+      Back: Deep Emerald Card with School Crest &amp; Name (<strong>شاہین پبلک ہائی سکول لوئے شلمان</strong>), Large Attendance QR Code, Helpline Numbers, Ghundakhel Address, and NoorX AI QR Footer.
+    </div>
+
+    <div class="pairs-grid">
+      {% for s in students[:2] %}
+      <div class="pair-card-container">
+        <div class="pair-header">
+          <span>Student: {{ s.full_name }}</span>
+          <span style="color:#0f4d34; font-weight:800;">({{ s.student_code }})</span>
+        </div>
+        <div class="pair-sides">
+          
+          <!-- FRONT -->
+          <div class="side-wrapper">
+            <span class="side-tag tag-front" style="background:#0f4d34; color:#fff;">Front Side (Emerald Iqbal)</span>
+            <div class="iqbal-scope">
+              <div class="id-card theme-emerald relative flex flex-col overflow-hidden rounded-[22px] shadow-2xl bg-cpaper">
+                <!-- Elliptical Top Header -->
+                <div class="relative h-[230px] bg-c1 text-center [clip-path:ellipse(85%_100%_at_50%_0)]" style="clip-path:ellipse(85% 100% at 50% 0); -webkit-clip-path:ellipse(85% 100% at 50% 0);">
+                  <img src="/static/img/shaheen_logo_trans.png" alt="School crest" width="353" height="260" class="object-contain mx-auto mt-3 h-20 w-20"/>
+                  <div class="font-serif text-[19px] font-extrabold leading-tight text-c2">Shaheen Public High School</div>
+                  <div class="mt-1 text-[10px] tracking-[0.25em] text-c2 uppercase">— Loi Shalman • Khyber —</div>
+                </div>
+
+                <!-- Gold Curved Accent Line -->
+                <div class="absolute inset-x-0 top-[218px] mx-auto h-2 w-[80%] rounded-full bg-c2"></div>
+
+                <!-- Overlapping Circular Student Photo -->
+                <div class="overflow-hidden bg-muted mx-auto -mt-[78px] h-[140px] w-[140px] rounded-full border-[5px] border-c2 shadow-lg relative">
+                  {% if s.photo_url %}
+                    <img src="{{ s.photo_url }}" alt="{{ s.full_name }}" class="h-full w-full object-cover">
+                  {% else %}
+                    <div class="flex h-full items-center justify-center text-sm text-muted-foreground font-semibold">Upload photo</div>
+                  {% endif %}
+                </div>
+
+                <!-- Student Identity Card Pill -->
+                <div class="mx-auto mt-2 rounded-full border-2 border-c2 bg-c1 px-5 py-1 font-serif text-[12px] font-bold tracking-wide text-c2">
+                  STUDENT IDENTITY CARD
+                </div>
+
+                <!-- Student Details Table -->
+                <div class="mx-5 mt-3 overflow-hidden rounded-md border border-c2">
+                  <div class="flex text-[12px]">
+                    <span class="w-[42%] bg-c1/10 px-2 py-[3px] font-semibold text-c3">Name</span>
+                    <span class="px-2 py-[3px] font-semibold text-cink">{{ s.full_name }}</span>
+                  </div>
+                  <div class="flex text-[12px] border-t border-c2/50">
+                    <span class="w-[42%] bg-c1/10 px-2 py-[3px] font-semibold text-c3">Father's Name</span>
+                    <span class="px-2 py-[3px] font-semibold text-cink">{{ s.father_name or '—' }}</span>
+                  </div>
+                  <div class="flex text-[12px] border-t border-c2/50">
+                    <span class="w-[42%] bg-c1/10 px-2 py-[3px] font-semibold text-c3">Class</span>
+                    <span class="px-2 py-[3px] font-semibold text-cink">{{ s.class_name }}</span>
+                  </div>
+                  <div class="flex text-[12px] border-t border-c2/50">
+                    <span class="w-[42%] bg-c1/10 px-2 py-[3px] font-semibold text-c3">Roll No</span>
+                    <span class="px-2 py-[3px] font-semibold text-cink">{{ s.roll_no }}</span>
+                  </div>
+                  <div class="flex text-[12px] border-t border-c2/50">
+                    <span class="w-[42%] bg-c1/10 px-2 py-[3px] font-semibold text-c3">Session</span>
+                    <span class="px-2 py-[3px] font-semibold text-cink">2026 - 2027</span>
+                  </div>
+                  <div class="flex text-[12px] border-t border-c2/50">
+                    <span class="w-[42%] bg-c1/10 px-2 py-[3px] font-semibold text-c3">ID No</span>
+                    <span class="px-2 py-[3px] font-semibold text-cink">{{ s.student_code }}</span>
+                  </div>
+                </div>
+
+                <!-- Elliptical Bottom Footer with Iqbal Poetry -->
+                <div class="mt-auto bg-c1 px-4 pt-2 pb-3 text-center [clip-path:ellipse(90%_100%_at_50%_100%)]" style="clip-path:ellipse(90% 100% at 50% 100%); -webkit-clip-path:ellipse(90% 100% at 50% 100%);">
+                  <div dir="rtl" class="mx-1 font-urdu text-[13px] leading-[2.1] text-c2">تو شاہیں ہے پرواز ہے کام تیرا</div>
+                  <div dir="rtl" class="mx-1 font-urdu text-[13px] leading-[2.1] text-c2">تیرے سامنے آسماں اور بھی ہیں</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BACK -->
+          <div class="side-wrapper">
+            <span class="side-tag tag-back" style="background:#0f4d34; color:#fff;">Back Side (Big QR &amp; Contacts)</span>
+            <div class="iqbal-scope">
+              <div class="id-card theme-emerald relative flex flex-col overflow-hidden rounded-[22px] shadow-2xl bg-c1 text-center">
+                <img src="/static/img/shaheen_logo_trans.png" alt="School crest" width="353" height="260" class="object-contain mx-auto mt-4 h-20 w-20"/>
+                <div class="font-serif text-[18px] font-extrabold text-c2">Shaheen Public High School</div>
+                <div dir="rtl" class="font-urdu text-[15px] leading-[2.1] text-c2 [word-spacing:0.2em]">شاہین پبلک ہائی سکول لوئے شلمان</div>
+                
+                <!-- Large Attendance QR -->
+                <div class="mx-auto mt-2 rounded-xl bg-c2 p-2">
+                  <img src="{{ s.qr_image }}" alt="QR" class="h-[172px] w-[172px] rounded-md bg-cpaper p-1"/>
+                </div>
+                
+                <div class="mx-auto mt-3 rounded-full bg-c2 px-5 py-1 font-serif text-[12px] font-bold text-c3">
+                  SCAN FOR ATTENDANCE
+                </div>
+
+                <!-- Helpline & Location Details -->
+                <div class="mx-6 mt-4 space-y-2.5 text-left">
+                  <div class="flex items-center gap-2">
+                    <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-c2 text-c3">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone" aria-hidden="true"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path></svg>
+                    </span>
+                    <span class="text-[16px] font-extrabold text-primary-foreground">0335-9365884</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-c2 text-c3">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone" aria-hidden="true"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path></svg>
+                    </span>
+                    <span class="text-[16px] font-extrabold text-primary-foreground">0334-2727432</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-c2 text-c3">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    </span>
+                    <span class="pt-0.5 text-[11px] leading-snug text-primary-foreground/90">Loi Shalman Near Cricket Ground, Ghundakhel</span>
+                  </div>
+                </div>
+
+                <div class="mx-6 mt-1 text-center text-[8px] text-primary-foreground/60">If found, please return this card to the school office.</div>
+
+                <!-- NoorX AI QR Elliptical Banner -->
+                <div class="mt-auto flex items-center justify-between gap-3 bg-c2 px-6 pb-3 pt-3 [clip-path:ellipse(90%_100%_at_50%_100%)]" style="clip-path:ellipse(90% 100% at 50% 100%); -webkit-clip-path:ellipse(90% 100% at 50% 100%);">
+                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&amp;margin=0&amp;data=https%3A%2F%2Fnoorxai.com%2Fschools" alt="NoorX AI" class="h-[52px] w-[52px] shrink-0 rounded border border-c3 bg-cpaper p-[2px]"/>
+                  <div dir="rtl" class="text-right font-urdu leading-[1.8] text-c3">
+                    <div class="text-[10.5px] font-bold">کارڈز، کمپیوٹرائزڈ ڈی ایم سی، ڈیجیٹل حاضری</div>
+                    <div class="text-[9.5px]">اور طلبہ کارڈز کی سہولت کے لیے یہ QR اسکین کریں</div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
 
   <!-- ═══════════════ NEW: DESIGN 2-APEX (GEOMETRIC APEX - GREEN & METALLIC GOLD) ═══════════════ -->
   <div class="design-section">
