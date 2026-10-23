@@ -1602,7 +1602,7 @@
       width: 54mm;
       height: 85.6mm;
       background: #ffffff;
-      border: 1px solid #cbd5e1;
+      border: 1.2px solid #044332;
       border-radius: 4.5mm;
       display: flex;
       flex-direction: column;
@@ -1610,11 +1610,14 @@
       overflow: hidden;
       box-shadow: 0 4px 14px rgba(0,0,0,0.08);
     }
-    /* AREA A: Solid Green Header with White & Gold text */
+    /* AREA A: Solid Green Header — Extends seamlessly to top curved border */
     .card-apex-front .apex-top-zone {
       background: #044332;
       position: relative;
-      padding-top: 2.4mm;
+      padding-top: 2.8mm;
+      margin-top: -1px;
+      margin-left: -1px;
+      margin-right: -1px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -2064,19 +2067,15 @@
                 <div class="apex-badge">STUDENT IDENTITY CARD</div>
               </div>
 
-              <!-- Student Details Table -->
+              <!-- Student Details Table (Clean, Consistent & Uniform) -->
               <div class="apex-table">
                 <div class="apex-watermark"><img src="/static/img/shaheen_logo_trans.png" alt=""></div>
-                <div class="apex-row"><span class="apex-label">Student Name<span>:</span></span><span class="apex-val">{{ s.full_name }}</span></div>
-                <div class="apex-row"><span class="apex-label">Father Name<span>:</span></span><span class="apex-val">{{ s.father_name or 'Guardian' }}</span></div>
-                
-                <div class="apex-highlight-pill">
-                  <span>Class: <strong>{{ s.class_name }}</strong></span>
-                  <span>Roll No: <strong>{{ s.roll_no }}</strong></span>
-                </div>
-
-                <div class="apex-row"><span class="apex-label">Academic Session<span>:</span></span><span class="apex-val">2026 - 2027</span></div>
-                <div class="apex-row"><span class="apex-label">Student Code<span>:</span></span><span class="apex-val"><span class="apex-code-box">{{ s.student_code }}</span></span></div>
+                <div class="apex-row"><span class="apex-label">Name<span>:</span></span><span class="apex-val">{{ s.full_name }}</span></div>
+                <div class="apex-row"><span class="apex-label">Father's Name<span>:</span></span><span class="apex-val">{{ s.father_name or 'Guardian' }}</span></div>
+                <div class="apex-row"><span class="apex-label">Class<span>:</span></span><span class="apex-val">{{ s.class_name }}</span></div>
+                <div class="apex-row"><span class="apex-label">Roll No<span>:</span></span><span class="apex-val">{{ s.roll_no }}</span></div>
+                <div class="apex-row"><span class="apex-label">Session<span>:</span></span><span class="apex-val">2026 - 2027</span></div>
+                <div class="apex-row"><span class="apex-label">ID NO<span>:</span></span><span class="apex-val" style="color:#044332; font-family:monospace; font-weight:800;">{{ s.student_code }}</span></div>
               </div>
 
               <!-- AREA C: Sculpted Geometric Multi-layer Footer -->
