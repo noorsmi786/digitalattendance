@@ -339,12 +339,73 @@
               <!-- Gold Curved Accent Line -->
               <div class="absolute inset-x-0 top-[218px] mx-auto h-2 w-[80%] rounded-full bg-c2"></div>
 
-              <!-- Overlapping Circular Student Photo -->
+              <!-- Overlapping Circular Student Photo / Female / Male Avatar -->
               <div class="overflow-hidden bg-muted mx-auto -mt-[78px] h-[140px] w-[140px] rounded-full border-[5px] border-c2 shadow-lg relative">
-                {% if s.photo_url %}
+                {% if s.photo_url and s.photo_url.strip() %}
                   <img src="{{ s.photo_url }}" alt="{{ s.full_name }}" class="h-full w-full object-cover">
+                {% elif s.gender and (s.gender|lower == 'female' or s.gender|lower == 'f') %}
+                  <!-- FEMALE STUDENT PLACEHOLDER AVATAR -->
+                  <svg viewBox="0 0 140 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block; width:100%; height:100%;">
+                    <defs>
+                      <linearGradient id="prev-fem-bg-{{ s.student_code }}" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#f0fdf4"/>
+                        <stop offset="100%" stop-color="#dcfce7"/>
+                      </linearGradient>
+                      <linearGradient id="prev-fem-hijab-{{ s.student_code }}" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#0a5c45"/>
+                        <stop offset="100%" stop-color="#044332"/>
+                      </linearGradient>
+                      <linearGradient id="prev-fem-gold-{{ s.student_code }}" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#eab308"/>
+                        <stop offset="50%" stop-color="#fde047"/>
+                        <stop offset="100%" stop-color="#ca8a04"/>
+                      </linearGradient>
+                    </defs>
+                    <circle cx="70" cy="70" r="70" fill="url(#prev-fem-bg-{{ s.student_code }})"/>
+                    <path d="M 14 140 Q 20 102 70 100 Q 120 102 126 140 Z" fill="url(#prev-fem-hijab-{{ s.student_code }})"/>
+                    <ellipse cx="70" cy="65" rx="38" ry="46" fill="url(#prev-fem-hijab-{{ s.student_code }})"/>
+                    <path d="M 42 70 C 44 42 96 42 98 70 C 96 94 44 94 42 70 Z" fill="none" stroke="url(#prev-fem-gold-{{ s.student_code }})" stroke-width="2.5"/>
+                    <ellipse cx="70" cy="68" rx="25" ry="28" fill="#fed7aa"/>
+                    <path d="M 48 55 C 55 45 85 45 92 55 C 84 50 56 50 48 55 Z" fill="#044332"/>
+                    <path d="M 58 67 Q 63 70 68 67" stroke="#9a3412" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+                    <path d="M 72 67 Q 77 70 82 67" stroke="#9a3412" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+                    <path d="M 67 76 Q 70 79 73 76" stroke="#c2410c" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                    <path d="M 58 108 L 70 125 L 82 108 Z" fill="#022c22" opacity="0.55"/>
+                    <circle cx="70" cy="108" r="4" fill="url(#prev-fem-gold-{{ s.student_code }})"/>
+                  </svg>
                 {% else %}
-                  <div class="flex h-full items-center justify-center text-sm text-muted-foreground font-semibold">Upload photo</div>
+                  <!-- MALE STUDENT PLACEHOLDER AVATAR -->
+                  <svg viewBox="0 0 140 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block; width:100%; height:100%;">
+                    <defs>
+                      <linearGradient id="prev-male-bg-{{ s.student_code }}" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#f8fafc"/>
+                        <stop offset="100%" stop-color="#e2e8f0"/>
+                      </linearGradient>
+                      <linearGradient id="prev-male-suit-{{ s.student_code }}" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#0a5c45"/>
+                        <stop offset="100%" stop-color="#044332"/>
+                      </linearGradient>
+                      <linearGradient id="prev-male-gold-{{ s.student_code }}" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#d4a34b"/>
+                        <stop offset="50%" stop-color="#fde047"/>
+                        <stop offset="100%" stop-color="#b45309"/>
+                      </linearGradient>
+                    </defs>
+                    <circle cx="70" cy="70" r="70" fill="url(#prev-male-bg-{{ s.student_code }})"/>
+                    <path d="M 14 140 C 18 110 38 96 70 96 C 102 96 122 110 126 140 Z" fill="url(#prev-male-suit-{{ s.student_code }})"/>
+                    <polygon points="54,96 86,96 70,126" fill="#ffffff"/>
+                    <polygon points="67,98 73,98 75,104 70,128 65,104" fill="url(#prev-male-gold-{{ s.student_code }})"/>
+                    <polygon points="50,96 62,96 66,106 54,100" fill="#f8fafc" stroke="#cbd5e1" stroke-width="0.8"/>
+                    <polygon points="90,96 78,96 74,106 86,100" fill="#f8fafc" stroke="#cbd5e1" stroke-width="0.8"/>
+                    <rect x="62" y="80" width="16" height="18" rx="4" fill="#fed7aa"/>
+                    <ellipse cx="70" cy="64" rx="25" ry="28" fill="#fed7aa"/>
+                    <path d="M 45 56 C 45 36 60 28 70 28 C 80 28 95 36 95 56 C 95 60 93 64 91 64 C 89 48 83 40 70 40 C 57 40 51 48 49 64 C 47 64 45 60 45 56 Z" fill="#1e293b"/>
+                    <path d="M 57 58 Q 62 56 66 58" stroke="#1e293b" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+                    <path d="M 74 58 Q 78 56 83 58" stroke="#1e293b" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+                    <circle cx="61.5" cy="63" r="2" fill="#1e293b"/>
+                    <circle cx="78.5" cy="63" r="2" fill="#1e293b"/>
+                    <path d="M 66 73 Q 70 76 74 73" stroke="#c2410c" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+                  </svg>
                 {% endif %}
               </div>
 
@@ -401,7 +462,7 @@
               
               <!-- Large Attendance QR (190px) -->
               <div class="mx-auto mt-2 rounded-xl bg-c2 p-2">
-                <img src="{{ s.qr_image }}" alt="QR" class="h-[190px] w-[190px] rounded-md bg-cpaper p-1.5"/>
+                <img src="{{ s.qr_image }}" alt="QR" class="h-[190px] w-[190px] rounded-md bg-cpaper p-1.5" style="image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges; image-rendering: pixelated; shape-rendering: crispEdges; background: #ffffff;"/>
               </div>
               
               <div class="mx-auto mt-3 rounded-full bg-c2 px-5 py-1 font-serif text-[12px] font-bold text-c3">
