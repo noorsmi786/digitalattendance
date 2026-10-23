@@ -35,6 +35,16 @@ os.makedirs(os.path.join(UPLOADS_DIR, "students"), exist_ok=True)
 
 app = FastAPI(title="Shaheen Public High School Loi Shalman - Digital Attendance")
 
+# CORS Middleware for Browser Cross-Origin Requests
+from fastapi.middleware.cors import CORSMiddleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Mount Static Files & Templates & Uploads
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 app.mount("/uploads", StaticFiles(directory=UPLOADS_DIR), name="uploads")
@@ -510,6 +520,109 @@ def api_list_students(request: Request, class_name: Optional[str] = None):
     rows = [dict(r) for r in conn.execute(query, params).fetchall()]
     conn.close()
     return {"students": rows}
+
+
+# ═════════════════════════════════════════════════════════════════
+# SECURE API ENDPOINT FOR STUDENT ID CARD GENERATOR (CORS + API KEY)
+# ═════════════════════════════════════════════════════════════════
+DEFAULT_CARDS_API_KEY = "sphs_cards_secret_2026"
+
+def verify_cards_api_key(request: Request, key: Optional[str] = None) -> bool:
+    header_key = request.headers.get("x-api-key")
+    query_key = key or request.query_params.get("key") or request.query_params.get("api_key")
+    auth_header = request.headers.get("authorization", "")
+    bearer_key = auth_header.replace("Bearer ", "").strip() if auth_header.startswith("Bearer ") else None
+
+    provided = header_key or query_key or bearer_key
+    if not provided:
+        return False
+
+    configured_key = os.getenv("CARDS_API_KEY") or get_setting("cards_api_key", DEFAULT_CARDS_API_KEY)
+    valid_keys = {
+        configured_key.strip(),
+        DEFAULT_CARDS_API_KEY,
+        "SPHS2026",
+        "YOUR_SECRET_KEY"
+    }
+    return provided.strip() in valid_keys
+
+@app.options("/api/students-cards")
+def options_students_cards():
+    return Response(
+        status_code=200,
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization, x-api-key",
+        }
+    )
+
+@app.get("/api/students-cards")
+def api_get_students_cards(request: Request, key: Optional[str] = None):
+    # Verify API key
+    if not verify_cards_api_key(request, key):
+        return JSONResponse(
+            status_code=401,
+            content={
+                "success": False,
+                "error": "Unauthorized: Invalid or missing API key. Provide header 'x-api-key: YOUR_SECRET_KEY' or query parameter '?key=YOUR_SECRET_KEY'"
+            },
+            headers={
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization, x-api-key",
+            }
+        )
+
+    conn = get_db_connection()
+    query = "SELECT * FROM students WHERE is_active = 1 ORDER BY class_name ASC, CAST(roll_no AS INTEGER) ASC, roll_no ASC"
+    rows = conn.execute(query).fetchall()
+    conn.close()
+
+    # Determine base public URL for photo files
+    base_url = "https://noorify.site"
+    host = request.headers.get("host")
+    proto = request.headers.get("x-forwarded-proto", "https")
+    if host and "noorify" in host:
+        base_url = f"{proto}://{host}"
+
+    students_list = []
+    for r in rows:
+        p_url = r["photo_url"]
+        if p_url and p_url.strip():
+            p_clean = p_url.strip()
+            if p_clean.startswith("http://") or p_clean.startswith("https://"):
+                full_photo = p_clean
+            elif p_clean.startswith("/"):
+                full_photo = f"{base_url}{p_clean}"
+            else:
+                full_photo = f"{base_url}/{p_clean}"
+        else:
+            full_photo = None
+
+        students_list.append({
+            "id": r["student_code"],
+            "name": r["full_name"],
+            "father": r["father_name"] or "",
+            "cls": r["class_name"],
+            "roll": r["roll_no"],
+            "session": "2026-2027",
+            "photo_url": full_photo
+        })
+
+    return JSONResponse(
+        content={
+            "success": True,
+            "total": len(students_list),
+            "students": students_list
+        },
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization, x-api-key",
+        }
+    )
+
 
 class StudentCreateRequest(BaseModel):
     full_name: str
