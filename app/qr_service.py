@@ -42,15 +42,14 @@ def verify_qr_payload(payload: str) -> str:
 def generate_qr_base64(payload: str) -> str:
     """
     Generate QR code as base64 data URI PNG.
-    With short 4-6 char payload, Version 1 (21x21 modules) with Error Correction H (30%)
-    and a full 4-module quiet zone (border=4) provides massive black blocks and 10000%
-    indestructible readability on all barcode scanners and phone cameras.
+    With border=0, the QR code matrix fills 100% of the allocated square area
+    with zero wasted white border, while Error Correction Level H provides maximum durability.
     """
     qr = qrcode.QRCode(
         version=1,
-        error_correction=qrcode.constants.ERROR_CORRECT_H, # 30% error correction
-        box_size=16, # Ultra-crisp high DPI
-        border=1,   # Tight 1-module quiet zone so matrix fills the box
+        error_correction=qrcode.constants.ERROR_CORRECT_H,
+        box_size=16,
+        border=0,   # Fill 100% of the area with QR code matrix
     )
     qr.add_data(payload)
     qr.make(fit=True)
