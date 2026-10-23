@@ -992,6 +992,192 @@
       }
       .id-card { box-shadow: none !important; }
     }
+  
+    /* ========================================================
+       DESIGN 1 (NEW): WAVY ACADEMY (BRIGHT FUTURE ADAPTED)
+       ======================================================== */
+    .card-wavy {
+      border-radius: 4.5mm;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      position: relative;
+      overflow: hidden;
+    }
+    .card-wavy .wv-header-wave {
+      position: relative;
+      background: #044332;
+      height: 24mm;
+      padding: 2mm 3mm 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .card-wavy .wv-header-wave::after {
+      content: '';
+      position: absolute;
+      bottom: -5.5mm;
+      left: 0;
+      right: 0;
+      height: 6mm;
+      background: #044332;
+      clip-path: ellipse(55% 70% at 50% 30%);
+      z-index: 1;
+    }
+    .card-wavy .wv-logo-circle {
+      width: 8mm;
+      height: 8mm;
+      background: #ffffff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      margin-bottom: 0.8mm;
+      padding: 0.8mm;
+      position: relative;
+      z-index: 2;
+    }
+    .card-wavy .wv-logo-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .card-wavy .wv-school-title {
+      font-size: 7.8pt;
+      font-weight: 900;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      line-height: 1.1;
+      position: relative;
+      z-index: 2;
+    }
+    .card-wavy .wv-school-loc {
+      font-size: 4.6pt;
+      color: #fde68a;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-top: 0.3mm;
+      position: relative;
+      z-index: 2;
+    }
+    .card-wavy .wv-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 3.5mm 3mm 1mm;
+      position: relative;
+      z-index: 2;
+    }
+    .card-wavy .wv-photo-wrap {
+      width: 23mm;
+      height: 23mm;
+      border-radius: 50%;
+      border: 1.5mm solid #ffffff;
+      box-shadow: 0 2px 8px rgba(4,67,50,0.25);
+      background: #e2e8f0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: -5.5mm;
+      margin-bottom: 1.2mm;
+      position: relative;
+      z-index: 3;
+    }
+    .card-wavy .wv-photo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .card-wavy .wv-photo-wrap svg {
+      width: 14mm;
+      height: 14mm;
+      fill: #64748b;
+    }
+    .card-wavy .wv-student-name {
+      font-size: 9.6pt;
+      font-weight: 900;
+      color: #0f172a;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 46mm;
+      line-height: 1.15;
+    }
+    .card-wavy .wv-father-name {
+      font-size: 5.2pt;
+      color: #64748b;
+      font-weight: 500;
+      margin-top: 0.3mm;
+      text-align: center;
+    }
+    .card-wavy .wv-badge-pill {
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      border-radius: 2.5mm;
+      padding: 0.6mm 3mm;
+      font-size: 5.6pt;
+      font-weight: 800;
+      color: #044332;
+      margin-top: 1.2mm;
+      margin-bottom: 1.2mm;
+      letter-spacing: 0.3px;
+    }
+    .card-wavy .wv-details-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2mm 2mm;
+      padding: 0 1mm;
+      margin-top: 0.8mm;
+    }
+    .card-wavy .wv-item {
+      display: flex;
+      align-items: center;
+      gap: 1.2mm;
+      font-size: 4.8pt;
+      color: #334155;
+    }
+    .card-wavy .wv-item-icon {
+      width: 3.6mm;
+      height: 3.6mm;
+      border-radius: 50%;
+      background: #044332;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.2pt;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .card-wavy .wv-item-val {
+      font-weight: 700;
+      color: #044332;
+    }
+    .card-wavy .wv-bottom-waves {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 11mm;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .card-wavy .wv-bottom-waves svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
   </style>
 </head>
 <body>
@@ -1001,6 +1187,7 @@
       <div class="control-group">
         <label for="design-select">Card Template:</label>
         <select id="design-select">
+          <option value="wavy" selected>🌟 Wavy Academy (Bright Future Style - Circular Photo)</option>
           <option value="emerald">1 — Emerald Classic (Option 1: 25mm Centered QR)</option>
           <option value="emerald-side">1B — Emerald Split (Large 27mm QR + Large Eagle)</option>
           <option value="split">2 — Vertical Split Panel (Original: 24mm QR)</option>
@@ -1028,6 +1215,51 @@
   <div id="cards-container" class="cards-container">
     {% for s in students %}
     <div class="card-wrapper" data-student-code="{{ s.student_code }}">
+
+      <!-- ==== DESIGN: WAVY ACADEMY (BRIGHT FUTURE STYLE) ==== -->
+      <div class="id-card card-wavy design-view design-wavy" style="display:none;">
+        <div class="wv-header-wave">
+          <div class="wv-logo-circle"><img src="/static/img/shaheen_logo_trans.png" alt="Logo"></div>
+          <div class="wv-school-title">Shaheen Public</div>
+          <div class="wv-school-title">High School</div>
+          <div class="wv-school-loc">Loi Shalman &bull; Khyber</div>
+        </div>
+        <div class="wv-body">
+          <div class="wv-photo-wrap">
+            {% if s.photo_url %}<img src="{{ s.photo_url }}" alt="{{ s.full_name }}">
+            {% else %}<svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>{% endif %}
+          </div>
+          <div class="wv-student-name">{{ s.full_name }}</div>
+          <div class="wv-father-name">S/D of {{ s.father_name or 'Guardian' }}</div>
+          <div class="wv-badge-pill">Class: {{ s.class_name }} &bull; Roll: {{ s.roll_no }}</div>
+          <div class="wv-details-grid">
+            <div class="wv-item">
+              <span class="wv-item-icon">ID</span>
+              <span><span class="wv-item-val">{{ s.student_code }}</span></span>
+            </div>
+            <div class="wv-item">
+              <span class="wv-item-icon">YR</span>
+              <span>Session: <span class="wv-item-val">2026-27</span></span>
+            </div>
+            <div class="wv-item">
+              <span class="wv-item-icon">BL</span>
+              <span>Blood: <span class="wv-item-val">A+</span></span>
+            </div>
+            <div class="wv-item">
+              <span class="wv-item-icon">PH</span>
+              <span>{{ s.parent_phone or '03359365884' }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="wv-bottom-waves">
+          <svg viewBox="0 0 100 28" preserveAspectRatio="none">
+            <path d="M0,12 C25,24 45,26 60,26 C78,26 90,18 100,14 L100,28 L0,28 Z" fill="#044332"/>
+            <path d="M0,18 C25,26 48,28 65,27 C82,26 92,22 100,19 L100,28 L0,28 Z" fill="#065f46" opacity="0.7"/>
+            <path d="M0,10 C25,22 45,24.5 60,24.5 C78,24.5 90,16.5 100,12.5 L100,14 C90,18 78,26 60,26 C45,26 25,24 0,12 Z" fill="#d97706"/>
+          </svg>
+        </div>
+      </div>
+
 
       <!-- ==== OPTION 1: DESIGN 1 (EMERALD CLASSIC - 25mm Centered QR) ==== -->
       <div class="id-card card-emerald design-view design-emerald" style="display:none;">
@@ -1312,7 +1544,7 @@
     const urlParams = new URLSearchParams(window.location.search);
     const paramDesign = urlParams.get('design');
     const saved = paramDesign || localStorage.getItem('sphs_card_design') || 'split-2b';
-    if (['emerald','emerald-side','split','split-2b','royal','exec'].includes(saved)) {
+    if (['wavy','emerald','emerald-side','split','split-2b','royal','exec'].includes(saved)) {
       designSelect.value = saved;
     }
     updateDesign();

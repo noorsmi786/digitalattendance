@@ -780,6 +780,7 @@ window.deleteStudent = async function(id, name) {
 let selectedDesignKey = localStorage.getItem('sphs_card_design') || 'split-2b';
 
 const designNamesMap = {
+  'wavy': '🌟 Wavy Academy (Bright Future Style - Circular Photo)',
   'emerald': '1 — Emerald Classic (Centered 25mm QR)',
   'emerald-side': '1B — Emerald Split (Large 27mm QR + Large Eagle)',
   'split': '2 — Vertical Split Panel (Original 24mm QR)',
