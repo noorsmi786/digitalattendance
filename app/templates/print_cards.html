@@ -2850,33 +2850,6 @@ body { font-family: Outfit, sans-serif; }
 
 .hex { clip-path: polygon(50% 0px, 100% 25%, 100% 75%, 50% 100%, 0px 75%, 0px 25%); }
 
-.a4-sheet { box-sizing: border-box; background: rgb(255, 255, 255); grid-template-columns: repeat(2, 4in); grid-auto-rows: 3in; place-content: start center; gap: 4mm 2mm; width: 210mm; height: 297mm; padding: 8mm 2mm; display: grid; box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 12px; }
-
-.a4-pair { outline: rgb(153, 153, 153) dashed 0.3mm; width: 4in; height: 3in; display: flex; }
-
-.a4-pair .id-card { zoom: 0.5; print-color-adjust: exact; box-shadow: none !important; }
-
-@media print {
-
-  @page { margin: 0.3in; }
-
-  .no-print { display: none !important; }
-
-  body { background: rgb(255, 255, 255); }
-
-  .print-area { gap: 0.2in !important; }
-
-  .id-card { zoom: 0.5; print-color-adjust: exact; box-shadow: none !important; }
-
-  body:has(.a4-mode) { margin: 0px; }
-
-  .a4-mode { gap: 0px !important; }
-
-  body:has(.a4-mode) .min-h-screen { background: rgb(255, 255, 255); padding: 0px !important; }
-
-  .a4-sheet { box-shadow: none; break-after: page; }
-
-  .a4-sheet:last-child { break-after: auto; }
 
 }
 
@@ -3193,6 +3166,18 @@ body {
 
 .card-rot-wrapper .id-card {
   box-shadow: none !important;
+}
+
+
+.card-rot-wrapper .id-card {
+  zoom: 1 !important;
+  box-shadow: none !important;
+}
+@media print {
+  .id-card, .card-rot-wrapper .id-card {
+    zoom: 1 !important;
+    box-shadow: none !important;
+  }
 }
 
 /* Print Overrides */
