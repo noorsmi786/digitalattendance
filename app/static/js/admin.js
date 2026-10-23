@@ -777,54 +777,15 @@ window.deleteStudent = async function(id, name) {
 
 
 // --- TAB 3: PRINT CARDS & STICKERS ---
-let selectedDesignKey = localStorage.getItem('sphs_card_design') || 'split-2b';
-
-const designNamesMap = {
-  'crest': '✨ Iqbal Emerald Crest (Allama Iqbal Poetry & Elliptical Curves)',
-  'apex': '💎 2-APEX — Geometric Apex (Solid Green & Metallic Gold)',
-  'geopro': '👑 2-PRO — Geometric Bow-Tie Royal (3D Gold & لوئے شلمان)',
-  'geo': '📐 2 — Geometric Bow-Tie (Red Wings & Green Bar)',
-  'arc': '🎯 5 — Modern Curve Arc (Dark Slate & Crimson)',
-  'wavy': '🌟 Wavy Academy (Bright Future Style - Circular Photo)',
-  'emerald': '1 — Emerald Classic (Centered 25mm QR)',
-  'emerald-side': '1B — Emerald Split (Large 27mm QR + Large Eagle)',
-  'split': '2 — Vertical Split Panel (Original 24mm QR)',
-  'split-2b': '2B — Vertical Split Max (27mm QR + Eagle Watermark)',
-  'royal': '3 — Royal Minimalist (Ivory & Gold Crest)',
-  'exec': '5 — Executive Daily Scanner (Large 27mm QR + Fast Scan)'
-};
-
-function selectCardDesign(cardEl, designKey) {
-  selectedDesignKey = designKey;
-  localStorage.setItem('sphs_card_design', designKey);
-
-  document.querySelectorAll('.design-gallery-card').forEach(el => el.classList.remove('selected'));
-  if (cardEl) {
-    cardEl.classList.add('selected');
-  } else {
-    const matching = document.querySelector(`.design-gallery-card[data-design="${designKey}"]`);
-    if (matching) matching.classList.add('selected');
-  }
-
-  const nameSpan = document.getElementById('dgc-selected-name');
-  if (nameSpan && designNamesMap[designKey]) {
-    nameSpan.textContent = designNamesMap[designKey];
-  }
-}
-window.selectCardDesign = selectCardDesign;
-
 function initCards() {
   const printCardsBtn = document.getElementById('launch-print-cards-btn');
   const printStickersBtn = document.getElementById('launch-print-stickers-btn');
   const classSelect = document.getElementById('print-class-select');
 
-  // Highlight previously saved or default design
-  selectCardDesign(null, selectedDesignKey);
-
   if (printCardsBtn) {
     printCardsBtn.addEventListener('click', () => {
       const cls = classSelect ? classSelect.value : '';
-      window.open(`/print/cards?class_name=${encodeURIComponent(cls)}&design=${encodeURIComponent(selectedDesignKey)}`, '_blank');
+      window.open(`/print/cards?class_name=${encodeURIComponent(cls)}`, '_blank');
     });
   }
 
@@ -835,7 +796,6 @@ function initCards() {
     });
   }
 }
-
 
 // --- TAB 4: REPORTS & ANALYTICS ---
 function initReports() {

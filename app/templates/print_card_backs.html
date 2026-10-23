@@ -7,362 +7,222 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@500;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Cinzel:wght@600;800&family=Noto+Nastaliq+Urdu:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
-      font-family: 'Inter', Arial, sans-serif;
-      background: #d1d5db;
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f1f5f9; color: #0f172a; padding-bottom: 25mm;
+      -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
     }
 
     /* ── TOOLBAR ── */
     .toolbar {
-      position: sticky; top: 0; z-index: 200;
+      position: sticky; top: 0; z-index: 100;
       background: #fff; border-bottom: 2px solid #044332;
-      padding: 10px 20px;
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 12px; flex-wrap: wrap;
-      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+      padding: 12px 24px; display: flex; justify-content: space-between;
+      align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.06); gap: 14px; flex-wrap: wrap;
     }
-    .tleft { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-    .ttitle { font-size: 14px; font-weight: 800; color: #044332; }
-    .ctrl { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #374151; font-weight: 600; }
-    .ctrl select { padding: 5px 8px; border: 1px solid #d1d5db; border-radius: 5px; font-size: 12px; font-weight: 600; background: #fff; cursor: pointer; }
-    .btn { padding: 7px 14px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 5px; text-decoration: none; }
+    .toolbar-left { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .school-crest-mini { width: 34px; height: 34px; object-fit: contain; }
+    .toolbar-title { font-size: 15px; font-weight: 800; color: #044332; line-height: 1.2; }
+    .toolbar-sub { font-size: 11px; color: #64748b; font-weight: 500; }
+    
+    .control-group { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #475569; }
+    .control-group select {
+      padding: 7px 14px; border-radius: 6px; border: 1.5px solid #cbd5e1;
+      font-size: 13px; font-weight: 700; background: #fff; color: #0f172a; cursor: pointer;
+    }
+    
+    .toolbar-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 16px; border-radius: 6px; text-decoration: none;
+      font-weight: 700; font-size: 13px; cursor: pointer; border: none;
+      transition: all 0.15s ease;
+    }
     .btn-green { background: #044332; color: #fff; }
     .btn-green:hover { background: #065f46; }
     .btn-navy { background: #1e3a8a; color: #fff; }
     .btn-navy:hover { background: #1e40af; }
-    .btn-light { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; }
-    .btn-light:hover { background: #e5e7eb; }
+    .btn-light { background: #f8fafc; color: #334155; border: 1px solid #cbd5e1; }
+    .btn-light:hover { background: #e2e8f0; }
 
-    /* Tip banner */
-    .tip-banner {
-      background: #f0fdf4; border-bottom: 1px solid #86efac;
-      padding: 8px 20px; font-size: 12px; color: #15803d; font-weight: 600;
-      display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;
-    }
-
-    /* ── A4 SHEET ── */
-    .sheet-wrapper { padding: 20px 0 40px; display: flex; flex-direction: column; align-items: center; gap: 24px; }
-    .a4-sheet {
-      width: 210mm; min-height: 297mm;
-      background: #fff;
-      box-shadow: 0 4px 20px rgba(0,0,0,.18);
-      page-break-after: always; break-after: page;
-    }
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 54mm);
-      gap: 5.5mm 6mm;
+    /* ── CARD GRID ── */
+    .cards-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
       justify-content: center;
-      padding: 5mm 0;
-    }
-
-    /* ── BASE CARD SHELL (CR80: 54mm x 85.6mm) ── */
-    .id-card-back {
-      width: 54mm;
-      height: 85.6mm;
-      border-radius: 4.5mm;
-      overflow: hidden;
-      position: relative;
-      background: #fff;
-      box-shadow: 0 2px 6px rgba(0,0,0,.06);
-      page-break-inside: avoid;
-      break-inside: avoid;
+      padding: 28px 16px;
+      max-width: 1300px;
+      margin: 0 auto;
     }
 
     /* ═══════════════════════════════════════════════════
-       DESIGN 1B BACK: EMERALD SPLIT COMPANION (BIG QR)
+       OFFICIAL EMERALD CREST BACK STYLES
        ═══════════════════════════════════════════════════ */
-    .back-1b {
-      border: 1.2px solid #044332;
+    .iqbal-scope {
+      --c1: oklch(33% .08 160);
+      --c2: oklch(78% .14 82);
+      --c3: oklch(24% .06 160);
+      --cpaper: oklch(99% .005 90);
+      --cink: oklch(20% .02 250);
+      --primary-foreground: oklch(98.4% .003 247.858);
+      --muted: oklch(96.8% .007 247.896);
+      --muted-foreground: oklch(55.4% .046 257.417);
+      --spacing: 0.25rem;
+      font-family: 'Outfit', sans-serif;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .iqbal-scope *, .iqbal-scope *::before, .iqbal-scope *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    .iqbal-scope .id-card {
+      width: 384px;
+      height: 576px;
+      position: relative;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      background: #fff;
-    }
-
-    .b1b-head {
-      background: #044332;
-      padding: 1.8mm 2.4mm 1.6mm;
-      display: flex;
-      align-items: center;
-      gap: 1.8mm;
-      position: relative;
-    }
-    .b1b-head::after {
-      content: ''; position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 0.8mm; background: #d97706;
-    }
-    .b1b-logo {
-      width: 8.5mm; height: 8.5mm; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .b1b-logo img { width: 100%; height: 100%; object-fit: contain; }
-    .b1b-titles {
-      flex: 1; text-align: center;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 0.2mm;
-    }
-    .b1b-ur {
-      font-family: 'Noto Nastaliq Urdu', serif;
-      font-size: 6.2pt; font-weight: 700;
-      color: #ffffff; direction: rtl; line-height: 1.35;
-    }
-    .b1b-en {
-      font-size: 4.2pt; font-weight: 800;
-      color: #d1fae5; text-transform: uppercase; letter-spacing: 0.4px;
-    }
-    .b1b-loc {
-      font-size: 3.6pt; font-weight: 600; color: #fde68a;
-      letter-spacing: 0.4px;
-    }
-    .b1b-flag {
-      width: 7.5mm; height: 5mm; flex-shrink: 0;
-      border: 0.4px solid rgba(255,255,255,.3);
-      border-radius: 0.5mm; overflow: hidden;
-    }
-    .b1b-flag svg { display: block; width: 100%; height: 100%; }
-
-    .b1b-body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1.6mm 2.4mm 1.2mm;
-      flex: 1;
-      position: relative;
-    }
-
-    .b1b-scan-lbl {
-      font-size: 4.0pt;
-      font-weight: 800;
-      color: #044332;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      display: flex;
-      align-items: center;
-      gap: 1.6mm;
-      width: 100%;
-      margin-bottom: 0.6mm;
-    }
-    .b1b-scan-lbl::before, .b1b-scan-lbl::after { content: ''; flex: 1; height: 0.4px; background: #cbd5e1; }
-
-    .b1b-qr-box {
-      width: 35mm;
-      height: 35mm;
-      border: 1.2px solid #044332;
-      border-radius: 2mm;
-      padding: 1mm;
-      background: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      margin-bottom: 0.8mm;
-      box-shadow: 0 1px 4px rgba(0,0,0,.06);
-    }
-    .b1b-qr-box::before {
-      content: ''; position: absolute;
-      top: -0.8px; left: -0.8px; width: 4mm; height: 4mm;
-      border-top: 2px solid #d97706; border-left: 2px solid #d97706;
-      border-radius: 1.6mm 0 0 0;
-    }
-    .b1b-qr-box::after {
-      content: ''; position: absolute;
-      bottom: -0.8px; right: -0.8px; width: 4mm; height: 4mm;
-      border-bottom: 2px solid #d97706; border-right: 2px solid #d97706;
-      border-radius: 0 0 1.6mm 0;
-    }
-    .b1b-qr-box img { width: 100%; height: 100%; object-fit: contain; display: block; image-rendering: pixelated; }
-
-    .b1b-code-pill {
-      background: #044332;
+      overflow: hidden;
+      border-radius: 22px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12);
+      background-color: var(--c1);
       color: #fff;
-      font-size: 5.4pt;
-      font-weight: 900;
-      letter-spacing: 0.8px;
-      padding: 0.5mm 3.2mm;
-      border-radius: 3mm;
-      margin-bottom: 0.4mm;
-    }
-    .b1b-name {
-      font-size: 5.4pt;
-      font-weight: 800;
-      color: #0f172a;
       text-align: center;
-      max-width: 48mm;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .b1b-class {
-      font-size: 4.4pt;
-      font-weight: 700;
-      color: #64748b;
-      margin-bottom: 0.8mm;
-    }
-
-    .b1b-contact {
-      width: 100%;
-      background: #f0fdf4;
-      border: 0.7px solid #86efac;
-      border-radius: 1.2mm;
-      padding: 1mm 1.4mm;
-      text-align: center;
-    }
-    .b1b-contact-addr {
-      font-size: 3.7pt; font-weight: 700; color: #1e293b; line-height: 1.2;
-    }
-    .b1b-contact-phone {
-      font-size: 4.3pt; font-weight: 900; color: #044332; margin-top: 0.4mm; letter-spacing: 0.2px;
-    }
-    .b1b-return-notice {
-      font-family: 'Noto Nastaliq Urdu', serif;
-      font-size: 4.3pt; font-weight: 600; color: #15803d;
-      margin-top: 0.4mm; direction: rtl;
-    }
-
-    .b1b-wave { height: 6mm; width: 100%; flex-shrink: 0; }
-    .b1b-wave svg { width: 100%; height: 100%; display: block; }
-
-
-    /* ═══════════════════════════════════════════════════
-       DESIGN 2B BACK: VERTICAL SPLIT COMPANION (BIG QR)
-       ═══════════════════════════════════════════════════ */
-    .back-2b {
-      border: 1.2px solid #1e3a8a;
-      display: flex;
-      flex-direction: row;
-      background: #fff;
-    }
-
-    .b2b-side {
-      width: 9.5mm;
-      background: #1e3a8a;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-between;
-      padding: 2.2mm 0;
       flex-shrink: 0;
     }
-    .b2b-side-logo {
-      width: 8mm; height: 8mm;
-      background: rgba(255,255,255,.12);
-      border-radius: 1.5mm;
-      padding: 0.5mm;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .b2b-side-logo img { width: 100%; height: 100%; object-fit: contain; }
-    .b2b-side-text {
-      writing-mode: vertical-rl;
-      transform: rotate(180deg);
-      font-size: 4.6pt; font-weight: 600;
-      color: rgba(255,255,255,.78);
-      letter-spacing: 1.1px; text-transform: uppercase;
-      flex: 1; display: flex; align-items: center; justify-content: center;
-      padding: 2mm 0;
-    }
-    .b2b-side-badge {
-      width: 7.2mm; background: #d97706; color: #fff;
-      font-size: 4.2pt; font-weight: 700; text-align: center;
-      padding: 1mm 0; border-radius: 1mm;
+
+    .iqbal-scope .theme-emerald {
+      --c1: oklch(33% .08 160);
+      --c2: oklch(78% .14 82);
+      --c3: oklch(24% .06 160);
     }
 
-    .b2b-main {
-      flex: 1;
-      display: flex; flex-direction: column; align-items: center; text-align: center;
-      padding: 1.6mm 2mm 1.8mm; overflow: hidden; position: relative; justify-content: space-between;
+    .iqbal-scope .relative { position: relative; }
+    .iqbal-scope .flex { display: flex; }
+    .iqbal-scope .flex-col { flex-direction: column; }
+    .iqbal-scope .items-center { align-items: center; }
+    .iqbal-scope .items-start { align-items: flex-start; }
+    .iqbal-scope .justify-center { justify-content: center; }
+    .iqbal-scope .justify-between { justify-content: space-between; }
+
+    .iqbal-scope .overflow-hidden { overflow: hidden; }
+    .iqbal-scope .rounded-\[22px\] { border-radius: 22px; }
+    .iqbal-scope .rounded-full { border-radius: 9999px; }
+    .iqbal-scope .rounded-md { border-radius: 6px; }
+    .iqbal-scope .rounded-xl { border-radius: 12px; }
+    .iqbal-scope .rounded { border-radius: 4px; }
+
+    .iqbal-scope .shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+
+    .iqbal-scope .bg-cpaper { background-color: var(--cpaper); }
+    .iqbal-scope .bg-c1 { background-color: var(--c1); }
+    .iqbal-scope .bg-c2 { background-color: var(--c2); }
+
+    .iqbal-scope .text-c2 { color: var(--c2); }
+    .iqbal-scope .text-c3 { color: var(--c3); }
+    .iqbal-scope .text-primary-foreground { color: var(--primary-foreground); }
+    .iqbal-scope .text-primary-foreground\/90 { color: color-mix(in oklab, var(--primary-foreground) 90%, transparent); }
+    .iqbal-scope .text-primary-foreground\/60 { color: color-mix(in oklab, var(--primary-foreground) 60%, transparent); }
+
+    .iqbal-scope .text-center { text-align: center; }
+    .iqbal-scope .text-left { text-align: left; }
+    .iqbal-scope .text-right { text-align: right; }
+
+    .iqbal-scope .font-serif { font-family: 'Cinzel', serif; }
+    .iqbal-scope .font-urdu { font-family: 'Noto Nastaliq Urdu', serif; }
+    .iqbal-scope .font-bold { font-weight: 700; }
+    .iqbal-scope .font-extrabold { font-weight: 800; }
+    .iqbal-scope .font-semibold { font-weight: 600; }
+
+    .iqbal-scope .\[clip-path\:ellipse\(90\%_100\%_at_50\%_100\)\] {
+      clip-path: ellipse(90% 100% at 50% 100%);
+      -webkit-clip-path: ellipse(90% 100% at 50% 100%);
+    }
+    .iqbal-scope .\[word-spacing\:0\.2em\] {
+      word-spacing: 0.2em;
     }
 
-    .b2b-head {
-      width: 100%; display: flex; flex-direction: column; align-items: center;
-      gap: 0.3mm; margin-bottom: 0.6mm;
-    }
-    .b2b-sch1 {
-      font-size: 6.8pt; font-weight: 900;
-      color: #1e3a8a; text-transform: uppercase; letter-spacing: 0.3px; line-height: 1.15;
-    }
-    .b2b-ur {
-      font-family: 'Noto Nastaliq Urdu', serif;
-      font-size: 5.6pt; font-weight: 700; color: #1e3a8a;
-      direction: rtl; line-height: 1.35;
-    }
-    .b2b-divider { width: 22mm; height: 1.2px; background: #d97706; margin-top: 0.4mm; }
+    .iqbal-scope .h-6 { height: 24px; }
+    .iqbal-scope .h-16 { height: 64px; }
+    .iqbal-scope .h-\[52px\] { height: 52px; }
+    .iqbal-scope .h-\[190px\] { height: 190px; }
 
-    .b2b-scan-lbl {
-      font-size: 3.8pt; font-weight: 800; color: #1e3a8a;
-      text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.6mm;
-    }
+    .iqbal-scope .w-6 { width: 24px; }
+    .iqbal-scope .w-16 { width: 64px; }
+    .iqbal-scope .w-\[52px\] { width: 52px; }
+    .iqbal-scope .w-\[190px\] { width: 190px; }
+    .iqbal-scope .shrink-0 { flex-shrink: 0; }
 
-    .b2b-qr-box {
-      width: 35mm; height: 35mm;
-      border: 1.2px solid #1e3a8a; border-radius: 2mm;
-      padding: 1mm; background: #fff;
-      display: flex; align-items: center; justify-content: center;
-      position: relative; margin-bottom: 0.8mm;
-      box-shadow: 0 1px 4px rgba(0,0,0,.06);
-    }
-    .b2b-qr-box::before {
-      content: ''; position: absolute; top: -0.8px; left: -0.8px; width: 4mm; height: 4mm;
-      border-top: 2px solid #d97706; border-left: 2px solid #d97706; border-radius: 1.6mm 0 0 0;
-    }
-    .b2b-qr-box::after {
-      content: ''; position: absolute; bottom: -0.8px; right: -0.8px; width: 4mm; height: 4mm;
-      border-bottom: 2px solid #d97706; border-right: 2px solid #d97706; border-radius: 0 0 1.6mm 0;
-    }
-    .b2b-qr-box img { width: 100%; height: 100%; object-fit: contain; display: block; image-rendering: pixelated; }
+    .iqbal-scope .mx-auto { margin-left: auto; margin-right: auto; }
+    .iqbal-scope .mx-6 { margin-left: 24px; margin-right: 24px; }
 
-    .b2b-code-pill {
-      background: #1e3a8a; color: #fff;
-      font-size: 5.2pt; font-weight: 900; letter-spacing: 0.8px;
-      padding: 0.5mm 3mm; border-radius: 3mm; margin-bottom: 0.4mm;
-    }
-    .b2b-name {
-      font-size: 5.4pt; font-weight: 800; color: #0f172a;
-      max-width: 38mm; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    .b2b-class {
-      font-size: 4.4pt; font-weight: 700; color: #64748b;
-      margin-bottom: 0.8mm;
+    .iqbal-scope .mt-1 { margin-top: 4px; }
+    .iqbal-scope .mt-2 { margin-top: 8px; }
+    .iqbal-scope .mt-3 { margin-top: 12px; }
+    .iqbal-scope .mt-4 { margin-top: 16px; }
+    .iqbal-scope .mt-auto { margin-top: auto; }
+
+    .iqbal-scope .p-1\.5 { padding: 6px; }
+    .iqbal-scope .p-2 { padding: 8px; }
+    .iqbal-scope .p-\[2px\] { padding: 2px; }
+    .iqbal-scope .px-5 { padding-left: 20px; padding-right: 20px; }
+    .iqbal-scope .px-6 { padding-left: 24px; padding-right: 24px; }
+    .iqbal-scope .py-1 { padding-top: 4px; padding-bottom: 4px; }
+    .iqbal-scope .pt-0\.5 { padding-top: 2px; }
+    .iqbal-scope .pt-3 { padding-top: 12px; }
+    .iqbal-scope .pb-3 { padding-bottom: 12px; }
+
+    .iqbal-scope .gap-2 { gap: 8px; }
+    .iqbal-scope .gap-3 { gap: 12px; }
+    .iqbal-scope .space-y-2\.5 > :not([hidden]) ~ :not([hidden]) {
+      margin-top: 10px;
     }
 
-    .b2b-contact {
-      width: 100%; background: #eff6ff; border: 0.6px solid #bfdbfe;
-      border-radius: 1mm; padding: 0.8mm 1mm;
-    }
-    .b2b-contact-addr { font-size: 3.6pt; font-weight: 600; color: #1e3a8a; line-height: 1.15; }
-    .b2b-contact-phone { font-size: 4.1pt; font-weight: 900; color: #044332; margin-top: 0.3mm; }
-    .b2b-return-notice {
-      font-family: 'Noto Nastaliq Urdu', serif;
-      font-size: 4.2pt; font-weight: 600; color: #1e3a8a;
-      margin-top: 0.3mm; direction: rtl;
-    }
+    .iqbal-scope .border { border-width: 1px; border-style: solid; }
+    .iqbal-scope .border-c3 { border-color: var(--c3); }
 
-    .b2b-bottom { width: 100%; display: flex; flex-direction: column; margin-top: 0.6mm; }
-    .b2b-bar-gold { height: 0.8mm; background: #d97706; }
-    .b2b-bar-navy { height: 1.6mm; background: #1e3a8a; }
+    .iqbal-scope .text-\[8px\] { font-size: 8px; }
+    .iqbal-scope .text-\[9\.5px\] { font-size: 9.5px; }
+    .iqbal-scope .text-\[10\.5px\] { font-size: 10.5px; }
+    .iqbal-scope .text-\[12px\] { font-size: 12px; }
+    .iqbal-scope .text-\[13\.5px\] { font-size: 13.5px; }
+    .iqbal-scope .text-\[15px\] { font-size: 15px; }
+    .iqbal-scope .text-\[16px\] { font-size: 16px; }
+    .iqbal-scope .text-\[18px\] { font-size: 18px; }
 
-    /* ── PRINT MEDIA RULES ── */
+    .iqbal-scope .leading-snug { line-height: 1.375; }
+    .iqbal-scope .leading-\[1\.8\] { line-height: 1.8; }
+    .iqbal-scope .leading-\[2\.1\] { line-height: 2.1; }
+
+    .iqbal-scope .object-contain { object-fit: contain; }
+
     @media print {
-      body { background: #fff !important; }
-      .toolbar, .tip-banner { display: none !important; }
-      .sheet-wrapper { padding: 0 !important; gap: 0 !important; }
-      .a4-sheet {
-        box-shadow: none !important;
-        width: 210mm !important; min-height: 297mm !important;
-        page-break-after: always !important;
+      body { background: #fff !important; padding: 0 !important; }
+      .toolbar, .no-print { display: none !important; }
+      .cards-container {
+        display: grid !important;
+        grid-template-columns: repeat(3, 192px) !important;
+        gap: 0.25in 0.25in !important;
+        justify-content: center !important;
+        padding: 0.2in !important;
+        margin: 0 auto !important;
       }
-      .cards-grid {
-        grid-template-columns: repeat(3, 54mm) !important;
-        gap: 5.5mm 6mm !important;
-        padding: 5mm 0 !important;
+      .card-wrapper {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+      .iqbal-scope .id-card {
+        zoom: 0.5;
+        box-shadow: none !important;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
       }
     }
   </style>
@@ -370,25 +230,18 @@
 <body>
 
 <!-- TOOLBAR -->
-<div class="toolbar">
-  <div class="tleft">
-    <div class="ttitle">📇 QR Card Backs Studio — {{ students|length }} Students</div>
-    
-    <!-- Theme Toggle -->
-    <div class="ctrl">
-      <label for="theme-sel">Matching Theme:</label>
-      <select id="theme-sel">
-        <option value="1b" selected>🌲 Option 1B Companion: Emerald Split (Big QR)</option>
-        <option value="2b">⚓ Option 2B Companion: Vertical Split Navy (Big QR)</option>
-      </select>
+<div class="toolbar no-print">
+  <div class="toolbar-left">
+    <img src="/static/img/shaheen_logo_trans.png" alt="Crest" class="school-crest-mini">
+    <div>
+      <div class="toolbar-title">Shaheen Public High School — ID Card Backs</div>
+      <div class="toolbar-sub">Official Back Design &bull; 190px High-Res Attendance QR Code</div>
     </div>
-
-    <!-- Class Filter -->
-    <div class="ctrl">
-      <label for="class-filter">Class:</label>
-      <select id="class-filter" onchange="window.location='/print/card-backs?class_name='+this.value">
-        <option value="" {% if class_name=='All Classes' %}selected{% endif %}>All Classes</option>
-        {% set seen=[] %}
+    <div class="control-group" style="margin-left: 12px;">
+      <label for="class-select" style="font-weight:700;">Filter Class:</label>
+      <select id="class-select" onchange="filterClass(this.value)">
+        <option value="">All Classes</option>
+        {% set seen = [] %}
         {% for s in students %}
           {% if s.class_name not in seen %}
             {% set _ = seen.append(s.class_name) %}
@@ -399,150 +252,83 @@
     </div>
   </div>
 
-  <div style="display:flex; gap:8px; align-items:center;">
-    <a href="/print/card-preview-noqr" class="btn btn-navy">🔍 Preview Fronts (No QR)</a>
-    <a href="/print/cards" class="btn btn-light">🖨️ Front Studio</a>
-    <a href="/admin" class="btn btn-light">← Admin</a>
-    <button onclick="window.print()" class="btn btn-green">🖨️ Print Backs Now</button>
+  <div class="toolbar-actions">
+    <a href="/admin" class="btn btn-light">&larr; Dashboard</a>
+    <a href="/print/cards" class="btn btn-navy">&#128438;&#65039; Front Studio</a>
+    <a href="/print/card-preview-noqr" target="_blank" class="btn btn-light">&#128065; Pair Preview</a>
+    <button onclick="window.print()" class="btn btn-green">&#128438;&#65039; Print Backs Now</button>
   </div>
 </div>
 
-<!-- TIP BANNER -->
-<div class="tip-banner">
-  <div>
-    💡 <strong>Duplex Printing Instructions:</strong> Print the front cards first (from <strong>Front Studio</strong>). Take the printed stack, place it back into your printer tray (without rotating), and hit <strong>Print Backs Now</strong>. Each student's QR aligns edge-to-edge with their front photo!
-  </div>
-  <div style="font-size:11px; color:#166534; font-weight:700;">
-    CR80 Standard (54mm × 85.6mm) • Big 35mm QR Code
-  </div>
-</div>
+<!-- CARDS CONTAINER -->
+<div class="cards-container">
+  {% for s in students %}
+  <div class="card-wrapper" data-student-code="{{ s.student_code }}" data-class="{{ s.class_name }}">
+    <div class="iqbal-scope">
+      <div class="id-card theme-emerald relative flex flex-col overflow-hidden rounded-[22px] shadow-2xl bg-c1 text-center">
+        <img src="/static/img/shaheen_logo_trans.png" alt="School crest" width="353" height="260" class="object-contain mx-auto mt-3 h-16 w-16"/>
+        <div class="font-serif text-[18px] font-extrabold text-c2">Shaheen Public High School</div>
+        <div dir="rtl" class="font-urdu text-[15px] leading-[2.1] text-c2 [word-spacing:0.2em]">شاہین پبلک ہائی سکول لوئے شلمان</div>
+        
+        <!-- Large Attendance QR (190px) -->
+        <div class="mx-auto mt-2 rounded-xl bg-c2 p-2">
+          <img src="{{ s.qr_image }}" alt="QR" class="h-[190px] w-[190px] rounded-md bg-cpaper p-1.5"/>
+        </div>
+        
+        <div class="mx-auto mt-3 rounded-full bg-c2 px-5 py-1 font-serif text-[12px] font-bold text-c3">
+          SCAN FOR ATTENDANCE
+        </div>
 
-<!-- SHEETS -->
-<div class="sheet-wrapper" id="sheets-wrapper">
-  {% set cards_per_page = 9 %}
-  {% set total = students|length %}
-  {% for page_start in range(0, total, cards_per_page) %}
-  {% set page_students = students[page_start : page_start + cards_per_page] %}
-  <div class="a4-sheet">
-    <div class="cards-grid">
-      {% for s in page_students %}
-
-      <!-- ── CARD BACK 1B (EMERALD SPLIT COMPANION) ── -->
-      <div class="id-card-back back-1b card-variant-1b">
-        <div class="b1b-head">
-          <div class="b1b-logo">
-            <img src="/static/img/shaheen_logo_trans.png" alt="Logo">
+        <!-- Helpline & Location Details -->
+        <div class="mx-6 mt-4 space-y-2.5 text-left">
+          <div class="flex items-center gap-2">
+            <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-c2 text-c3">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path></svg>
+            </span>
+            <span class="text-[16px] font-extrabold text-primary-foreground">0335-9365884</span>
           </div>
-          <div class="b1b-titles">
-            <div class="b1b-ur">شاہین پبلک ہائی سکول</div>
-            <div class="b1b-en">SHAHEEN PUBLIC HIGH SCHOOL</div>
-            <div class="b1b-loc">Loi Shalman &bull; Khyber</div>
+          <div class="flex items-center gap-2">
+            <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-c2 text-c3">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path></svg>
+            </span>
+            <span class="text-[16px] font-extrabold text-primary-foreground">0334-2727432</span>
           </div>
-          <div class="b1b-flag">
-            <svg viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg">
-              <rect width="60" height="40" fill="#01411C"/>
-              <rect width="15" height="40" fill="#fff"/>
-              <circle cx="37" cy="20" r="10" fill="#fff"/>
-              <circle cx="40.5" cy="18.5" r="8.5" fill="#01411C"/>
-              <polygon points="41,11.5 43.1,18 50,18 44.5,22 46.6,28.5 41,24.5 35.4,28.5 37.5,22 32,18 38.9,18" fill="#fff"/>
-            </svg>
+          <div class="flex items-start gap-2">
+            <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-c2 text-c3">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            </span>
+            <span class="pt-0.5 text-[13.5px] leading-snug font-semibold text-primary-foreground/90">Loi Shalman Near Cricket Ground, Ghundakhel</span>
           </div>
         </div>
 
-        <div class="b1b-body">
-          <div class="b1b-scan-lbl">Daily Attendance Scan</div>
-          
-          <div class="b1b-qr-box">
-            <img src="{{ s.qr_image }}" alt="QR {{ s.student_code }}">
-          </div>
+        <div class="mx-6 mt-1 text-center text-[8px] text-primary-foreground/60">If found, please return this card to the school office.</div>
 
-          <div class="b1b-code-pill">{{ s.student_code }}</div>
-          <div class="b1b-name">{{ s.full_name }}</div>
-          <div class="b1b-class">{{ s.class_name }}{% if s.roll_no %} &bull; Roll # {{ s.roll_no }}{% endif %}</div>
-
-          <div class="b1b-contact">
-            <div class="b1b-contact-addr">Loi Shalman Near Cricket Ground, Ghundakhel</div>
-            <div class="b1b-contact-phone">📞 03359365884 &bull; 💬 03342727432</div>
-            <div class="b1b-return-notice">کارڈ ملنے کی صورت میں برائے مہربانی واپس کریں یا فون کریں</div>
+        <!-- NoorX AI QR Elliptical Banner -->
+        <div class="mt-auto flex items-center justify-between gap-3 bg-c2 px-6 pb-3 pt-3 [clip-path:ellipse(90%_100%_at_50%_100%)]" style="clip-path:ellipse(90% 100% at 50% 100%); -webkit-clip-path:ellipse(90% 100% at 50% 100%);">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&amp;margin=0&amp;data=https%3A%2F%2Fnoorxai.com%2Fschools" alt="NoorX AI" class="h-[52px] w-[52px] shrink-0 rounded border border-c3 bg-cpaper p-[2px]"/>
+          <div dir="rtl" class="text-right font-urdu leading-[1.8] text-c3">
+            <div class="text-[10.5px] font-bold">کارڈز، کمپیوٹرائزڈ ڈی ایم سی، ڈیجیٹل حاضری</div>
+            <div class="text-[9.5px]">اور طلبہ کارڈز کی سہولت کے لیے یہ QR اسکین کریں</div>
           </div>
         </div>
 
-        <div class="b1b-wave">
-          <svg viewBox="0 0 100 28" preserveAspectRatio="none">
-            <path d="M0,12 C25,24 45,26 60,26 C78,26 90,18 100,14 L100,28 L0,28 Z" fill="#044332"/>
-            <path d="M0,20 C25,26 48,28 65,27 C82,26 92,22 100,19 L100,28 L0,28 Z" fill="#022a1f" opacity="0.6"/>
-            <path d="M0,10 C25,22 45,24.5 60,24.5 C78,24.5 90,16.5 100,12.5 L100,14 C90,18 78,26 60,26 C45,26 25,24 0,12 Z" fill="#d97706"/>
-          </svg>
-        </div>
       </div>
-
-
-      <!-- ── CARD BACK 2B (VERTICAL SPLIT COMPANION) ── -->
-      <div class="id-card-back back-2b card-variant-2b" style="display:none;">
-        <div class="b2b-side">
-          <div class="b2b-side-logo">
-            <img src="/static/img/shaheen_logo_trans.png" alt="Logo">
-          </div>
-          <div class="b2b-side-text">Student Attendance QR</div>
-          <div class="b2b-side-badge">26-27</div>
-        </div>
-
-        <div class="b2b-main">
-          <div class="b2b-head">
-            <div class="b2b-sch1">SHAHEEN PUBLIC HIGH SCHOOL</div>
-            <div class="b2b-ur">شاہین پبلک ہائی سکول لوئی شلمان</div>
-            <div class="b2b-divider"></div>
-          </div>
-
-          <div class="b2b-scan-lbl">Scan to Verify Attendance</div>
-
-          <div class="b2b-qr-box">
-            <img src="{{ s.qr_image }}" alt="QR {{ s.student_code }}">
-          </div>
-
-          <div class="b2b-code-pill">{{ s.student_code }}</div>
-          <div class="b2b-name">{{ s.full_name }}</div>
-          <div class="b2b-class">{{ s.class_name }}{% if s.roll_no %} &bull; Roll # {{ s.roll_no }}{% endif %}</div>
-
-          <div class="b2b-contact">
-            <div class="b2b-contact-addr">Loi Shalman Near Cricket Ground, Ghundakhel</div>
-            <div class="b2b-contact-phone">📞 03359365884 &bull; 💬 03342727432</div>
-            <div class="b2b-return-notice">اگر یہ کارڈ ملے تو برائے مہربانی واپس کریں</div>
-          </div>
-
-          <div class="b2b-bottom">
-            <div class="b2b-bar-gold"></div>
-            <div class="b2b-bar-navy"></div>
-          </div>
-        </div>
-      </div>
-
-      {% endfor %}
-
-      {# Blank padding for last sheet #}
-      {% set filled = page_students|length %}
-      {% for blank in range(cards_per_page - filled) %}
-      <div class="id-card-back" style="border:1px dashed #cbd5e1; background:#fafafa; display:flex; align-items:center; justify-content:center;">
-        <span style="font-size:9pt; color:#cbd5e1; font-weight:700; transform:rotate(-45deg);">BLANK</span>
-      </div>
-      {% endfor %}
-
     </div>
   </div>
   {% endfor %}
 </div>
 
 <script>
-  const themeSel = document.getElementById('theme-sel');
-  themeSel.addEventListener('change', function() {
-    const is1B = this.value === '1b';
-    document.querySelectorAll('.card-variant-1b').forEach(el => {
-      el.style.display = is1B ? 'flex' : 'none';
-    });
-    document.querySelectorAll('.card-variant-2b').forEach(el => {
-      el.style.display = is1B ? 'none' : 'flex';
-    });
-  });
+  function filterClass(cls) {
+    const url = new URL(window.location.href);
+    if (cls) {
+      url.searchParams.set('class_name', cls);
+    } else {
+      url.searchParams.delete('class_name');
+    }
+    window.location.href = url.toString();
+  }
 </script>
+
 </body>
 </html>
