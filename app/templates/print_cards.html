@@ -1178,6 +1178,173 @@
       display: block;
     }
 
+  
+    /* ========================================================
+       DESIGN 5 (NEW): MODERN CURVE / EXECUTIVE ARC
+       ======================================================== */
+    .card-arc {
+      border-radius: 4.5mm;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      position: relative;
+      overflow: hidden;
+    }
+    .card-arc .arc-top-header {
+      background: #0f172a;
+      height: 27mm;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 2.2mm;
+      flex-shrink: 0;
+    }
+    .card-arc .arc-top-header::after {
+      content: '';
+      position: absolute;
+      bottom: -4mm;
+      left: 0;
+      right: 0;
+      height: 8mm;
+      background: #0f172a;
+      border-radius: 0 0 50% 50% / 0 0 100% 100%;
+      z-index: 1;
+    }
+    .card-arc .arc-red-accent {
+      position: absolute;
+      bottom: -5.5mm;
+      left: 0;
+      right: 0;
+      height: 9mm;
+      background: #dc2626;
+      border-radius: 0 0 50% 50% / 0 0 100% 100%;
+      z-index: 0;
+    }
+    .card-arc .arc-school-title {
+      font-size: 8pt;
+      font-weight: 900;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      line-height: 1.1;
+      position: relative;
+      z-index: 2;
+    }
+    .card-arc .arc-school-sub {
+      font-size: 4.6pt;
+      color: #94a3b8;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-top: 0.4mm;
+      position: relative;
+      z-index: 2;
+    }
+    .card-arc .arc-photo-circle {
+      width: 25mm;
+      height: 25mm;
+      border-radius: 50%;
+      border: 1.8mm solid #dc2626;
+      background: #e2e8f0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.18);
+      position: absolute;
+      top: 14mm;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 4;
+    }
+    .card-arc .arc-photo-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .card-arc .arc-photo-circle svg {
+      width: 15mm;
+      height: 15mm;
+      fill: #64748b;
+    }
+    .card-arc .arc-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16mm 3mm 2mm;
+      position: relative;
+      z-index: 2;
+    }
+    .card-arc .arc-student-name {
+      font-size: 10pt;
+      font-weight: 900;
+      color: #0f172a;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 46mm;
+      line-height: 1.1;
+    }
+    .card-arc .arc-father-name {
+      font-size: 5.2pt;
+      color: #64748b;
+      margin-top: 0.4mm;
+      text-align: center;
+    }
+    .card-arc .arc-pill-tag {
+      background: #fef2f2;
+      border: 1px solid #fca5a5;
+      color: #dc2626;
+      font-size: 5.2pt;
+      font-weight: 800;
+      padding: 0.6mm 3.5mm;
+      border-radius: 2mm;
+      margin-top: 1.5mm;
+      margin-bottom: 2mm;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .card-arc .arc-info-table {
+      width: 100%;
+      padding: 0 2mm;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2mm;
+    }
+    .card-arc .arc-info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px dashed #e2e8f0;
+      padding-bottom: 0.6mm;
+      font-size: 5pt;
+    }
+    .card-arc .arc-info-lbl {
+      color: #64748b;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .card-arc .arc-info-val {
+      color: #0f172a;
+      font-weight: 800;
+    }
+    .card-arc .arc-bottom-footer {
+      height: 9mm;
+      position: relative;
+      background: #ffffff;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .card-arc .arc-bottom-footer svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
   </style>
 </head>
 <body>
@@ -1187,6 +1354,7 @@
       <div class="control-group">
         <label for="design-select">Card Template:</label>
         <select id="design-select">
+          <option value="arc">🎯 5 — Modern Curve Arc (Dark Slate & Crimson)</option>
           <option value="wavy" selected>🌟 Wavy Academy (Bright Future Style - Circular Photo)</option>
           <option value="emerald">1 — Emerald Classic (Option 1: 25mm Centered QR)</option>
           <option value="emerald-side">1B — Emerald Split (Large 27mm QR + Large Eagle)</option>
@@ -1215,6 +1383,49 @@
   <div id="cards-container" class="cards-container">
     {% for s in students %}
     <div class="card-wrapper" data-student-code="{{ s.student_code }}">
+
+      <!-- ==== DESIGN 5: MODERN CURVE / EXECUTIVE ARC ==== -->
+      <div class="id-card card-arc design-view design-arc" style="display:none;">
+        <div class="arc-top-header">
+          <div class="arc-school-title">Shaheen Public High School</div>
+          <div class="arc-school-sub">Loi Shalman &bull; Khyber Agency</div>
+          <div class="arc-red-accent"></div>
+        </div>
+        <div class="arc-photo-circle">
+          {% if s.photo_url %}<img src="{{ s.photo_url }}" alt="{{ s.full_name }}">
+          {% else %}<svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>{% endif %}
+        </div>
+        <div class="arc-body">
+          <div class="arc-student-name">{{ s.full_name }}</div>
+          <div class="arc-father-name">S/D of {{ s.father_name or 'Guardian' }}</div>
+          <div class="arc-pill-tag">Student ID Card</div>
+          <div class="arc-info-table">
+            <div class="arc-info-row">
+              <span class="arc-info-lbl">Roll Number:</span>
+              <span class="arc-info-val">{{ s.roll_no }}</span>
+            </div>
+            <div class="arc-info-row">
+              <span class="arc-info-lbl">Class:</span>
+              <span class="arc-info-val">{{ s.class_name }}</span>
+            </div>
+            <div class="arc-info-row">
+              <span class="arc-info-lbl">Student ID:</span>
+              <span class="arc-info-val" style="color:#dc2626;font-family:monospace;">{{ s.student_code }}</span>
+            </div>
+            <div class="arc-info-row">
+              <span class="arc-info-lbl">Emergency:</span>
+              <span class="arc-info-val">{{ s.parent_phone or '03359365884' }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="arc-bottom-footer">
+          <svg viewBox="0 0 100 25" preserveAspectRatio="none">
+            <path d="M0,15 Q30,5 50,15 T100,10 L100,25 L0,25 Z" fill="#dc2626"/>
+            <path d="M0,18 Q40,8 60,18 T100,15 L100,25 L0,25 Z" fill="#0f172a"/>
+          </svg>
+        </div>
+      </div>
+
 
       <!-- ==== DESIGN: WAVY ACADEMY (BRIGHT FUTURE STYLE) ==== -->
       <div class="id-card card-wavy design-view design-wavy" style="display:none;">
@@ -1544,7 +1755,7 @@
     const urlParams = new URLSearchParams(window.location.search);
     const paramDesign = urlParams.get('design');
     const saved = paramDesign || localStorage.getItem('sphs_card_design') || 'split-2b';
-    if (['wavy','emerald','emerald-side','split','split-2b','royal','exec'].includes(saved)) {
+    if (['arc','wavy','emerald','emerald-side','split','split-2b','royal','exec'].includes(saved)) {
       designSelect.value = saved;
     }
     updateDesign();
