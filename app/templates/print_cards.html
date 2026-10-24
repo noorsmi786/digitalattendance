@@ -3177,6 +3177,10 @@ body {
   box-shadow: none !important;
 }
 
+.print-page-break {
+  display: none;
+}
+
 /* Print Overrides */
 @media print {
   @page {
@@ -3204,19 +3208,16 @@ body {
     overflow: visible !important;
   }
   .a4-page {
+    display: block !important;
     box-shadow: none !important;
     margin: 0 auto !important;
-    padding: 1mm 0 !important;
-    width: 100% !important;
-    max-width: 210mm !important;
+    padding: 3mm 0 !important;
+    width: 210mm !important;
+    max-width: 100% !important;
     height: auto !important;
     min-height: 0 !important;
     max-height: none !important;
     box-sizing: border-box !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    align-items: center !important;
     page-break-after: always !important;
     break-after: page !important;
     page-break-inside: avoid !important;
@@ -3229,14 +3230,35 @@ body {
     break-after: auto !important;
   }
   .cards-grid-5rows {
-    gap: 2mm !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 1.8mm !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
   .card-row {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     gap: 8mm !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
+  }
+  .print-page-break {
+    display: block !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    clear: both !important;
+    page-break-after: always !important;
+    break-after: page !important;
   }
   .card-cell {
     width: 3in !important;
@@ -3533,6 +3555,7 @@ body {
       </div>
 
     </div>
+    <div class="print-page-break"></div>
   {% endfor %}
 </div>
 
