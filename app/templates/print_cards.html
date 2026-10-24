@@ -3083,21 +3083,28 @@ body {
   margin-bottom: 4px;
 }
 
-/* Fixed A4 Page Container (210mm x 297mm) */
-.a4-page {
-  width: 210mm !important;
-  height: 297mm !important;
-  padding: 10mm !important;
+/* ═══════════════════════════════════════════════════════
+   USER EXACT A4 SHEET & 5-ROW PRINT ENGINE
+   ═══════════════════════════════════════════════════════ */
+.id-card { 
+  width: 384px !important; 
+  height: 576px !important; 
+} /* 2in x 3in card at 2x scale */
+
+/* A4 sheet: fixed size, 5 rows, front | back */
+.a4-sheet, .a4-page { 
+  width: 210mm !important; 
+  height: 297mm !important; 
+  padding: 10mm !important; 
+  background: white !important;
+  display: flex !important; 
+  flex-direction: column !important; 
+  align-items: center !important; 
+  gap: 3mm !important; 
   box-sizing: border-box !important;
-  background: #ffffff !important;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
   position: relative !important;
   overflow: hidden !important;
-  display: block !important;
-  page-break-after: always !important;
-  break-after: page !important;
-  page-break-inside: avoid !important;
-  break-inside: avoid !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }
 
 /* Top Sheet Guide Header (Screen only) */
@@ -3112,78 +3119,62 @@ body {
   letter-spacing: 0.5px;
   border-bottom: 0.5px dashed #e2e8f0;
   padding-bottom: 1mm;
-  margin-bottom: 2mm;
+  margin-bottom: 1mm;
+  width: 100%;
 }
 
-/* 5 Rows Vertical Flex Column - strictly flex-start */
 .cards-grid-5rows {
   display: flex !important;
   flex-direction: column !important;
-  justify-content: flex-start !important;
   align-items: center !important;
+  gap: 3mm !important;
   width: 100% !important;
   padding: 0 !important;
   margin: 0 !important;
 }
 
-/* Fixed A4 Row: 2in tall, 3mm bottom margin, flex-start */
-.a4-row, .card-row {
-  display: flex !important;
-  justify-content: flex-start !important;
-  align-items: center !important;
-  gap: 3mm !important;
-  height: 2in !important;
-  margin-bottom: 3mm !important;
-  flex: none !important;
-  page-break-inside: avoid !important;
-  break-inside: avoid !important;
-}
-
-.a4-row:last-child, .card-row:last-child {
-  margin-bottom: 0 !important;
-}
-
-/* Fixed Card Slot / Face: strictly 3in x 2in */
-.card-face, .a4-slot, .card-cell {
-  width: 3in !important;
+.a4-row, .card-row { 
+  display: flex !important; 
+  gap: 10mm !important; 
   height: 2in !important;
   flex: none !important;
   box-sizing: border-box !important;
-  position: relative !important;
-  outline: 0.3mm dashed #cbd5e1;
-  border-radius: 2.5mm;
-  overflow: hidden !important;
-  background: #ffffff;
-  page-break-inside: avoid !important;
-  break-inside: avoid !important;
 }
 
-/* Card Rotation Wrapper: strictly fixed size 3in x 2in */
-.card-rot-wrapper {
-  width: 3in !important;
+.a4-slot, .card-slot, .card-cell, .card-face { 
+  position: relative !important; 
+  width: 3in !important; 
   height: 2in !important;
-  overflow: hidden !important;
-  position: relative !important;
-  flex: none !important;
+  outline: 0.2mm dashed #bbb !important; 
+  overflow: hidden !important; 
   box-sizing: border-box !important;
+  flex: none !important;
+  background: #ffffff !important;
+  border-radius: 2.5mm !important;
 }
 
-/* Rotated Card Inside 3in x 2in Wrapper */
-.card-rot-wrapper .id-card {
-  position: absolute !important;
-  width: 384px !important;
-  height: 576px !important;
-  left: 50% !important;
-  top: 50% !important;
-  margin-left: -192px !important;
-  margin-top: -288px !important;
-  transform: rotate(-90deg) scale(0.5) !important;
-  transform-origin: center center !important;
-  box-shadow: none !important;
+.a4-rot, .card-rot-wrapper { 
+  position: absolute !important; 
+  left: 0 !important; 
+  top: 0 !important; 
+  width: 2in !important; 
+  height: 3in !important;
+  transform-origin: top left !important; 
+  transform: translateY(2in) rotate(-90deg) !important; 
 }
 
-.rotate-cw .card-rot-wrapper .id-card {
-  transform: rotate(90deg) scale(0.5) !important;
+.rotate-cw .a4-rot, .rotate-cw .card-rot-wrapper {
+  transform: translateX(3in) rotate(90deg) !important;
+}
+
+.a4-sheet .id-card, .a4-page .id-card { 
+  zoom: 0.5 !important; 
+  box-shadow: none !important; 
+  position: relative !important;
+  left: auto !important;
+  top: auto !important;
+  margin: 0 !important;
+  transform: none !important;
 }
 
 /* Invisible placeholder slots and rows for last page */
@@ -3196,94 +3187,40 @@ body {
 
 /* Print Overrides */
 @media print {
-  @page {
-    size: A4 portrait;
-    margin: 0;
+  @page { 
+    size: A4 portrait; 
+    margin: 0; 
   }
-  html, body {
-    background: #ffffff !important;
-    width: 100% !important;
-    height: auto !important;
-    min-height: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow: visible !important;
+  .no-print, .toolbar, .sheet-badge, .sheet-guide-header { 
+    display: none !important; 
   }
-  .no-print, .toolbar, .sheet-badge, .sheet-guide-header {
-    display: none !important;
+  body { 
+    background: white !important; 
+    margin: 0 !important; 
+    padding: 0 !important; 
   }
-  .screen-container {
-    display: block !important;
-    width: 100% !important;
-    height: auto !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    overflow: visible !important;
-  }
-  .a4-page {
-    width: 210mm !important;
-    height: 297mm !important;
-    padding: 10mm !important;
-    box-sizing: border-box !important;
-    margin: 0 auto !important;
-    page-break-after: always !important;
-    break-after: page !important;
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
-    overflow: hidden !important;
-    border: none !important;
+  .id-card { 
+    zoom: 0.5 !important; 
     box-shadow: none !important;
+    -webkit-print-color-adjust: exact !important; 
+    print-color-adjust: exact !important; 
+  }
+  .print-sheets, .screen-container { 
+    gap: 0 !important; 
     display: block !important;
-  }
-  .a4-page:last-of-type {
-    page-break-after: auto !important;
-    break-after: auto !important;
-  }
-  .cards-grid-5rows {
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: flex-start !important;
-    align-items: center !important;
-    width: 100% !important;
-    margin: 0 auto !important;
     padding: 0 !important;
+    margin: 0 !important;
   }
-  .a4-row, .card-row {
-    display: flex !important;
-    justify-content: flex-start !important;
-    align-items: center !important;
-    gap: 3mm !important;
-    height: 2in !important;
-    margin-bottom: 3mm !important;
-    flex: none !important;
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
+  .a4-sheet, .a4-page { 
+    box-shadow: none !important; 
+    margin: 0 auto !important;
+    break-after: page !important; 
+    page-break-after: always !important;
   }
-  .a4-row:last-child, .card-row:last-child {
-    margin-bottom: 0 !important;
-  }
-  .card-face, .a4-slot, .card-cell {
-    width: 3in !important;
-    height: 2in !important;
-    flex: none !important;
-    box-sizing: border-box !important;
-    outline: 0.25mm dashed #94a3b8 !important;
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
-  }
-  .card-rot-wrapper {
-    width: 3in !important;
-    height: 2in !important;
-    overflow: hidden !important;
-    position: relative !important;
-    flex: none !important;
-    box-sizing: border-box !important;
-  }
-  .a4-slot.empty-slot, .card-cell.empty-slot, .empty-row {
-    visibility: hidden !important;
-    border: none !important;
-    outline: none !important;
-    background: transparent !important;
+  .a4-sheet:last-of-type, .a4-page:last-of-type,
+  .a4-sheet:last-child, .a4-page:last-child { 
+    break-after: auto !important; 
+    page-break-after: auto !important;
   }
 }
 
@@ -3360,7 +3297,7 @@ body {
     <a href="/admin" class="btn btn-light">&larr; Dashboard</a>
   </div>
 </div>
-<div class="screen-container" id="sheets-root">
+<div class="screen-container print-sheets" id="sheets-root">
   {% set chunk_size = 5 %}
   {% set total_students = students|length %}
   {% set total_pages = ((total_students + chunk_size - 1) // chunk_size) if total_students > 0 else 0 %}
@@ -3374,7 +3311,7 @@ body {
     </div>
 
     <!-- PHYSICAL A4 PAGE CONTAINER -->
-    <div class="a4-page">
+    <div class="a4-sheet a4-page">
       
       <div class="sheet-guide-header no-print">
         <span>Shaheen Public High School &bull; 2-Column × 5-Row A4 Layout</span>
@@ -3385,13 +3322,13 @@ body {
       <!-- 5-ROW GRID: EACH ROW = 1 STUDENT (BACK on Left, FRONT on Right) -->
       <div class="cards-grid-5rows">
         {% for s in chunk %}
-        <div class="card-row a4-row" data-student-code="{{ s.student_code }}" data-class="{{ s.class_name }}">
+        <div class="a4-row card-row" data-student-code="{{ s.student_code }}" data-class="{{ s.class_name }}">
 
                     <!-- ══════════════════════════════════════════════
                LEFT COLUMN: FRONT SIDE (STUDENT DETAILS)
                ══════════════════════════════════════════════ -->
-          <div class="card-cell a4-slot card-face">
-            <div class="card-rot-wrapper">
+          <div class="a4-slot card-face card-cell">
+            <div class="a4-rot card-rot-wrapper">
               <div class="id-card theme-emerald relative flex flex-col overflow-hidden rounded-[22px] shadow-2xl bg-cpaper">
                 <!-- Elliptical Top Header -->
                 <div class="relative h-[230px] bg-c1 text-center [clip-path:ellipse(85%_100%_at_50%_0)]" style="clip-path:ellipse(85% 100% at 50% 0); -webkit-clip-path:ellipse(85% 100% at 50% 0);">
@@ -3518,8 +3455,8 @@ body {
           <!-- ══════════════════════════════════════════════
                RIGHT COLUMN: BACK SIDE (ATTENDANCE QR)
                ══════════════════════════════════════════════ -->
-          <div class="card-cell a4-slot card-face">
-            <div class="card-rot-wrapper">
+          <div class="a4-slot card-face card-cell">
+            <div class="a4-rot card-rot-wrapper">
               <div class="id-card theme-emerald relative flex flex-col overflow-hidden rounded-[22px] shadow-2xl bg-c1 text-center">
                 <img src="/static/img/shaheen_logo_trans.png" alt="School crest" width="353" height="260" class="object-contain mx-auto mt-3 h-16 w-16"/>
                 <div class="font-serif text-[18px] font-extrabold text-c2">Shaheen Public High School</div>
@@ -3574,9 +3511,9 @@ body {
 
         {% if chunk|length < chunk_size %}
           {% for _ in range(chunk_size - chunk|length) %}
-          <div class="card-row a4-row empty-row">
-            <div class="card-cell a4-slot card-face empty-slot"></div>
-            <div class="card-cell a4-slot card-face empty-slot"></div>
+          <div class="a4-row card-row empty-row">
+            <div class="a4-slot card-face card-cell empty-slot"></div>
+            <div class="a4-slot card-face card-cell empty-slot"></div>
           </div>
           {% endfor %}
         {% endif %}
