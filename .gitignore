@@ -8,10 +8,26 @@ venv/
 .venv/
 env/
 
-# Database backups (the active app/data/attendance.db is preserved)
+# ──────────────────────────────────────────────────────────────────────────────
+# IMPORTANT: The live database and student photos must NEVER be committed to git.
+# They live only on the VPS disk and are preserved across deployments via 
+# Docker volumes (./app/data:/app/app/data and ./app/uploads:/app/app/uploads).
+# ──────────────────────────────────────────────────────────────────────────────
+app/data/attendance.db
+app/data/*.db
+app/data/*.db-*
+app/data/*.db-wal
+app/data/*.db-shm
+app/uploads/students/*.jpg
+app/uploads/students/*.jpeg
+app/uploads/students/*.png
+app/uploads/students/*.webp
+
+# Database backups
 *.bak
 *.bak_*
 app/data/*.bak*
+app/data/*.pre_fix_*
 
 # Scratch and debug files
 scratch/
