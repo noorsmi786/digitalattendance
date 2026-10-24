@@ -13,6 +13,48 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 def sanitize_filename(name: str) -> str:
     return re.sub(r'[^a-zA-Z0-9_\-\.]', '', name)
 
+def optimize_image_for_print(file_bytes: bytes, original_ext: str, max_dim: int = 1200) -> Tuple[bytes, str]:
+    """
+    Optimizes raw camera photos (4MB-10MB+) down to ultra-crisp print size (~120KB-180KB).
+    - Preserves orientation via EXIF transpose.
+    - Uses LANCZOS resampling (highest quality downsampling filter in imaging).
+    - Caps longest edge at 1200px (equivalent to 600+ DPI on printed ID card).
+    - If PNG with transparency, preserves RGBA/PNG.
+    - If already small (< 300KB and <= 1200px), leaves bytes untouched.
+    """
+    try:
+        from PIL import Image, ImageOps
+        img = Image.open(io.BytesIO(file_bytes))
+        img = ImageOps.exif_transpose(img)
+
+        w, h = img.size
+        # If already reasonable size, don't recompress
+        if max(w, h) <= max_dim and len(file_bytes) < 300 * 1024:
+            return file_bytes, original_ext
+
+        # Scale preserving aspect ratio if larger than max_dim
+        if max(w, h) > max_dim:
+            if w > h:
+                new_w = max_dim
+                new_h = int(h * (max_dim / w))
+            else:
+                new_h = max_dim
+                new_w = int(w * (max_dim / h))
+            img = img.resize((new_w, new_h), Image.Resampling.LANCZOS)
+
+        out_io = io.BytesIO()
+        if original_ext.lower() == '.png' and img.mode in ('RGBA', 'LA', 'P'):
+            img.save(out_io, 'PNG', optimize=True)
+            return out_io.getvalue(), '.png'
+        else:
+            if img.mode != 'RGB':
+                img = img.convert('RGB')
+            img.save(out_io, 'JPEG', quality=90, optimize=True)
+            return out_io.getvalue(), '.jpg'
+    except Exception:
+        # Fallback to original bytes if any error parsing
+        return file_bytes, original_ext
+
 def match_and_save_photo(file_bytes: bytes, original_filename: str) -> Tuple[bool, str, str]:
     """
     Matches photo filename to a student:
@@ -55,6 +97,9 @@ def match_and_save_photo(file_bytes: bytes, original_filename: str) -> Tuple[boo
     if not student:
         conn.close()
         return False, f"No matching student found for '{original_filename}'", ""
+
+    # Optimize photo for high-resolution print (max 1200px, quality 90, Lanczos filter)
+    file_bytes, ext = optimize_image_for_print(file_bytes, ext, max_dim=1200)
 
     # Save to uploads directory with student_code filename
     target_filename = f"{student['student_code']}{ext}"
@@ -147,7 +192,8 @@ def save_student_capture(student_id: int, image_base64: str) -> Dict[str, Any]:
             top = (h - new_h) // 2
             img = img.crop((0, top, w, top + new_h))
 
-        img = img.resize((600, 800), Image.Resampling.LANCZOS)
+        # Upgrade to 900x1200 with LANCZOS resampling (equivalent to 600+ DPI on printed card)
+        img = img.resize((900, 1200), Image.Resampling.LANCZOS)
 
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -158,7 +204,7 @@ def save_student_capture(student_id: int, image_base64: str) -> Dict[str, Any]:
 
         filename = f"{student['student_code']}.jpg"
         target_path = os.path.join(UPLOAD_DIR, filename)
-        img.save(target_path, "JPEG", quality=92)
+        img.save(target_path, "JPEG", quality=90, optimize=True)
 
         photo_url = f"/uploads/students/{filename}"
         cursor.execute("UPDATE students SET photo_url = ? WHERE id = ?", (photo_url, student_id))

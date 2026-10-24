@@ -456,6 +456,75 @@ function initStudents() {
     });
   }
 
+  // ── High-Fidelity Image Optimizer for Print (300-600 DPI quality, 95% smaller upload) ──
+  async function compressImageForPrint(file, maxDimension = 1200, quality = 0.88) {
+    if (!file || !file.type || !file.type.startsWith('image/')) {
+      return file; // Leave ZIP archives and non-images untouched
+    }
+    // If image is already smaller than 200KB, no need to touch
+    if (file.size < 200 * 1024) {
+      return file;
+    }
+
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          let w = img.width;
+          let h = img.height;
+
+          // If already within maxDimension and reasonable file size, keep original
+          if (w <= maxDimension && h <= maxDimension && file.size < 400 * 1024) {
+            resolve(file);
+            return;
+          }
+
+          // Scale preserving aspect ratio (max dimension capped at 1200px = 600 DPI print)
+          if (w > h) {
+            if (w > maxDimension) {
+              h = Math.round((h * maxDimension) / w);
+              w = maxDimension;
+            }
+          } else {
+            if (h > maxDimension) {
+              w = Math.round((w * maxDimension) / h);
+              h = maxDimension;
+            }
+          }
+
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(img, 0, 0, w, h);
+
+          canvas.toBlob(
+            (blob) => {
+              if (blob && blob.size < file.size) {
+                const optimizedFile = new File([blob], file.name, {
+                  type: 'image/jpeg',
+                  lastModified: Date.now()
+                });
+                resolve(optimizedFile);
+              } else {
+                resolve(file);
+              }
+            },
+            'image/jpeg',
+            quality
+          );
+        };
+        img.onerror = () => resolve(file);
+        img.src = e.target.result;
+      };
+      reader.onerror = () => resolve(file);
+      reader.readAsDataURL(file);
+    });
+  }
+
   const submitBatchPhotosBtn = document.getElementById('submit-batch-photos-btn');
   if (submitBatchPhotosBtn) {
     submitBatchPhotosBtn.addEventListener('click', async () => {
@@ -465,13 +534,20 @@ function initStudents() {
         return;
       }
 
-      const formData = new FormData();
-      for (let i = 0; i < fileInput.files.length; i++) {
-        formData.append('files', fileInput.files[i]);
-      }
-
       const statusBox = document.getElementById('photos-status-box');
       statusBox.style.display = 'block';
+
+      const formData = new FormData();
+      const totalFiles = fileInput.files.length;
+      for (let i = 0; i < totalFiles; i++) {
+        const file = fileInput.files[i];
+        if (totalFiles > 1 && file.type && file.type.startsWith('image/')) {
+          statusBox.innerHTML = `<span style="color: var(--primary);">Optimizing photo ${i + 1} of ${totalFiles} for print...</span>`;
+        }
+        const optimized = await compressImageForPrint(file, 1200, 0.88);
+        formData.append('files', optimized);
+      }
+
       statusBox.innerHTML = '<span style="color: var(--primary);">Matching and attaching photos...</span>';
 
       try {

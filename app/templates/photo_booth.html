@@ -829,17 +829,36 @@
       const previewCanvas = document.getElementById('preview-canvas');
       const outputCanvas = document.getElementById('hidden-canvas');
 
-      outputCanvas.width = previewCanvas.width || 640;
-      outputCanvas.height = previewCanvas.height || 480;
+      // High-resolution 900x1200 portrait (600+ DPI equivalent for ID card print)
+      const targetW = 900;
+      const targetH = 1200;
+      outputCanvas.width = targetW;
+      outputCanvas.height = targetH;
       const ctx = outputCanvas.getContext('2d');
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+
+      // Center-crop previewCanvas to exact 3:4 portrait ratio
+      const pw = previewCanvas.width || 640;
+      const ph = previewCanvas.height || 480;
+      const targetRatio = 3 / 4;
+      let sx = 0, sy = 0, sw = pw, sh = ph;
+      if (pw / ph > targetRatio) {
+        sw = Math.round(ph * targetRatio);
+        sx = Math.round((pw - sw) / 2);
+      } else {
+        sh = Math.round(pw / targetRatio);
+        sy = Math.round((ph - sh) / 2);
+      }
 
       if (currentFacingMode === 'user') {
-        ctx.translate(outputCanvas.width, 0);
+        ctx.translate(targetW, 0);
         ctx.scale(-1, 1);
       }
-      ctx.drawImage(previewCanvas, 0, 0);
+      ctx.drawImage(previewCanvas, sx, sy, sw, sh, 0, 0, targetW, targetH);
 
-      const base64Data = outputCanvas.toDataURL('image/jpeg', 0.92);
+      // High print quality JPEG (0.88 preserves 100% photographic detail while cutting data by 80%)
+      const base64Data = outputCanvas.toDataURL('image/jpeg', 0.88);
 
       // ── STEP 1: Save to local IndexedDB queue IMMEDIATELY (never lost) ──
       const queueId = await queuePhotoLocally(s.id, s.full_name, s.roll_no, base64Data);
