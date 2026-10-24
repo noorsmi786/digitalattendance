@@ -3206,11 +3206,12 @@ body {
   .a4-page {
     box-shadow: none !important;
     margin: 0 auto !important;
-    padding: 0 !important;
-    width: 210mm !important;
-    height: 297mm !important;
-    max-height: 297mm !important;
-    min-height: 297mm !important;
+    padding: 1mm 0 !important;
+    width: 100% !important;
+    max-width: 210mm !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
     box-sizing: border-box !important;
     display: flex !important;
     flex-direction: column !important;
@@ -3220,7 +3221,7 @@ body {
     break-after: page !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
-    overflow: hidden !important;
+    overflow: visible !important;
     border: none !important;
   }
   .a4-page:last-of-type {
@@ -3228,10 +3229,12 @@ body {
     break-after: auto !important;
   }
   .cards-grid-5rows {
-    gap: 3mm !important;
+    gap: 2mm !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
   .card-row {
-    gap: 10mm !important;
+    gap: 8mm !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
@@ -3310,6 +3313,9 @@ body {
     <button onclick="window.print()" class="btn btn-green" title="Print cards or Save as PDF">
       🖨️ Print / Save PDF
     </button>
+    <span class="no-print" style="font-size: 11px; background: #fef3c7; color: #92400e; padding: 6px 10px; border-radius: 6px; font-weight: 700; border: 1px solid #fde68a; display: inline-flex; align-items: center; gap: 4px;">
+      💡 Tip: In Print Dialog, set Margins to <u>None</u>
+    </span>
     <a href="/admin" class="btn btn-light">&larr; Dashboard</a>
   </div>
 </div>
