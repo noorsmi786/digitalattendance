@@ -770,9 +770,11 @@ function renderStudentsTable() {
         <td><strong>${s.roll_no}</strong></td>
         <td>
           <div style="display: flex; align-items: center; gap: 8px;">
-            ${photoThumb}
+            <div onclick="triggerDirectPhotoUpload(${s.id}, '${s.student_code}', '${escapeHtml(s.full_name)}')" style="cursor: pointer;" title="Click to upload/replace photo (auto-archives old photo)">
+              ${photoThumb}
+            </div>
             <div>
-              <div style="font-weight: 700;">${s.full_name}</div>
+              <div style="font-weight: 700; cursor: pointer;" onclick="triggerDirectPhotoUpload(${s.id}, '${s.student_code}', '${escapeHtml(s.full_name)}')" title="Click photo to replace">${s.full_name}</div>
               ${!hasPhoto && !isGirl ? '<span style="font-size: 10px; color: #ef4444; font-weight: 700;">⚪ Needs Photo</span>' : ''}
               ${!hasPhoto && isGirl ? '<span style="font-size: 10px; color: #db2777; font-weight: 600;">👧 Exempt</span>' : ''}
             </div>
@@ -1287,3 +1289,46 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
 }
+
+
+// ── Direct Single Photo Upload & Auto-Archive ──
+window.triggerDirectPhotoUpload = function(studentId, studentCode, studentName) {
+  let fileInput = document.getElementById('direct-photo-hidden-input');
+  if (!fileInput) {
+    fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.id = 'direct-photo-hidden-input';
+    fileInput.accept = 'image/*';
+    fileInput.style.display = 'none';
+    document.body.appendChild(fileInput);
+  }
+
+  fileInput.onchange = async () => {
+    if (!fileInput.files.length) return;
+    const rawFile = fileInput.files[0];
+    fileInput.value = '';
+
+    const optimized = await compressImageForPrint(rawFile, 1200, 0.88);
+    const formData = new FormData();
+    formData.append('file', optimized);
+
+    try {
+      const res = await fetch(`/api/students/${studentId}/photo`, {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert(`✅ Photo updated for ${studentName}!
+Previous photo has been safely archived in replaced_archive folder.`);
+        loadStudents();
+      } else {
+        alert('Error: ' + (data.message || 'Upload failed'));
+      }
+    } catch (err) {
+      alert('Network error uploading photo');
+    }
+  };
+
+  fileInput.click();
+};

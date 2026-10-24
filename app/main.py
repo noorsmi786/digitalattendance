@@ -926,6 +926,18 @@ def api_student_photo_capture(student_id: int, payload: StudentPhotoCaptureReque
     result = save_student_capture(student_id, payload.image_base64)
     return result
 
+@app.post("/api/students/{student_id}/photo")
+async def api_upload_single_student_photo(student_id: int, request: Request, file: UploadFile = File(...)):
+    require_auth(request)
+    content = await file.read()
+    if not content:
+        raise HTTPException(status_code=400, detail="Empty file provided")
+    from app.photo_service import save_direct_student_photo
+    result = save_direct_student_photo(student_id, content, file.filename)
+    if not result["success"]:
+        raise HTTPException(status_code=400, detail=result.get("message", "Upload failed"))
+    return result
+
 
 # ==================== LEAVE MANAGEMENT API ====================
 

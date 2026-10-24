@@ -10,6 +10,28 @@ from app.database import get_db_connection
 UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "uploads", "students")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
+ARCHIVE_DIR = os.path.join(os.path.dirname(__file__), "uploads", "replaced_archive")
+os.makedirs(ARCHIVE_DIR, exist_ok=True)
+
+def archive_existing_photo(student_code: str):
+    """
+    If a photo already exists for this student on disk, preserves it by
+    copying it to 'uploads/replaced_archive/{student_code}_{timestamp}.{ext}'.
+    Prevents any previous photo from being permanently lost when replaced.
+    """
+    import datetime
+    for ext in [".jpg", ".jpeg", ".png", ".webp"]:
+        existing_path = os.path.join(UPLOAD_DIR, f"{student_code}{ext}")
+        if os.path.exists(existing_path) and os.path.getsize(existing_path) > 0:
+            mtime = os.path.getmtime(existing_path)
+            ts = datetime.datetime.fromtimestamp(mtime).strftime("%Y%m%d_%H%M%S")
+            archive_filename = f"{student_code}_{ts}{ext}"
+            archive_path = os.path.join(ARCHIVE_DIR, archive_filename)
+            try:
+                shutil.copy2(existing_path, archive_path)
+            except Exception as e:
+                print(f"Failed to archive existing photo {existing_path}: {e}")
+
 def sanitize_filename(name: str) -> str:
     return re.sub(r'[^a-zA-Z0-9_\-\.]', '', name)
 
@@ -98,6 +120,9 @@ def match_and_save_photo(file_bytes: bytes, original_filename: str) -> Tuple[boo
         conn.close()
         return False, f"No matching student found for '{original_filename}'", ""
 
+    # Archive existing photo if one is already present before replacing
+    archive_existing_photo(student['student_code'])
+
     # Optimize photo for high-resolution print (max 1200px, quality 90, Lanczos filter)
     file_bytes, ext = optimize_image_for_print(file_bytes, ext, max_dim=1200)
 
@@ -108,8 +133,10 @@ def match_and_save_photo(file_bytes: bytes, original_filename: str) -> Tuple[boo
     with open(target_path, "wb") as f:
         f.write(file_bytes)
 
-    # Relative URL accessible via web
-    photo_url = f"/uploads/students/{target_filename}"
+    # Relative URL with cache-busting timestamp so browser immediately shows new face
+    import time
+    ts = int(time.time())
+    photo_url = f"/uploads/students/{target_filename}?t={ts}"
     cursor.execute("UPDATE students SET photo_url = ? WHERE id = ?", (photo_url, student["id"]))
     conn.commit()
     conn.close()
@@ -202,19 +229,22 @@ def save_student_capture(student_id: int, image_base64: str) -> Dict[str, Any]:
             conn.close()
             return {"success": False, "message": f"Student with ID {student_id} not found."}
 
+        # Archive existing photo if present before overwriting
+        archive_existing_photo(student['student_code'])
+
         filename = f"{student['student_code']}.jpg"
         target_path = os.path.join(UPLOAD_DIR, filename)
         img.save(target_path, "JPEG", quality=90, optimize=True)
 
-        photo_url = f"/uploads/students/{filename}"
+        ts = int(time.time())
+        photo_url = f"/uploads/students/{filename}?t={ts}"
         cursor.execute("UPDATE students SET photo_url = ? WHERE id = ?", (photo_url, student_id))
         conn.commit()
         conn.close()
 
-        cache_busting_url = f"{photo_url}?t={int(time.time())}"
         return {
             "success": True,
-            "photo_url": cache_busting_url,
+            "photo_url": photo_url,
             "student_code": student["student_code"],
             "full_name": student["full_name"],
             "class_name": student["class_name"],
@@ -222,3 +252,67 @@ def save_student_capture(student_id: int, image_base64: str) -> Dict[str, Any]:
         }
     except Exception as e:
         return {"success": False, "message": f"Photo save failed: {str(e)}"}
+
+def save_direct_student_photo(student_id: int, file_bytes: bytes, original_filename: str) -> Dict[str, Any]:
+    """
+    Directly uploads or replaces a photo for a single student from Admin panel:
+    - Archives previous photo if one already existed
+    - Normalizes orientation and crops/resizes to 3:4 portrait (900x1200, Lanczos)
+    - Updates DB with ?t= cache buster timestamp
+    """
+    import time
+    from PIL import Image, ImageOps
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    student = cursor.execute("SELECT id, student_code, full_name, class_name, roll_no FROM students WHERE id = ?", (student_id,)).fetchone()
+    if not student:
+        conn.close()
+        return {"success": False, "message": f"Student with ID {student_id} not found."}
+
+    code = student["student_code"]
+
+    try:
+        # 1. Archive existing photo
+        archive_existing_photo(code)
+
+        # 2. Process image with PIL
+        img = Image.open(io.BytesIO(file_bytes))
+        img = ImageOps.exif_transpose(img)
+        if img.mode in ("RGBA", "P"):
+            img = img.convert("RGB")
+
+        w, h = img.size
+        target_ratio = 3.0 / 4.0
+        cur_ratio = w / h
+        if cur_ratio > target_ratio:
+            new_w = int(h * target_ratio)
+            left = (w - new_w) // 2
+            img = img.crop((left, 0, left + new_w, h))
+        else:
+            new_h = int(w / target_ratio)
+            top = (h - new_h) // 2
+            img = img.crop((0, top, w, top + new_h))
+
+        img = img.resize((900, 1200), Image.Resampling.LANCZOS)
+        filename = f"{code}.jpg"
+        target_path = os.path.join(UPLOAD_DIR, filename)
+        img.save(target_path, "JPEG", quality=90, optimize=True)
+
+        ts = int(time.time())
+        photo_url = f"/uploads/students/{filename}?t={ts}"
+        cursor.execute("UPDATE students SET photo_url = ? WHERE id = ?", (photo_url, student_id))
+        conn.commit()
+        conn.close()
+
+        return {
+            "success": True,
+            "photo_url": photo_url,
+            "student_code": code,
+            "full_name": student["full_name"],
+            "message": f"Photo updated and old photo archived for {student['full_name']}!"
+        }
+    except Exception as e:
+        conn.close()
+        return {"success": False, "message": f"Photo save failed: {str(e)}"}
+

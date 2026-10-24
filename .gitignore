@@ -22,6 +22,8 @@ app/uploads/students/*.jpg
 app/uploads/students/*.jpeg
 app/uploads/students/*.png
 app/uploads/students/*.webp
+app/uploads/replaced_archive/*
+app/uploads/replaced_archive/
 
 # Database backups
 *.bak
