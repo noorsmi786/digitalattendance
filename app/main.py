@@ -192,7 +192,7 @@ def print_cards_page(
         # Use student_code directly as the QR payload
         s["qr_image"] = generate_qr_base64(s.get("student_code", s.get("qr_payload", "")))
 
-    return templates.TemplateResponse(
+    response = templates.TemplateResponse(
         request=request,
         name="print_cards.html",
         context={
@@ -204,6 +204,10 @@ def print_cards_page(
             "is_sample_preview": bool(sample_preview),
         }
     )
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
 
 
 @app.get("/print/card-preview-noqr", response_class=HTMLResponse)
