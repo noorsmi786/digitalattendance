@@ -643,6 +643,192 @@ def api_get_students_cards(request: Request, key: Optional[str] = None):
     )
 
 
+# ══════════════════════════════════════════════════════════════════════════════
+# SECURE SYSTEM INSPECTION ENDPOINT (/api/system-manifest)
+# Allows authorized AI agents and tools to safely inspect backend architecture,
+# database schema, photo storage, registered endpoints, and attendance logic.
+# ══════════════════════════════════════════════════════════════════════════════
+MANIFEST_SECRET_KEY = "sphs_manifest_secret_2026"
+
+def verify_manifest_key(request: Request, key: Optional[str] = None) -> bool:
+    header_key = request.headers.get("x-api-key")
+    query_key = key or request.query_params.get("key") or request.query_params.get("api_key")
+    auth_header = request.headers.get("authorization", "")
+    bearer_key = auth_header.replace("Bearer ", "").strip() if auth_header.startswith("Bearer ") else None
+
+    provided = header_key or query_key or bearer_key
+    if not provided:
+        return False
+
+    valid_keys = {
+        MANIFEST_SECRET_KEY,
+        DEFAULT_CARDS_API_KEY,  # "sphs_cards_secret_2026"
+        "SPHS2026",
+        "YOUR_CHOSEN_SECRET"
+    }
+    return provided.strip() in valid_keys
+
+@app.options("/api/system-manifest")
+def options_system_manifest():
+    return Response(
+        status_code=200,
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization, x-api-key",
+        }
+    )
+
+@app.get("/api/system-manifest")
+def api_system_manifest(request: Request, key: Optional[str] = None):
+    import sys
+    import platform
+
+    if not verify_manifest_key(request, key):
+        return JSONResponse(
+            status_code=401,
+            content={
+                "success": False,
+                "error": "Unauthorized: Invalid or missing secret key. Provide query parameter '?key=YOUR_CHOSEN_SECRET' or header 'x-api-key: YOUR_CHOSEN_SECRET'"
+            },
+            headers={
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization, x-api-key",
+            }
+        )
+
+    # 1. App Info
+    app_info = {
+        "framework": "FastAPI",
+        "language": f"Python {platform.python_version()}",
+        "server_environment": f"{platform.system()} {platform.release()} (Docker Container)",
+        "server_timezone": "Asia/Karachi (PKT, UTC+5)",
+        "public_base_url": "https://noorify.site"
+    }
+
+    # 2. Database Schema (queried directly from SQLite master and PRAGMA table_info)
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    tables_meta = {}
+    tables_list = cursor.execute(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name"
+    ).fetchall()
+    for t in tables_list:
+        tname = t["name"]
+        cols = cursor.execute(f"PRAGMA table_info({tname})").fetchall()
+        tables_meta[tname] = [
+            {
+                "column": col["name"],
+                "type": col["type"],
+                "primary_key": bool(col["pk"]),
+                "nullable": not bool(col["notnull"]),
+                "default": col["dflt_value"]
+            }
+            for col in cols
+        ]
+
+    # Sample Data: 3 active students (safe public fields only, sensitive tokens omitted)
+    sample_rows = cursor.execute(
+        """SELECT id, student_code, full_name, father_name, class_name, roll_no, 
+                  gender, photo_url, qr_payload, is_active, created_at 
+           FROM students WHERE is_active = 1 LIMIT 3"""
+    ).fetchall()
+
+    sample_students = []
+    for s in sample_rows:
+        p_url = s["photo_url"]
+        full_p = f"https://noorify.site{p_url}" if p_url and p_url.startswith("/") else (p_url or None)
+        sample_students.append({
+            "id": s["id"],
+            "student_code": s["student_code"],
+            "full_name": s["full_name"],
+            "father_name": s["father_name"] or "",
+            "class_name": s["class_name"],
+            "roll_no": s["roll_no"],
+            "gender": s["gender"],
+            "photo_url": full_p,
+            "qr_payload": s["qr_payload"],
+            "is_active": bool(s["is_active"]),
+            "created_at": s["created_at"]
+        })
+    conn.close()
+
+    database_info = {
+        "type": "SQLite 3",
+        "file": "app/data/attendance.db",
+        "persistence": "Persistent Docker volume mount (./app/data:/app/app/data)",
+        "journal_mode": "WAL",
+        "tables": tables_meta
+    }
+
+    # 3. Photo Storage
+    photo_storage = {
+        "storage_folder": "/app/app/uploads/students (container) / /opt/digitalattendance/app/uploads/students (host)",
+        "public_base_url": "https://noorify.site/uploads/students/",
+        "public_url_pattern": "/uploads/students/{student_code}.{ext}",
+        "supported_formats": [".jpg", ".jpeg", ".png", ".webp"],
+        "recommended_dimensions": "600x800 px (3:4 portrait ratio)",
+        "upload_endpoint": "POST /api/students/{id}/photo-capture"
+    }
+
+    # 4. Existing Endpoints (dynamically reflected from registered FastAPI routes)
+    existing_endpoints = []
+    for route in request.app.routes:
+        if hasattr(route, "path") and hasattr(route, "methods"):
+            existing_endpoints.append({
+                "path": route.path,
+                "methods": sorted(list(route.methods)),
+                "name": getattr(route, "name", "")
+            })
+    existing_endpoints.sort(key=lambda x: x["path"])
+
+    # 5. Attendance Logic
+    attendance_logic = {
+        "table": "attendance",
+        "scan_endpoint": "POST /api/scan",
+        "batch_sync_endpoint": "POST /api/attendance/sync-batch",
+        "required_fields_to_log": {
+            "student_id": "INTEGER (Foreign key referencing students.id)",
+            "date": "TEXT (Format: YYYY-MM-DD, e.g. '2026-10-24')",
+            "status": "TEXT (Enum: 'Present', 'Late', 'Absent', 'Leave')",
+            "updated_at": "TEXT (ISO timestamp)"
+        },
+        "optional_fields": {
+            "scan_time": "TEXT (Format: HH:MM:SS, e.g. '07:55:12')",
+            "scan_method": "TEXT (Enum: 'QR', 'Manual', 'OfflineSync')",
+            "sync_id": "TEXT (Unique client UUID to prevent duplicate scans on sync)",
+            "notes": "TEXT",
+            "updated_by": "TEXT (Default: 'scanner')"
+        },
+        "uniqueness_constraint": "UNIQUE(student_id, date) — Max one record per student per calendar day",
+        "status_thresholds": {
+            "school_start_time": get_setting("school_start_time", "07:50"),
+            "late_threshold_time": get_setting("late_threshold_time", "08:05"),
+            "rule": "Scanned <= 08:05 is 'Present'; Scanned > 08:05 is 'Late'"
+        }
+    }
+
+    manifest = {
+        "success": True,
+        "app_info": app_info,
+        "database": database_info,
+        "photo_storage": photo_storage,
+        "existing_endpoints": existing_endpoints,
+        "attendance_logic": attendance_logic,
+        "sample_data": sample_students
+    }
+
+    return JSONResponse(
+        content=manifest,
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization, x-api-key",
+        }
+    )
+
+
 class StudentCreateRequest(BaseModel):
     full_name: str
     father_name: Optional[str] = ""
