@@ -3177,10 +3177,6 @@ body {
   box-shadow: none !important;
 }
 
-.print-page-break {
-  display: none;
-}
-
 /* Print Overrides */
 @media print {
   @page {
@@ -3248,17 +3244,6 @@ body {
     gap: 8mm !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
-  }
-  .print-page-break {
-    display: block !important;
-    height: 0 !important;
-    min-height: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border: none !important;
-    clear: both !important;
-    page-break-after: always !important;
-    break-after: page !important;
   }
   .card-cell {
     width: 3in !important;
@@ -3329,6 +3314,11 @@ body {
     <!-- Download Female Photos -->
     <a href="/api/download/female-photos" class="btn" style="background:#701a75; color:#fff;" title="Download ZIP of all female student photos for background changing">
       👧 Female Photos (.ZIP)
+    </a>
+
+    <!-- Direct Download 47-Page PDF -->
+    <a href="/uploads/exports/all_school_id_cards.pdf" download="all_school_id_cards_47pages.pdf" class="btn" style="background:#0284c7; color:#fff; font-weight:800;" title="Instantly download the complete ready-to-print 47-page PDF (All 232 Students)">
+      📥 Download All Cards (.PDF)
     </a>
 
     <!-- Print / Download PDF -->
@@ -3555,7 +3545,6 @@ body {
       </div>
 
     </div>
-    <div class="print-page-break"></div>
   {% endfor %}
 </div>
 
