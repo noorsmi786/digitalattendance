@@ -3083,31 +3083,25 @@ body {
   margin-bottom: 4px;
 }
 
-/* Physical A4 Sheet Container (210mm x 297mm) */
+/* Fixed A4 Page Container (210mm x 297mm) */
 .a4-page {
-  width: 210mm;
-  height: 297mm;
-  max-height: 297mm;
-  box-sizing: border-box;
-  padding: 0;
-  background: #ffffff;
+  width: 210mm !important;
+  height: 297mm !important;
+  padding: 10mm !important;
+  box-sizing: border-box !important;
+  background: #ffffff !important;
   box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  page-break-after: always;
-  break-after: page;
-  overflow: hidden;
+  position: relative !important;
+  overflow: hidden !important;
+  display: block !important;
+  page-break-after: always !important;
+  break-after: page !important;
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
 }
 
 /* Top Sheet Guide Header (Screen only) */
 .sheet-guide-header {
-  position: absolute;
-  top: 4mm;
-  left: 15mm;
-  right: 15mm;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -3118,63 +3112,86 @@ body {
   letter-spacing: 0.5px;
   border-bottom: 0.5px dashed #e2e8f0;
   padding-bottom: 1mm;
+  margin-bottom: 2mm;
 }
 
-/* 5 Rows Vertical Flex Column */
+/* 5 Rows Vertical Flex Column - strictly flex-start */
 .cards-grid-5rows {
-  display: flex;
-  flex-direction: column;
-  gap: 3mm; /* Exact 3mm cut gap between rows */
-  width: 100%;
-  align-items: center;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+  width: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
-/* Each Row = 1 Student (Left: Front, Right: Back) */
-.card-row {
-  display: flex;
-  gap: 10mm; /* Clean horizontal gap between Front and Back */
-  align-items: center;
-  justify-content: center;
-  page-break-inside: avoid;
-  break-inside: avoid;
+/* Fixed A4 Row: 2in tall, 3mm bottom margin, flex-start */
+.a4-row, .card-row {
+  display: flex !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+  gap: 3mm !important;
+  height: 2in !important;
+  margin-bottom: 3mm !important;
+  flex: none !important;
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
 }
 
-/* Card Cell: Exactly 3 inches wide × 2 inches tall (76.2mm × 50.8mm) */
-.card-cell {
-  width: 3in;
-  height: 2in;
-  box-sizing: border-box;
-  position: relative;
+.a4-row:last-child, .card-row:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* Fixed Card Slot / Face: strictly 3in x 2in */
+.card-face, .a4-slot, .card-cell {
+  width: 3in !important;
+  height: 2in !important;
+  flex: none !important;
+  box-sizing: border-box !important;
+  position: relative !important;
   outline: 0.3mm dashed #cbd5e1;
   border-radius: 2.5mm;
-  overflow: hidden;
+  overflow: hidden !important;
   background: #ffffff;
-  flex-shrink: 0;
-  page-break-inside: avoid;
-  break-inside: avoid;
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
 }
 
-/* Rotated Card Wrapper: 384px x 576px scaled to 50% and rotated sideways */
+/* Card Rotation Wrapper: strictly fixed size 3in x 2in */
 .card-rot-wrapper {
-  position: absolute;
-  width: 384px;
-  height: 576px;
-  left: 50%;
-  top: 50%;
-  margin-left: -192px;
-  margin-top: -288px;
-  transform: rotate(-90deg) scale(0.5);
-  transform-origin: center center;
+  width: 3in !important;
+  height: 2in !important;
+  overflow: hidden !important;
+  position: relative !important;
+  flex: none !important;
+  box-sizing: border-box !important;
 }
 
-/* Optional Toggle: rotate clockwise (+90deg) */
-.rotate-cw .card-rot-wrapper {
-  transform: rotate(90deg) scale(0.5);
-}
-
+/* Rotated Card Inside 3in x 2in Wrapper */
 .card-rot-wrapper .id-card {
-  zoom: 1 !important;
+  position: absolute !important;
+  width: 384px !important;
+  height: 576px !important;
+  left: 50% !important;
+  top: 50% !important;
+  margin-left: -192px !important;
+  margin-top: -288px !important;
+  transform: rotate(-90deg) scale(0.5) !important;
+  transform-origin: center center !important;
   box-shadow: none !important;
+}
+
+.rotate-cw .card-rot-wrapper .id-card {
+  transform: rotate(90deg) scale(0.5) !important;
+}
+
+/* Invisible placeholder slots and rows for last page */
+.a4-slot.empty-slot, .card-cell.empty-slot, .empty-row {
+  visibility: hidden !important;
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
 }
 
 /* Print Overrides */
@@ -3204,22 +3221,19 @@ body {
     overflow: visible !important;
   }
   .a4-page {
-    display: block !important;
-    box-shadow: none !important;
-    margin: 0 auto !important;
-    padding: 3mm 0 !important;
     width: 210mm !important;
-    max-width: 100% !important;
-    height: auto !important;
-    min-height: 0 !important;
-    max-height: none !important;
+    height: 297mm !important;
+    padding: 10mm !important;
     box-sizing: border-box !important;
+    margin: 0 auto !important;
     page-break-after: always !important;
     break-after: page !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
-    overflow: visible !important;
+    overflow: hidden !important;
     border: none !important;
+    box-shadow: none !important;
+    display: block !important;
   }
   .a4-page:last-of-type {
     page-break-after: auto !important;
@@ -3228,33 +3242,48 @@ body {
   .cards-grid-5rows {
     display: flex !important;
     flex-direction: column !important;
-    align-items: center !important;
     justify-content: flex-start !important;
-    gap: 1.8mm !important;
+    align-items: center !important;
     width: 100% !important;
     margin: 0 auto !important;
     padding: 0 !important;
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
   }
-  .card-row {
+  .a4-row, .card-row {
     display: flex !important;
+    justify-content: flex-start !important;
     align-items: center !important;
-    justify-content: center !important;
-    gap: 8mm !important;
+    gap: 3mm !important;
+    height: 2in !important;
+    margin-bottom: 3mm !important;
+    flex: none !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
-  .card-cell {
+  .a4-row:last-child, .card-row:last-child {
+    margin-bottom: 0 !important;
+  }
+  .card-face, .a4-slot, .card-cell {
     width: 3in !important;
     height: 2in !important;
+    flex: none !important;
+    box-sizing: border-box !important;
     outline: 0.25mm dashed #94a3b8 !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
-  .id-card, .card-rot-wrapper .id-card {
-    zoom: 1 !important;
-    box-shadow: none !important;
+  .card-rot-wrapper {
+    width: 3in !important;
+    height: 2in !important;
+    overflow: hidden !important;
+    position: relative !important;
+    flex: none !important;
+    box-sizing: border-box !important;
+  }
+  .a4-slot.empty-slot, .card-cell.empty-slot, .empty-row {
+    visibility: hidden !important;
+    border: none !important;
+    outline: none !important;
+    background: transparent !important;
   }
 }
 
@@ -3356,12 +3385,12 @@ body {
       <!-- 5-ROW GRID: EACH ROW = 1 STUDENT (BACK on Left, FRONT on Right) -->
       <div class="cards-grid-5rows">
         {% for s in chunk %}
-        <div class="card-row" data-student-code="{{ s.student_code }}" data-class="{{ s.class_name }}">
+        <div class="card-row a4-row" data-student-code="{{ s.student_code }}" data-class="{{ s.class_name }}">
 
                     <!-- ══════════════════════════════════════════════
                LEFT COLUMN: FRONT SIDE (STUDENT DETAILS)
                ══════════════════════════════════════════════ -->
-          <div class="card-cell">
+          <div class="card-cell a4-slot card-face">
             <div class="card-rot-wrapper">
               <div class="id-card theme-emerald relative flex flex-col overflow-hidden rounded-[22px] shadow-2xl bg-cpaper">
                 <!-- Elliptical Top Header -->
@@ -3489,7 +3518,7 @@ body {
           <!-- ══════════════════════════════════════════════
                RIGHT COLUMN: BACK SIDE (ATTENDANCE QR)
                ══════════════════════════════════════════════ -->
-          <div class="card-cell">
+          <div class="card-cell a4-slot card-face">
             <div class="card-rot-wrapper">
               <div class="id-card theme-emerald relative flex flex-col overflow-hidden rounded-[22px] shadow-2xl bg-c1 text-center">
                 <img src="/static/img/shaheen_logo_trans.png" alt="School crest" width="353" height="260" class="object-contain mx-auto mt-3 h-16 w-16"/>
@@ -3542,6 +3571,15 @@ body {
           </div>
         </div>
         {% endfor %}
+
+        {% if chunk|length < chunk_size %}
+          {% for _ in range(chunk_size - chunk|length) %}
+          <div class="card-row a4-row empty-row">
+            <div class="card-cell a4-slot card-face empty-slot"></div>
+            <div class="card-cell a4-slot card-face empty-slot"></div>
+          </div>
+          {% endfor %}
+        {% endif %}
       </div>
 
     </div>
