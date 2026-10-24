@@ -24,6 +24,9 @@ app/uploads/students/*.png
 app/uploads/students/*.webp
 app/uploads/replaced_archive/*
 app/uploads/replaced_archive/
+app/uploads/exports/*
+app/uploads/exports/
+*.zip
 
 # Database backups
 *.bak

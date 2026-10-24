@@ -93,11 +93,22 @@ def match_and_save_photo(file_bytes: bytes, original_filename: str) -> Tuple[boo
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # 1. Match exact student_code (e.g. SPHS-1001)
+    # 1. Match exact student_code (e.g. SPHS-1001, S102) or prefix before separator (e.g. S102_Manahil -> S102)
     student = cursor.execute(
         "SELECT id, student_code, full_name, class_name, roll_no FROM students WHERE LOWER(student_code) = ? AND is_active = 1",
         (base_name.lower(),)
     ).fetchone()
+
+    if not student:
+        for sep in ["_", "-", " "]:
+            if sep in base_name:
+                code_prefix = base_name.split(sep)[0].strip().lower()
+                student = cursor.execute(
+                    "SELECT id, student_code, full_name, class_name, roll_no FROM students WHERE LOWER(student_code) = ? AND is_active = 1",
+                    (code_prefix,)
+                ).fetchone()
+                if student:
+                    break
 
     # 2. Match exact roll_no (e.g. 01, 15) or clean roll
     if not student:

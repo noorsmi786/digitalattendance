@@ -939,6 +939,68 @@ async def api_upload_single_student_photo(student_id: int, request: Request, fil
     return result
 
 
+@app.get("/api/download/female-photos")
+def api_download_female_photos(request: Request):
+    """
+    Downloads a ZIP containing all female students' photos with a manifest list.
+    """
+    if not is_authenticated(request):
+        return RedirectResponse(url="/login")
+
+    import zipfile
+    import io
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT student_code, full_name, class_name, roll_no, photo_url 
+        FROM students 
+        WHERE LOWER(gender) = 'female' AND photo_url IS NOT NULL AND TRIM(photo_url) != ''
+        ORDER BY class_name, CAST(roll_no AS INTEGER), student_code
+    """)
+    students = cursor.fetchall()
+    conn.close()
+
+    if not students:
+        raise HTTPException(status_code=404, detail="No female student photos found in database.")
+
+    zip_buffer = io.BytesIO()
+    with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as z:
+        manifest_lines = [
+            "STUDENT_CODE | FULL_NAME | CLASS | ROLL_NO | FILENAME\n",
+            "=" * 60 + "\n"
+        ]
+        for s in students:
+            code = s["student_code"]
+            name = s["full_name"]
+            cls = s["class_name"]
+            roll = s["roll_no"]
+            p_url = s["photo_url"].split("?")[0]
+            filename = os.path.basename(p_url)
+            file_path = os.path.join(UPLOADS_DIR, "students", filename)
+            if not os.path.exists(file_path):
+                file_path = os.path.join(UPLOADS_DIR, filename)
+
+            if os.path.exists(file_path):
+                ext = os.path.splitext(filename)[1] or ".jpg"
+                safe_name = name.strip().replace(" ", "_")
+                arc_name = f"{code}_{safe_name}{ext}"
+                z.write(file_path, arcname=arc_name)
+                manifest_lines.append(f"{code} | {name} | Class {cls} | Roll {roll} -> {arc_name}\n")
+
+        z.writestr("STUDENTS_LIST.txt", "".join(manifest_lines))
+
+    zip_buffer.seek(0)
+    today_str = datetime.now(PKT).strftime("%Y%m%d")
+    return Response(
+        content=zip_buffer.getvalue(),
+        media_type="application/zip",
+        headers={
+            "Content-Disposition": f"attachment; filename=female_students_photos_{today_str}.zip"
+        }
+    )
+
+
 # ==================== LEAVE MANAGEMENT API ====================
 
 @app.get("/api/leaves")

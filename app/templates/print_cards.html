@@ -3185,27 +3185,33 @@ body {
   }
   html, body {
     background: #ffffff !important;
-    width: 210mm !important;
-    height: 297mm !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
-    overflow: hidden !important;
+    overflow: visible !important;
   }
   .no-print, .toolbar, .sheet-badge, .sheet-guide-header {
     display: none !important;
   }
   .screen-container {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
     padding: 0 !important;
     margin: 0 !important;
-    gap: 0 !important;
+    overflow: visible !important;
   }
   .a4-page {
     box-shadow: none !important;
-    margin: 0 !important;
+    margin: 0 auto !important;
     padding: 0 !important;
     width: 210mm !important;
     height: 297mm !important;
     max-height: 297mm !important;
+    min-height: 297mm !important;
+    box-sizing: border-box !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: center !important;
@@ -3216,6 +3222,10 @@ body {
     break-inside: avoid !important;
     overflow: hidden !important;
     border: none !important;
+  }
+  .a4-page:last-of-type {
+    page-break-after: auto !important;
+    break-after: auto !important;
   }
   .cards-grid-5rows {
     gap: 3mm !important;
@@ -3289,6 +3299,11 @@ body {
     <!-- Generate All Students -->
     <a href="/print/cards" class="btn btn-light" title="Reset all filters and generate all students">
       👥 All Students
+    </a>
+
+    <!-- Download Female Photos -->
+    <a href="/api/download/female-photos" class="btn" style="background:#701a75; color:#fff;" title="Download ZIP of all female student photos for background changing">
+      👧 Female Photos (.ZIP)
     </a>
 
     <!-- Print / Download PDF -->
