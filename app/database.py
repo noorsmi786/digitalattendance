@@ -55,9 +55,14 @@ def init_db():
     # Ensure card_qr column exists in existing database
     try:
         cursor.execute("ALTER TABLE students ADD COLUMN card_qr TEXT DEFAULT NULL")
+        conn.commit()
     except sqlite3.OperationalError:
         pass
-    cursor.execute("CREATE INDEX IF NOT EXISTS idx_students_card_qr ON students(card_qr)")
+    try:
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_students_card_qr ON students(card_qr)")
+        conn.commit()
+    except sqlite3.OperationalError:
+        pass
 
     # Attendance table
     cursor.execute("""
