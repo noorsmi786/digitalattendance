@@ -208,6 +208,9 @@
       </div>
     </div>
     <div class="nav-actions">
+      <button onclick="openCardLinkerModal()" class="scanner-launch-btn" style="background: #0d9488; border-color: #14b8a6; cursor: pointer;" title="Fix & Map Misplaced Printed Card QRs">
+        🪪 Link Card QR
+      </button>
       <a href="/photo-booth" target="_blank" class="scanner-launch-btn" style="background: #0284c7; border-color: #38bdf8;" title="Student Serial Photo Booth">
         📸 Photo Booth
       </a>
@@ -402,6 +405,7 @@
             </select>
             <input type="text" id="student-search-input" class="input-field" placeholder="Search by name, roll, or code...">
             <button id="add-student-btn" class="btn btn-primary">+ Add Student</button>
+            <button type="button" onclick="openCardLinkerModal()" class="btn btn-secondary" style="border-color:#0d9488; color:#0f766e; font-weight:700;" title="Map / Link Misplaced Printed Card QRs">🪪 Link Card QR</button>
             <a href="/photo-booth" target="_blank" class="btn btn-primary" style="background: #0284c7; border-color: #38bdf8; text-decoration: none;" title="Open Serial Photo Booth">📸 Serial Photo Booth</a>
             <button id="bulk-upload-btn" class="btn btn-secondary">📥 Bulk Excel</button>
             <button id="batch-photos-btn" class="btn btn-secondary">📸 Batch Photos</button>
@@ -472,6 +476,9 @@
             <a href="/api/download/female-photos" class="btn" style="background:#701a75; color:#fff; text-decoration:none; white-space:nowrap;" title="Download ZIP of all female student photos">
               👧 Female Photos (.ZIP)
             </a>
+            <button type="button" onclick="openCardLinkerModal()" class="btn" style="background:#0d9488; color:#fff; font-weight:700; white-space:nowrap;" title="Map / Link Misplaced Printed Card QRs">
+              🪪 Link Card QR
+            </button>
             <a href="/print/card-preview-noqr" target="_blank" class="btn" style="background:#1e3a8a; color:#fff; text-decoration:none; white-space:nowrap;">
               👀 Full Pair Preview
             </a>
@@ -1071,6 +1078,614 @@
       </div>
     </div>
   </div>
+
+  <!-- ================== CARD QR LINKER MODAL ================== -->
+  <div id="card-linker-modal" class="modal-overlay hidden" style="z-index: 9999;">
+    <div class="modal-box" style="max-width: 780px; width: 95%; max-height: 92vh; display: flex; flex-direction: column; padding: 0; overflow: hidden; border-radius: 14px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);">
+      
+      <!-- Modal Header -->
+      <div class="modal-head" style="background: linear-gradient(135deg, #044332 0%, #0f766e 100%); color: #fff; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h3 style="margin: 0; font-size: 18px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px;">
+            🪪 Card QR Linker <span style="font-size: 11px; background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 12px; font-weight: 600;">Fix Misplaced Cards</span>
+          </h3>
+          <p style="margin: 3px 0 0; font-size: 12px; color: #ccfbf1;">
+            Pair printed physical cards to students without reprinting. Works with Barcode guns, Webcam, or Keyboard.
+          </p>
+        </div>
+        <button class="modal-close-btn" onclick="closeCardLinkerModal()" style="color: #fff; font-size: 26px; line-height: 1; background: transparent; border: none; cursor: pointer;">&times;</button>
+      </div>
+
+      <!-- Toolbar / Controls -->
+      <div style="background: #f8fafc; padding: 12px 20px; border-bottom: 1px solid #e2e8f0; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px;">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <label style="font-size: 12.5px; font-weight: 700; color: #334155;">Class:</label>
+          <select id="linker-class-select" class="select-field" style="width: 160px; height: 34px; padding: 4px 8px; font-size: 13px;" onchange="loadCardLinkerStudents()">
+            <option value="">All Classes</option>
+            {% for c in settings.classes_list %}
+            <option value="{{ c }}">{{ c }}</option>
+            {% endfor %}
+          </select>
+
+          <div style="display: inline-flex; border: 1px solid #cbd5e1; border-radius: 6px; overflow: hidden; background: #fff;">
+            <button id="linker-mode-stepper-btn" onclick="setLinkerMode('stepper')" style="padding: 5px 12px; font-size: 12px; font-weight: 700; border: none; background: #0f766e; color: #fff; cursor: pointer;">
+              🎯 Card-by-Card
+            </button>
+            <button id="linker-mode-table-btn" onclick="setLinkerMode('table')" style="padding: 5px 12px; font-size: 12px; font-weight: 600; border: none; background: #fff; color: #475569; cursor: pointer;">
+              📋 Full Table
+            </button>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div id="linker-stats-badge" style="font-size: 12px; font-weight: 700; color: #047857; background: #d1fae5; padding: 4px 10px; border-radius: 20px; border: 1px solid #a7f3d0;">
+            Linked: 0 / 0
+          </div>
+          <button id="linker-camera-toggle-btn" onclick="toggleLinkerCamera()" class="btn btn-sm" style="background: #0284c7; color: #fff; font-size: 11.5px; padding: 5px 10px; display: inline-flex; align-items: center; gap: 4px; border: none; border-radius: 6px; cursor: pointer;">
+            📷 Camera Scanner
+          </button>
+        </div>
+      </div>
+
+      <!-- Camera Drawer (Collapsible) -->
+      <div id="linker-camera-drawer" style="display: none; background: #0f172a; padding: 12px; text-align: center; border-bottom: 2px solid #0f766e;">
+        <div style="color: #94a3b8; font-size: 11px; margin-bottom: 6px;">Hold the printed card's QR code steadily in front of your camera</div>
+        <div id="linker-qr-reader" style="width: 280px; max-width: 100%; margin: 0 auto; border-radius: 8px; overflow: hidden; background: #000;"></div>
+      </div>
+
+      <!-- Modal Body (Scrollable) -->
+      <div class="modal-body" style="padding: 18px 20px; overflow-y: auto; flex: 1;">
+        
+        <!-- ================= VIEW 1: STEPPER RAPID MODE ================= -->
+        <div id="linker-view-stepper">
+          <!-- Student Card Info Box -->
+          <div style="background: #ffffff; border: 2px solid #e2e8f0; border-radius: 12px; padding: 16px; margin-bottom: 16px; display: flex; gap: 18px; align-items: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); position: relative;">
+            
+            <span id="linker-stepper-counter" style="position: absolute; top: 12px; right: 14px; font-size: 11px; font-weight: 700; color: #64748b; background: #f1f5f9; padding: 3px 8px; border-radius: 10px;">
+              Student 0 of 0
+            </span>
+
+            <!-- Student Photo / Avatar -->
+            <div id="linker-student-photo-box" style="width: 84px; height: 84px; border-radius: 50%; overflow: hidden; border: 3px solid #0f766e; flex-shrink: 0; background: #f8fafc; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <img id="linker-student-photo" src="" alt="Photo" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+              <span id="linker-student-avatar" style="font-size: 30px; font-weight: 800; color: #0f766e;">?</span>
+            </div>
+
+            <!-- Student Metadata -->
+            <div style="flex: 1; min-width: 0;">
+              <h2 id="linker-student-name" style="margin: 0; font-size: 19px; font-weight: 800; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                Loading...
+              </h2>
+              <div id="linker-student-father" style="font-size: 13px; color: #64748b; margin-top: 2px;">
+                Father: -
+              </div>
+
+              <div style="display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;">
+                <span id="linker-student-class" style="background: #e0f2fe; color: #0369a1; font-size: 11.5px; font-weight: 700; padding: 2px 8px; border-radius: 6px;">
+                  Class: -
+                </span>
+                <span id="linker-student-roll" style="background: #fef3c7; color: #b45309; font-size: 11.5px; font-weight: 700; padding: 2px 8px; border-radius: 6px;">
+                  Roll: -
+                </span>
+                <span id="linker-student-code" style="background: #f1f5f9; color: #475569; font-size: 11.5px; font-family: monospace; font-weight: 700; padding: 2px 8px; border-radius: 6px;">
+                  Code: -
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Physical Card Status Box -->
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 12px; font-weight: 700; color: #475569;">Physical Card Status:</span>
+              <span id="linker-current-card-badge" style="font-size: 12px; font-weight: 800; padding: 3px 10px; border-radius: 20px; background: #e2e8f0; color: #475569;">
+                Not Linked
+              </span>
+            </div>
+            <button id="linker-unlink-btn" onclick="clearCurrentStudentLink()" class="btn btn-sm" style="background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; font-size: 11px; padding: 3px 8px; display: none; cursor: pointer;">
+              ❌ Clear / Unlink Card
+            </button>
+          </div>
+
+          <!-- Fast Scan Input Box -->
+          <div style="background: #ecfdf5; border: 2px dashed #059669; border-radius: 12px; padding: 16px; margin-bottom: 16px; text-align: center;">
+            <label for="linker-qr-input" style="display: block; font-size: 13.5px; font-weight: 800; color: #065f46; margin-bottom: 8px;">
+              ⚡ Scan Printed Physical Card with Barcode Gun (or Type & Enter):
+            </label>
+            <div style="display: flex; gap: 8px; max-width: 480px; margin: 0 auto;">
+              <input type="text" id="linker-qr-input" placeholder="Scan or enter code printed on card (e.g. S612)..." style="flex: 1; height: 42px; font-size: 15px; font-weight: 700; font-family: monospace; text-align: center; border: 2px solid #059669; border-radius: 8px; outline: none; background: #fff;" autocomplete="off">
+              <button type="button" onclick="handleLinkerInputSubmit()" style="background: #059669; color: #fff; border: none; padding: 0 18px; font-size: 14px; font-weight: 700; border-radius: 8px; cursor: pointer; white-space: nowrap;">
+                Save &amp; Next ➡️
+              </button>
+            </div>
+            <div id="linker-feedback-msg" style="margin-top: 8px; font-size: 12.5px; font-weight: 700; min-height: 18px; color: #047857;"></div>
+          </div>
+
+          <!-- Stepper Navigation Bar -->
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <div style="display: flex; gap: 8px;">
+              <button type="button" onclick="navLinkerStudent(-1)" class="btn btn-secondary" style="font-size: 12.5px; padding: 6px 14px;">
+                ⬅️ Previous
+              </button>
+              <button type="button" onclick="navLinkerStudent(1)" class="btn btn-secondary" style="font-size: 12.5px; padding: 6px 14px;">
+                Skip / Next ➡️
+              </button>
+            </div>
+
+            <!-- Quick Jump Dropdown -->
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <label style="font-size: 12px; color: #64748b; font-weight: 600;">Jump to:</label>
+              <select id="linker-jump-select" class="select-field" style="width: 220px; height: 32px; font-size: 12px;" onchange="jumpToLinkerStudent(this.value)">
+                <!-- Dynamically populated -->
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= VIEW 2: FULL TABLE MODE ================= -->
+        <div id="linker-view-table" style="display: none;">
+          <div style="margin-bottom: 10px; display: flex; gap: 8px;">
+            <input type="text" id="linker-table-search" placeholder="Search student by name, roll, or code..." class="input-field" style="flex: 1; height: 34px; font-size: 12.5px;" oninput="filterLinkerTable()">
+          </div>
+          <div class="table-responsive" style="max-height: 50vh; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 8px;">
+            <table class="data-table" style="font-size: 12.5px;">
+              <thead>
+                <tr style="position: sticky; top: 0; background: #f8fafc; z-index: 2;">
+                  <th style="width: 50px;">Roll</th>
+                  <th>Student Name</th>
+                  <th>Class</th>
+                  <th>System Code</th>
+                  <th style="min-width: 160px;">Physical Card QR</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="linker-table-body">
+                <tr><td colspan="7" style="text-align: center; padding: 20px;">Loading students...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-foot" style="background: #f8fafc; padding: 12px 20px; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 11px; color: #64748b;">
+          💡 Tip: Scanner gun auto-submits on scan. Keep the input box focused to scan continuously.
+        </span>
+        <button class="btn btn-secondary" onclick="closeCardLinkerModal()" style="font-size: 12.5px; padding: 6px 16px;">
+          Done / Close
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="/static/js/html5-qrcode.min.js"></script>
+  <script>
+    // --- CARD QR LINKER CLIENT LOGIC ---
+    let linkerStudents = [];
+    let linkerIndex = 0;
+    let linkerHtml5QrCode = null;
+    let linkerCameraRunning = false;
+    let linkerCurrentMode = 'stepper';
+
+    function openCardLinkerModal() {
+      const modal = document.getElementById('card-linker-modal');
+      if (!modal) return;
+      modal.classList.remove('hidden');
+
+      const tab3Class = document.getElementById('print-class-select')?.value;
+      const tab2Class = document.getElementById('student-class-filter')?.value;
+      const select = document.getElementById('linker-class-select');
+      if (select) {
+        if (tab3Class) select.value = tab3Class;
+        else if (tab2Class) select.value = tab2Class;
+      }
+
+      loadCardLinkerStudents();
+    }
+
+    function closeCardLinkerModal() {
+      stopLinkerCamera();
+      const modal = document.getElementById('card-linker-modal');
+      if (modal) modal.classList.add('hidden');
+      if (typeof loadStudents === 'function') {
+        loadStudents();
+      }
+    }
+
+    async function loadCardLinkerStudents() {
+      const cls = document.getElementById('linker-class-select')?.value || '';
+      const url = '/api/card-linker/students' + (cls ? '?class_name=' + encodeURIComponent(cls) : '');
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        linkerStudents = data.students || [];
+
+        updateLinkerStats();
+        populateLinkerJumpSelect();
+
+        const firstUnlinked = linkerStudents.findIndex(s => !s.card_qr);
+        linkerIndex = firstUnlinked !== -1 ? firstUnlinked : 0;
+
+        if (linkerCurrentMode === 'stepper') {
+          renderLinkerStepper();
+        } else {
+          renderLinkerTable();
+        }
+      } catch (err) {
+        console.error('Failed to load students for card linker:', err);
+      }
+    }
+
+    function updateLinkerStats() {
+      const total = linkerStudents.length;
+      const linked = linkerStudents.filter(s => s.card_qr).length;
+      const badge = document.getElementById('linker-stats-badge');
+      if (badge) {
+        badge.textContent = `Linked: ${linked} / ${total} Cards`;
+        if (linked === total && total > 0) {
+          badge.style.background = '#dcfce7';
+          badge.style.color = '#15803d';
+        } else {
+          badge.style.background = '#d1fae5';
+          badge.style.color = '#047857';
+        }
+      }
+    }
+
+    function populateLinkerJumpSelect() {
+      const select = document.getElementById('linker-jump-select');
+      if (!select) return;
+      select.innerHTML = linkerStudents.map((s, idx) => {
+        const statusMark = s.card_qr ? `✅ [${s.card_qr}]` : '⚠️ Unlinked';
+        return `<option value="${idx}">Roll ${s.roll_no} - ${s.full_name} (${s.class_name}) ${statusMark}</option>`;
+      }).join('');
+    }
+
+    function setLinkerMode(mode) {
+      linkerCurrentMode = mode;
+      const stepView = document.getElementById('linker-view-stepper');
+      const tblView = document.getElementById('linker-view-table');
+      const stepBtn = document.getElementById('linker-mode-stepper-btn');
+      const tblBtn = document.getElementById('linker-mode-table-btn');
+
+      if (mode === 'stepper') {
+        stepView.style.display = 'block';
+        tblView.style.display = 'none';
+        stepBtn.style.background = '#0f766e';
+        stepBtn.style.color = '#fff';
+        tblBtn.style.background = '#fff';
+        tblBtn.style.color = '#475569';
+        renderLinkerStepper();
+      } else {
+        stepView.style.display = 'none';
+        tblView.style.display = 'block';
+        stepBtn.style.background = '#fff';
+        stepBtn.style.color = '#475569';
+        tblBtn.style.background = '#0f766e';
+        tblBtn.style.color = '#fff';
+        renderLinkerTable();
+      }
+    }
+
+    function renderLinkerStepper() {
+      if (!linkerStudents.length) {
+        document.getElementById('linker-student-name').textContent = 'No students found in this class';
+        document.getElementById('linker-student-father').textContent = '';
+        document.getElementById('linker-student-class').textContent = 'Class: -';
+        document.getElementById('linker-student-roll').textContent = 'Roll: -';
+        document.getElementById('linker-student-code').textContent = 'Code: -';
+        document.getElementById('linker-stepper-counter').textContent = '0 / 0';
+        document.getElementById('linker-current-card-badge').innerHTML = 'None';
+        document.getElementById('linker-unlink-btn').style.display = 'none';
+        return;
+      }
+
+      if (linkerIndex < 0) linkerIndex = 0;
+      if (linkerIndex >= linkerStudents.length) linkerIndex = linkerStudents.length - 1;
+
+      const s = linkerStudents[linkerIndex];
+
+      document.getElementById('linker-student-name').textContent = s.full_name;
+      document.getElementById('linker-student-father').textContent = 'Father: ' + (s.father_name || '-');
+      document.getElementById('linker-student-class').textContent = 'Class: ' + s.class_name;
+      document.getElementById('linker-student-roll').textContent = 'Roll: ' + s.roll_no;
+      document.getElementById('linker-student-code').textContent = 'Code: ' + s.student_code;
+      document.getElementById('linker-stepper-counter').textContent = `Student ${linkerIndex + 1} of ${linkerStudents.length}`;
+
+      const photoEl = document.getElementById('linker-student-photo');
+      const avatarEl = document.getElementById('linker-student-avatar');
+      if (s.photo_url && s.photo_url.trim()) {
+        photoEl.src = s.photo_url;
+        photoEl.style.display = 'block';
+        avatarEl.style.display = 'none';
+      } else {
+        photoEl.style.display = 'none';
+        avatarEl.style.display = 'inline';
+        avatarEl.textContent = s.full_name.charAt(0).toUpperCase();
+      }
+
+      const badge = document.getElementById('linker-current-card-badge');
+      const unlinkBtn = document.getElementById('linker-unlink-btn');
+      if (s.card_qr) {
+        badge.innerHTML = `✅ Card QR: <code style="font-size:13px; font-weight:800; background:#dcfce7; color:#15803d; padding:2px 6px; border-radius:4px;">${s.card_qr}</code>`;
+        badge.style.background = '#dcfce7';
+        badge.style.color = '#15803d';
+        unlinkBtn.style.display = 'inline-block';
+      } else {
+        badge.innerHTML = `⚠️ No Physical Card Linked Yet`;
+        badge.style.background = '#fef3c7';
+        badge.style.color = '#b45309';
+        unlinkBtn.style.display = 'none';
+      }
+
+      const jumpSel = document.getElementById('linker-jump-select');
+      if (jumpSel) jumpSel.value = linkerIndex;
+
+      const input = document.getElementById('linker-qr-input');
+      if (input) {
+        input.value = '';
+        setTimeout(() => input.focus(), 50);
+      }
+    }
+
+    function navLinkerStudent(delta) {
+      if (!linkerStudents.length) return;
+      linkerIndex += delta;
+      if (linkerIndex < 0) linkerIndex = 0;
+      if (linkerIndex >= linkerStudents.length) linkerIndex = linkerStudents.length - 1;
+      renderLinkerStepper();
+    }
+
+    function jumpToLinkerStudent(val) {
+      linkerIndex = parseInt(val, 10);
+      renderLinkerStepper();
+    }
+
+    function playLinkSuccessSound() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(784, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1046.5, ctx.currentTime + 0.12);
+        gain.gain.setValueAtTime(0.2, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.16);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.16);
+      } catch(e) {}
+    }
+
+    async function handleLinkerInputSubmit() {
+      const input = document.getElementById('linker-qr-input');
+      const code = (input?.value || '').trim();
+      if (!code) return;
+      if (!linkerStudents.length) return;
+
+      const currentStudent = linkerStudents[linkerIndex];
+      await saveCardLink(currentStudent.id, code, true);
+    }
+
+    async function clearCurrentStudentLink() {
+      if (!linkerStudents.length) return;
+      const currentStudent = linkerStudents[linkerIndex];
+      if (!confirm(`Are you sure you want to unlink the physical card for ${currentStudent.full_name}?`)) return;
+      await saveCardLink(currentStudent.id, '', false);
+    }
+
+    async function saveCardLink(studentId, code, advanceAfter = false) {
+      const msgEl = document.getElementById('linker-feedback-msg');
+      try {
+        const res = await fetch('/api/card-linker/link', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ student_id: studentId, card_qr: code })
+        });
+        const data = await res.json();
+        if (data.success) {
+          playLinkSuccessSound();
+
+          const s = linkerStudents.find(x => x.id === studentId);
+          if (s) s.card_qr = data.card_qr;
+
+          if (data.card_qr) {
+            linkerStudents.forEach(x => {
+              if (x.id !== studentId && x.card_qr && x.card_qr.toUpperCase() === data.card_qr.toUpperCase()) {
+                x.card_qr = null;
+              }
+            });
+          }
+
+          updateLinkerStats();
+          populateLinkerJumpSelect();
+
+          if (msgEl) {
+            msgEl.innerHTML = `<span style="color:#047857;">✅ ${data.message}</span>`;
+            setTimeout(() => { if (msgEl) msgEl.innerHTML = ''; }, 3000);
+          }
+
+          if (advanceAfter) {
+            if (linkerIndex < linkerStudents.length - 1) {
+              linkerIndex++;
+              renderLinkerStepper();
+            } else {
+              renderLinkerStepper();
+              if (msgEl) msgEl.innerHTML = `<span style="color:#047857;">🎉 All students in this class reached!</span>`;
+            }
+          } else {
+            renderLinkerStepper();
+          }
+        } else {
+          alert('Error: ' + (data.detail || 'Could not link card'));
+        }
+      } catch (err) {
+        console.error('Error saving card link:', err);
+        alert('Network error while saving card link');
+      }
+    }
+
+    function renderLinkerTable() {
+      const tbody = document.getElementById('linker-table-body');
+      if (!tbody) return;
+      filterLinkerTable();
+    }
+
+    function filterLinkerTable() {
+      const tbody = document.getElementById('linker-table-body');
+      const query = (document.getElementById('linker-table-search')?.value || '').toLowerCase().trim();
+      if (!tbody) return;
+
+      const filtered = linkerStudents.filter(s => {
+        if (!query) return true;
+        return (s.full_name || '').toLowerCase().includes(query) ||
+               (s.roll_no || '').toLowerCase().includes(query) ||
+               (s.student_code || '').toLowerCase().includes(query) ||
+               (s.card_qr || '').toLowerCase().includes(query);
+      });
+
+      if (!filtered.length) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:20px; color:#64748b;">No matching students found</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map((s) => {
+        const isLinked = Boolean(s.card_qr);
+        const originalIdx = linkerStudents.indexOf(s);
+        return `
+          <tr>
+            <td><strong>${s.roll_no}</strong></td>
+            <td>
+              <div style="font-weight:700;">${s.full_name}</div>
+              <div style="font-size:11px; color:#64748b;">${s.father_name || ''}</div>
+            </td>
+            <td>${s.class_name}</td>
+            <td><code>${s.student_code}</code></td>
+            <td>
+              <div style="display:flex; gap:4px; align-items:center;">
+                <input type="text" id="tbl-input-${s.id}" value="${s.card_qr || ''}" placeholder="Scan/Enter QR..." style="width:110px; height:28px; font-size:12px; font-family:monospace; padding:2px 6px; border:1px solid #cbd5e1; border-radius:4px;" onkeydown="if(event.key==='Enter') saveTableLink(${s.id})">
+                <button type="button" onclick="saveTableLink(${s.id})" class="btn btn-sm" style="background:#0f766e; color:#fff; padding:3px 8px; font-size:11px; border:none; border-radius:4px; cursor:pointer;">💾</button>
+                ${isLinked ? `<button type="button" onclick="saveTableLink(${s.id}, true)" class="btn btn-sm" style="background:#fee2e2; color:#b91c1c; padding:3px 6px; font-size:11px; border:1px solid #fca5a5; border-radius:4px; cursor:pointer;" title="Clear">❌</button>` : ''}
+              </div>
+            </td>
+            <td>
+              ${isLinked 
+                ? `<span style="font-size:10.5px; font-weight:700; color:#15803d; background:#dcfce7; padding:2px 6px; border-radius:10px;">✅ Linked</span>`
+                : `<span style="font-size:10.5px; font-weight:700; color:#b45309; background:#fef3c7; padding:2px 6px; border-radius:10px;">⚠️ Unlinked</span>`}
+            </td>
+            <td>
+              <button type="button" onclick="jumpFromTableToStepper(${originalIdx})" class="btn btn-sm" style="background:#f1f5f9; color:#0f766e; font-size:11px; padding:3px 8px; border:1px solid #cbd5e1; border-radius:4px; cursor:pointer;">
+                🎯 Step
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function saveTableLink(studentId, clear = false) {
+      const input = document.getElementById(`tbl-input-${studentId}`);
+      const val = clear ? '' : (input?.value || '').trim();
+      await saveCardLink(studentId, val, false);
+      filterLinkerTable();
+    }
+
+    function jumpFromTableToStepper(idx) {
+      linkerIndex = idx;
+      setLinkerMode('stepper');
+    }
+
+    async function toggleLinkerCamera() {
+      const drawer = document.getElementById('linker-camera-drawer');
+      const btn = document.getElementById('linker-camera-toggle-btn');
+      if (linkerCameraRunning) {
+        stopLinkerCamera();
+        drawer.style.display = 'none';
+        btn.innerHTML = '📷 Camera Scanner';
+        btn.style.background = '#0284c7';
+      } else {
+        drawer.style.display = 'block';
+        btn.innerHTML = '⏹️ Stop Camera';
+        btn.style.background = '#dc2626';
+        startLinkerCamera();
+      }
+    }
+
+    async function startLinkerCamera() {
+      if (typeof Html5Qrcode === 'undefined') {
+        alert('Camera scanner library not loaded');
+        return;
+      }
+      try {
+        if (linkerHtml5QrCode) {
+          try { await linkerHtml5QrCode.stop(); } catch(e){}
+        }
+        linkerHtml5QrCode = new Html5Qrcode('linker-qr-reader');
+        linkerCameraRunning = true;
+        await linkerHtml5QrCode.start(
+          { facingMode: 'environment' },
+          { fps: 15, qrbox: { width: 220, height: 220 } },
+          (decodedText) => {
+            const input = document.getElementById('linker-qr-input');
+            if (input) input.value = decodedText;
+            handleLinkerInputSubmit();
+          },
+          () => {}
+        );
+      } catch (err) {
+        console.error('Failed to start linker camera:', err);
+        try {
+          await linkerHtml5QrCode.start(
+            { facingMode: 'user' },
+            { fps: 15, qrbox: { width: 220, height: 220 } },
+            (decodedText) => {
+              const input = document.getElementById('linker-qr-input');
+              if (input) input.value = decodedText;
+              handleLinkerInputSubmit();
+            },
+            () => {}
+          );
+        } catch(e2) {
+          alert('Could not access camera: ' + (e2.message || err.message));
+          toggleLinkerCamera();
+        }
+      }
+    }
+
+    async function stopLinkerCamera() {
+      if (linkerHtml5QrCode && linkerCameraRunning) {
+        try {
+          await linkerHtml5QrCode.stop();
+          linkerHtml5QrCode.clear();
+        } catch(e) {}
+      }
+      linkerCameraRunning = false;
+      const drawer = document.getElementById('linker-camera-drawer');
+      const btn = document.getElementById('linker-camera-toggle-btn');
+      if (drawer) drawer.style.display = 'none';
+      if (btn) {
+        btn.innerHTML = '📷 Camera Scanner';
+        btn.style.background = '#0284c7';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const qrInput = document.getElementById('linker-qr-input');
+      if (qrInput) {
+        qrInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            handleLinkerInputSubmit();
+          }
+        });
+      }
+    });
+  </script>
 
   <script src="/static/js/admin.js?v={{ cache_bust }}"></script>
   <script>

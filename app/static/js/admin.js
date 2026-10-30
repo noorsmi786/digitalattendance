@@ -792,6 +792,7 @@ function renderStudentsTable() {
           <button class="btn btn-secondary btn-sm" onclick="viewQrCode('${s.student_code}', '${escapeHtml(s.full_name)}')">
             📷 QR
           </button>
+          ${s.card_qr ? `<div style="font-size:10px; color:#0f766e; font-weight:700; margin-top:3px;" title="Physical Card Linked: ${s.card_qr}">🪪 ${s.card_qr}</div>` : ''}
         </td>
         <td>
           <div style="display: flex; gap: 4px;">

@@ -46,10 +46,18 @@ def init_db():
             address TEXT DEFAULT '',
             photo_url TEXT DEFAULT '',
             qr_payload TEXT UNIQUE NOT NULL,
+            card_qr TEXT DEFAULT NULL,
             is_active INTEGER DEFAULT 1,
             created_at TEXT NOT NULL
         )
     """)
+
+    # Ensure card_qr column exists in existing database
+    try:
+        cursor.execute("ALTER TABLE students ADD COLUMN card_qr TEXT DEFAULT NULL")
+    except sqlite3.OperationalError:
+        pass
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_students_card_qr ON students(card_qr)")
 
     # Attendance table
     cursor.execute("""

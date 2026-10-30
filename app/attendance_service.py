@@ -73,12 +73,21 @@ def process_scan(
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Find student — supports new short code (S501), old SPHS- code, direct qr_payload, or roll_no
+    # Find student:
+    # 1. First priority: Check physical card mapping (card_qr) — handles misplaced printed cards
     student_row = cursor.execute("""
         SELECT * FROM students 
-        WHERE (student_code = ? OR qr_payload = ? OR roll_no = ? OR UPPER(student_code) = UPPER(?)) AND is_active = 1
+        WHERE (card_qr = ? OR card_qr = ? OR UPPER(card_qr) = UPPER(?)) AND is_active = 1
         LIMIT 1
-    """, (code, qr_payload, code, code)).fetchone()
+    """, (code, qr_payload, code)).fetchone()
+
+    # 2. Second priority: Standard student_code, qr_payload, or roll_no (default behavior)
+    if not student_row:
+        student_row = cursor.execute("""
+            SELECT * FROM students 
+            WHERE (student_code = ? OR qr_payload = ? OR roll_no = ? OR UPPER(student_code) = UPPER(?)) AND is_active = 1
+            LIMIT 1
+        """, (code, qr_payload, code, code)).fetchone()
 
     if not student_row:
         conn.close()

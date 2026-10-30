@@ -15,7 +15,7 @@ from pydantic import BaseModel
 from app.database import (
     init_db, get_db_connection, get_setting, set_setting, get_all_settings, hash_password
 )
-from app.qr_service import generate_qr_payload, generate_qr_base64, compute_student_code_and_roll
+from app.qr_service import generate_qr_payload, generate_qr_base64, compute_student_code_and_roll, verify_qr_payload
 from app.attendance_service import (
     process_scan, sync_batch_scans, manual_attendance_update, delete_attendance_entry,
     auto_mark_absentees, get_daily_dashboard_data, get_current_school_date
@@ -898,6 +898,96 @@ def api_get_student_qr(student_code: str, request: Request):
         raise HTTPException(status_code=404, detail="Student not found")
     b64 = generate_qr_base64(row["qr_payload"])
     return {"qr_image": b64, "student_code": student_code}
+
+# ----------------- Card QR Linker Endpoints -----------------
+class CardLinkRequest(BaseModel):
+    student_id: int
+    card_qr: str
+
+class BulkCardLinkItem(BaseModel):
+    student_id: Optional[int] = None
+    student_code: Optional[str] = None
+    card_qr: str
+
+class BulkCardLinkRequest(BaseModel):
+    links: List[BulkCardLinkItem]
+
+@app.get("/api/card-linker/students")
+def api_get_card_linker_students(request: Request, class_name: Optional[str] = None):
+    require_auth(request)
+    conn = get_db_connection()
+    query = """
+        SELECT id, student_code, full_name, father_name, class_name, roll_no, photo_url, card_qr, qr_payload
+        FROM students 
+        WHERE is_active = 1
+    """
+    params = []
+    if class_name and class_name.strip() and class_name != "All Classes":
+        query += " AND class_name = ?"
+        params.append(class_name.strip())
+    query += " ORDER BY class_name ASC, CAST(roll_no AS INTEGER) ASC, roll_no ASC"
+    rows = [dict(r) for r in conn.execute(query, params).fetchall()]
+    conn.close()
+    return {"students": rows}
+
+@app.post("/api/card-linker/link")
+def api_link_card_qr(payload: CardLinkRequest, request: Request):
+    require_auth(request)
+    raw_code = payload.card_qr.strip()
+    cleaned_code = verify_qr_payload(raw_code) if raw_code else ""
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    student = cursor.execute("SELECT id, student_code, full_name, class_name, roll_no FROM students WHERE id = ? AND is_active = 1", (payload.student_id,)).fetchone()
+    if not student:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Student not found")
+        
+    student = dict(student)
+    cleared_other = None
+    
+    if cleaned_code:
+        conflict = cursor.execute("SELECT id, student_code, full_name, roll_no FROM students WHERE (card_qr = ? OR UPPER(card_qr) = UPPER(?)) AND id != ?", (cleaned_code, cleaned_code, payload.student_id)).fetchone()
+        if conflict:
+            cleared_other = dict(conflict)
+            cursor.execute("UPDATE students SET card_qr = NULL WHERE id = ?", (conflict["id"],))
+
+        cursor.execute("UPDATE students SET card_qr = ? WHERE id = ?", (cleaned_code, payload.student_id))
+    else:
+        cursor.execute("UPDATE students SET card_qr = NULL WHERE id = ?", (payload.student_id,))
+        
+    conn.commit()
+    conn.close()
+    
+    msg = f"Linked QR '{cleaned_code}' to {student['full_name']} (Roll {student['roll_no']})"
+    if cleared_other:
+        msg += f" (Unlinked from {cleared_other['full_name']} Roll {cleared_other['roll_no']})"
+        
+    return {
+        "success": True, 
+        "student_id": payload.student_id, 
+        "card_qr": cleaned_code or None,
+        "message": msg
+    }
+
+@app.post("/api/card-linker/bulk-link")
+def api_bulk_link_card_qr(payload: BulkCardLinkRequest, request: Request):
+    require_auth(request)
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    updated = 0
+    for item in payload.links:
+        cleaned = verify_qr_payload(item.card_qr.strip()) if item.card_qr else ""
+        if item.student_id:
+            cursor.execute("UPDATE students SET card_qr = ? WHERE id = ?", (cleaned or None, item.student_id))
+            updated += 1
+        elif item.student_code:
+            cursor.execute("UPDATE students SET card_qr = ? WHERE student_code = ?", (cleaned or None, item.student_code.strip()))
+            updated += 1
+    conn.commit()
+    conn.close()
+    return {"success": True, "updated_count": updated}
 
 @app.get("/api/students/template")
 def api_download_template():
